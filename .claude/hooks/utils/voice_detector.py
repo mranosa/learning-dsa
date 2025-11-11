@@ -11,6 +11,7 @@ import os
 import json
 import time
 import tempfile
+import wave
 from pathlib import Path
 import sounddevice as sd
 import numpy as np
@@ -125,8 +126,15 @@ class VoiceDetector:
         temp_path = temp_file.name
         temp_file.close()
 
-        # Save as WAV using sounddevice
-        sd.write(temp_path, audio_array, self.config['sample_rate'])
+        # Convert float32 to int16 for WAV file
+        audio_int16 = (audio_array * 32767).astype(np.int16)
+
+        # Save as WAV using wave module
+        with wave.open(temp_path, 'wb') as wav_file:
+            wav_file.setnchannels(1)  # Mono
+            wav_file.setsampwidth(2)  # 16-bit
+            wav_file.setframerate(self.config['sample_rate'])
+            wav_file.writeframes(audio_int16.tobytes())
 
         print(f"✅ Audio saved ({recording_duration:.1f}s)", file=sys.stderr)
         return temp_path
