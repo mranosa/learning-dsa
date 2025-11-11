@@ -1,0 +1,135 @@
+# ========================================
+# SECURITY - Sensitive Files
+# ========================================
+
+# Environment variables (CONTAINS API KEYS!)
+.env
+*.env
+.env.*
+!.env.example
+
+# ========================================
+# Python
+# ========================================
+
+# Virtual environments
+whisper-env/
+venv/
+env/
+ENV/
+.venv/
+*.venv
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ========================================
+# IDEs and Editors
+# ========================================
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Sublime
+*.sublime-project
+*.sublime-workspace
+
+# ========================================
+# Operating System
+# ========================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+.directory
+
+# ========================================
+# Temporary & Generated Files
+# ========================================
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.project-commits.txt
+
+# Audio recordings (from voice detection)
+*.wav
+*.mp3
+/tmp/
+temp_audio/
+
+# ========================================
+# Project-Specific
+# ========================================
+
+# Interactive mode state (regenerated each session)
+.claude/hooks/utils/interactive_state.json
+
+# User's code solutions (optional - can commit if wanted)
+solutions/
+my-solutions/
+practice.ts
+scratch.ts
+
+# Node modules (if running TypeScript locally)
+node_modules/
+package-lock.json
+yarn.lock
+
+# TypeScript compiled output
+*.js
+*.js.map
+!.claude/**/*.js
+dist/
+
+# Session-specific temporary files
+.session-temp/
+
+# ========================================
+# Git-specific
+# ========================================
+
+# Git auto-generated
+*.orig
+*.rej

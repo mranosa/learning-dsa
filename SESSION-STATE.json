@@ -1,0 +1,32 @@
+{
+  "currentDay": 1,
+  "currentSession": 1,
+  "sessionTopic": "Big O & Arrays",
+  "lastActive": "2025-11-10T00:00:00Z",
+  "phase": "not-started",
+  "currentProblem": null,
+  "currentProblemIndex": 0,
+  "totalProblemsInSession": 10,
+  "problemsCompleted": [],
+  "totalProblemsCompleted": 0,
+  "videoWatched": false,
+  "conceptsQuizzed": [],
+  "tipsGiven": false,
+  "sessionStartTime": null,
+  "timerActive": false,
+  "timerStartTime": null,
+  "timerElapsed": 0,
+  "feedbackGiven": {},
+  "areasToImprove": [],
+  "strengths": [],
+  "averageTimeByDifficulty": {
+    "easy": [],
+    "medium": [],
+    "hard": []
+  },
+  "patternsLearned": [],
+  "blind75Progress": 0,
+  "currentStreak": 0,
+  "totalStudyTimeMinutes": 0,
+  "sessionHistory": []
+}
