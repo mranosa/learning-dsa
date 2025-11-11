@@ -88,23 +88,66 @@ def get_git_status():
     return ""
 
 
+def load_session_state():
+    """Load current session state from SESSION-STATE.json."""
+    try:
+        session_state_file = Path.cwd() / "SESSION-STATE.json"
+        if session_state_file.exists():
+            with open(session_state_file, 'r') as f:
+                return json.load(f)
+    except Exception:
+        pass
+    return None
+
+
+def calculate_session_number(day, session):
+    """Calculate overall session number from day and session."""
+    return (day - 1) * 3 + session
+
+
+def get_learning_progress():
+    """Get learning progress info from session state."""
+    state = load_session_state()
+    if not state:
+        return None
+
+    day = state.get("currentDay", 1)
+    session_in_day = state.get("currentSession", 1)
+    session_number = calculate_session_number(day, session_in_day)
+    topic = state.get("sessionTopic", "")
+    problem_index = state.get("currentProblemIndex", 0)
+    problems_in_session = state.get("totalProblemsInSession", 10)
+    total_completed = state.get("totalProblemsCompleted", 0)
+    phase = state.get("phase", "not-started")
+
+    # Build progress string
+    progress_parts = []
+    progress_parts.append(f"Day {day}/7")
+    progress_parts.append(f"S{session_number}/21: {topic}")
+
+    if phase != "not-started" and problem_index > 0:
+        progress_parts.append(f"P{problem_index}/{problems_in_session}")
+
+    progress_parts.append(f"{total_completed}/120 ✓")
+
+    return " | ".join(progress_parts)
+
+
 def generate_status_line(input_data):
     """Generate the status line based on input data."""
     parts = []
-    
+
+    # Learning progress (priority - shows first)
+    learning_progress = get_learning_progress()
+    if learning_progress:
+        parts.append(f"\033[35m🎯 {learning_progress}\033[0m")  # Magenta color
+
     # Model display name
     model_info = input_data.get('model', {})
     model_name = model_info.get('display_name', 'Claude')
     parts.append(f"\033[36m[{model_name}]\033[0m")  # Cyan color
-    
-    # Current directory
-    workspace = input_data.get('workspace', {})
-    current_dir = workspace.get('current_dir', '')
-    if current_dir:
-        dir_name = os.path.basename(current_dir)
-        parts.append(f"\033[34m📁 {dir_name}\033[0m")  # Blue color
-    
-    # Git branch and status
+
+    # Git branch and status (compact)
     git_branch = get_git_branch()
     if git_branch:
         git_status = get_git_status()
@@ -112,12 +155,7 @@ def generate_status_line(input_data):
         if git_status:
             git_info += f" {git_status}"
         parts.append(f"\033[32m{git_info}\033[0m")  # Green color
-    
-    # Version info (optional, smaller)
-    version = input_data.get('version', '')
-    if version:
-        parts.append(f"\033[90mv{version}\033[0m")  # Gray color
-    
+
     return " | ".join(parts)
 
 
