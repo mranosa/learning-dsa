@@ -1,0 +1,50 @@
+#!/bin/bash
+"""
+Setup Voice Hotkeys
+
+Activates F12 voice input for Claude Code.
+Run this once per session or add to startup.
+"""
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONFIG_FILE="$SCRIPT_DIR/.xbindkeysrc"
+
+echo "🔧 Setting up voice hotkeys for learning-dsa..."
+echo ""
+
+# Check if xbindkeys is running
+if pgrep -x "xbindkeys" > /dev/null; then
+    echo "⚠️  xbindkeys already running. Reloading configuration..."
+    killall xbindkeys
+    sleep 0.5
+fi
+
+# Start xbindkeys with our config
+xbindkeys -f "$CONFIG_FILE"
+
+if [ $? -eq 0 ]; then
+    echo "✅ Voice hotkeys activated!"
+    echo ""
+    echo "Hotkey Configuration:"
+    echo "  F12          → Voice input (types into Claude Code)"
+    echo "                 Say 'ok submit' to auto-press Enter"
+    echo ""
+    echo "Usage:"
+    echo "  1. Make sure Claude Code CLI is running"
+    echo "  2. Press F12 from anywhere (LeetCode, browser, etc.)"
+    echo "  3. Speak your command"
+    echo "  4. Text auto-types into Claude Code"
+    echo "  5. Add 'ok submit' to auto-press Enter"
+    echo ""
+    echo "Examples:"
+    echo "  Press F12: 'Claude, start session 1 1, ok submit'"
+    echo "  Press F12: 'Give me the problem, ok submit'"
+    echo "  Press F12: 'I'm stuck, ok submit'"
+    echo ""
+    echo "To stop hotkeys: killall xbindkeys"
+    echo "To reload: ./setup-voice-hotkeys"
+else
+    echo "❌ Failed to start xbindkeys"
+    echo "Make sure xbindkeys is installed: sudo apt-get install xbindkeys"
+    exit 1
+fi

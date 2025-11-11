@@ -1,0 +1,19 @@
+# XBindKeys configuration for Voice Interview System
+#
+# F12 - Voice Input for Claude Code
+# Works from anywhere - types into Claude Code window
+#
+# To activate: xbindkeys -f /home/badong/Projects/learning-dsa/.xbindkeysrc
+# To reload: killall xbindkeys && xbindkeys -f /home/badong/Projects/learning-dsa/.xbindkeysrc
+
+# F12 - Voice Input
+"/home/badong/Projects/learning-dsa/.claude/hooks/voice_input_handler.sh"
+    F12
+
+# Alternative: Ctrl+Space (if F12 conflicts with something)
+# "/home/badong/Projects/learning-dsa/.claude/hooks/voice_input_handler.sh"
+#     Control + space
+
+# Shift+F12 - Stop interactive mode
+# "/home/badong/Projects/learning-dsa/.claude/hooks/interactive_mode.py stop"
+#     Shift + F12
