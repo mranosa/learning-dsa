@@ -1,29 +1,18 @@
 # 1-Week Interactive DSA Interview Bootcamp
 
-> **Interactive Mode:** I (Claude) am your interviewer. Use voice commands to navigate sessions, get problems, request hints, and receive feedback.
+> **Interactive Mode:** I (Claude) am your interviewer. Type commands to navigate sessions, get problems, request hints, and receive feedback. Enable TTS in Claude settings for voice responses!
 
 ## 🚀 Quick Start
-
-### Option A: Full Voice Interview Mode (Recommended for Streaming!) 🎤
-
-1. **Test your voice system:** `./voice-interview test`
-2. **Start voice interview:** `./voice-interview`
-3. **Speak naturally:** "Claude, start session 1 1"
-4. **I respond with voice** and guide you through
-5. **Think aloud while coding** - I'll listen and respond in real-time!
-6. **See [VOICE-SETUP.md](./VOICE-SETUP.md) for details**
-
-### Option B: Standard Interactive Mode (Text-based)
 
 1. **Print the cheatsheet:** `INTERVIEW-MASTER-CHEATSHEET.docx` (3 pages)
 2. **Run:** Type `/start-session 1 1`
 3. **Watch video when I assign it**
 4. **Type responses** to my quiz questions
-5. **Use voice commands or type** (both work!)
+5. **Enable TTS in Claude settings** for voice responses (optional)
 
 ---
 
-## 🎤 VOICE COMMANDS (Quick Reference)
+## 💬 COMMANDS (Quick Reference)
 
 ### 📋 Session Management
 - **"Claude, start session [day] [session]"** - Begin a session
@@ -77,27 +66,6 @@
 
 📖 **Full command documentation:** [COMMAND-GUIDE.md](./COMMAND-GUIDE.md)
 🖨️ **Printable commands:** Page 3 of INTERVIEW-MASTER-CHEATSHEET.docx
-
----
-
-## 🎤 F12 Voice Input (Hands-Free Commands!)
-
-**Setup:** Run `./setup-voice-hotkeys` once
-
-**Usage:**
-1. **Press F12** from anywhere (LeetCode, browser, etc.)
-2. **Speak your command:** "Claude, start session 1 1, ok submit"
-3. **Text auto-types** into Claude Code
-4. **Auto-presses Enter** if you said "ok submit"
-
-**Magic:** Works even when Claude Code is in background!
-
-**Examples:**
-- F12: "Give me the problem, ok submit" → Auto-submits
-- F12: "I'm stuck" → You press Enter manually
-- F12: "Evaluate me, ok submit" → Auto-submits
-
-**See:** [VOICE-SETUP.md](./VOICE-SETUP.md) for full guide
 
 ---
 
@@ -244,13 +212,13 @@ Auto-commits after each problem with format:
 
 ## 💡 Tips for Best Results
 
-1. **Use voice commands** - More natural, simulates real interviews
-2. **Follow UMPIRE** - Don't skip steps (especially "Understand" and "Plan")
-3. **Think aloud** - Explain everything you're doing
-4. **Ask clarifying questions** - Show interview skills
-5. **Review cheatsheet** - Keep 3-page printout visible
-6. **Treat each problem as real interview** - Time pressure, communication focus
-7. **Review feedback** - Act on improvement areas
+1. **Follow UMPIRE** - Don't skip steps (especially "Understand" and "Plan")
+2. **Think aloud** - Explain everything you're doing (type thoughts or enable TTS)
+3. **Ask clarifying questions** - Show interview skills
+4. **Review cheatsheet** - Keep 3-page printout visible
+5. **Treat each problem as real interview** - Time pressure, communication focus
+6. **Review feedback** - Act on improvement areas
+7. **Enable TTS** - I'll read problems and responses aloud for more realistic practice
 
 ---
 
@@ -269,7 +237,7 @@ All automatic via `/mark-complete` and `/next-session` commands.
 Enable TTS in Claude settings, then:
 - I read problems aloud
 - I ask questions verbally
-- You respond by voice
+- You type responses (visible to stream)
 - Perfect for streaming + interview practice
 
 See [STREAMING-TIPS.md](./STREAMING-TIPS.md) for setup guide.

@@ -6,13 +6,9 @@
 
 ## ✅ COMPLETE (100%)
 
-### Voice Interaction System
+### Text-to-Speech Output
 - [x] TTS output (ElevenLabs with Badong voice)
-- [x] STT input (Whisper base model)
-- [x] F12 hotkey (xdotool automation)
-- [x] "ok submit" auto-enter feature
-- [x] Interactive mode (continuous listening)
-- [x] Voice Activity Detection
+- [x] Claude reads problems and responses aloud
 - [x] Command parser (natural language)
 - [x] Interviewer response library (100+ phrases)
 
@@ -38,8 +34,6 @@
 
 ### Tools & Scripts
 - [x] system-check (verification)
-- [x] setup-voice-hotkeys (F12 activation)
-- [x] voice-interview (interactive mode)
 - [x] All automation scripts
 
 ---
@@ -63,22 +57,11 @@ Remaining sessions can be populated as needed or on-demand.
 
 ## 🔧 Configuration
 
-### Voice Settings
-- Whisper model: base (good speed/accuracy)
-- Silence threshold: 0.01
-- Silence duration: 1.5s
-- Language: English
-- Sample rate: 16kHz
-
 ### TTS Settings
 - Voice: Badong (custom)
 - Model: eleven_turbo_v2_5
 - Stability: 0.5
 - Similarity: 0.8
-
-### Hotkeys
-- F12: Voice input
-- (Optional) Shift+F12: Stop interactive mode
 
 ---
 
