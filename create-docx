@@ -1,0 +1,29 @@
+#!/bin/bash
+# Create DOCX from markdown cheatsheet
+# Uses pandoc to generate Word document
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+echo "📄 Creating DOCX cheatsheet..."
+
+# Generate DOCX from 2-page markdown
+pandoc "$SCRIPT_DIR/CHEATSHEET-2PAGE.md" \
+  -o "$SCRIPT_DIR/INTERVIEW-CHEATSHEET.docx" \
+  --from markdown \
+  --to docx
+
+if [ $? -eq 0 ]; then
+    echo "✅ INTERVIEW-CHEATSHEET.docx created!"
+    echo ""
+    echo "📤 Upload to Google Docs:"
+    echo "   1. Go to: https://docs.google.com/document/u/0/"
+    echo "   2. Click: File → Open → Upload"
+    echo "   3. Select: INTERVIEW-CHEATSHEET.docx"
+    echo ""
+    echo "Or open locally:"
+    echo "   xdg-open INTERVIEW-CHEATSHEET.docx"
+else
+    echo "❌ Failed to create DOCX"
+    echo "Make sure pandoc is installed: sudo apt-get install pandoc"
+    exit 1
+fi

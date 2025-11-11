@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interview Cheatsheet</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 1cm;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 9pt;
+            line-height: 1.3;
+            margin: 0;
+            padding: 10px;
+        }
+
+        .page {
+            page-break-after: always;
+            height: 19cm;
+            columns: 2;
+            column-gap: 20px;
+            column-rule: 1px solid #ccc;
+        }
+
+        .page:last-child {
+            page-break-after: auto;
+        }
+
+        h1 {
+            font-size: 14pt;
+            margin: 0 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #333;
+            column-span: all;
+        }
+
+        h2 {
+            font-size: 11pt;
+            margin: 8px 0 5px 0;
+            color: #2c3e50;
+        }
+
+        h3 {
+            font-size: 10pt;
+            margin: 5px 0 3px 0;
+            color: #34495e;
+        }
+
+        p, ul, ol {
+            margin: 3px 0;
+        }
+
+        ul {
+            padding-left: 18px;
+        }
+
+        li {
+            margin: 2px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8pt;
+            margin: 5px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 3px 5px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+        code {
+            background-color: #f5f5f5;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-size: 8pt;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        pre {
+            background-color: #f8f8f8;
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 7.5pt;
+            margin: 3px 0;
+            white-space: pre-wrap;
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+        }
+
+        .checkbox {
+            margin-right: 5px;
+        }
+
+        strong {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+<!-- PAGE 1: INTERVIEW ESSENTIALS -->
+<div class="page">
+    <h1>PAGE 1: INTERVIEW ESSENTIALS</h1>
+
+    <h2>UMPIRE METHOD</h2>
+    <p><strong>U - UNDERSTAND</strong> (2 min): Restate problem, ask constraints</p>
+    <p><strong>M - MATCH</strong> (1 min): Identify pattern</p>
+    <p><strong>P - PLAN</strong> (3-5 min): Brute force FIRST, then optimize</p>
+    <p><strong>I - IMPLEMENT</strong> (15-25 min): Think aloud, descriptive names</p>
+    <p><strong>R - REVIEW</strong> (3-5 min): Test edge cases</p>
+    <p><strong>E - EVALUATE</strong> (2 min): State time/space complexity</p>
+
+    <h2>PATTERN RECOGNITION</h2>
+    <table>
+        <tr><th>Keyword</th><th>Pattern</th></tr>
+        <tr><td>Subarray/substring</td><td>Sliding Window</td></tr>
+        <tr><td>Sorted array</td><td>Binary Search</td></tr>
+        <tr><td>Find pair</td><td>Hash Map / Two Pointers</td></tr>
+        <tr><td>Top K</td><td>Heap</td></tr>
+        <tr><td>All combinations</td><td>Backtracking</td></tr>
+        <tr><td>Shortest path</td><td>BFS</td></tr>
+        <tr><td>Maximum/minimum</td><td>DP / Greedy</td></tr>
+    </table>
+
+    <h2>TYPESCRIPT QUICK REF</h2>
+    <pre><code>// Sort (MUST use comparator!)
+arr.sort((a,b) => a-b)  // ascending
+
+// Map
+const map = new Map&lt;number, number&gt;();
+map.set(k, v); map.get(k); map.has(k);
+
+// Set
+const set = new Set&lt;number&gt;();
+set.add(v); set.has(v);
+
+// Two pointers
+let [left, right] = [0, arr.length-1];
+
+// Swap
+[arr[i], arr[j]] = [arr[j], arr[i]];</code></pre>
+
+    <h2>COMPLEXITY TABLE</h2>
+    <table>
+        <tr><th>Pattern</th><th>Time</th><th>Space</th></tr>
+        <tr><td>Two Pointers</td><td>O(n)</td><td>O(1)</td></tr>
+        <tr><td>Hash Map</td><td>O(n)</td><td>O(n)</td></tr>
+        <tr><td>Binary Search</td><td>O(log n)</td><td>O(1)</td></tr>
+        <tr><td>Sliding Window</td><td>O(n)</td><td>O(k)</td></tr>
+        <tr><td>Tree DFS</td><td>O(n)</td><td>O(h)</td></tr>
+        <tr><td>Graph DFS/BFS</td><td>O(V+E)</td><td>O(V)</td></tr>
+        <tr><td>DP 1D</td><td>O(n)</td><td>O(n)</td></tr>
+        <tr><td>DP 2D</td><td>O(n²)</td><td>O(n²)</td></tr>
+        <tr><td>Backtracking</td><td>O(2ⁿ)</td><td>O(n)</td></tr>
+    </table>
+
+    <h2>EDGE CASES CHECKLIST</h2>
+    <p><span class="checkbox">□</span> Empty input<br>
+    <span class="checkbox">□</span> Single element<br>
+    <span class="checkbox">□</span> All same elements<br>
+    <span class="checkbox">□</span> Negative numbers/zero<br>
+    <span class="checkbox">□</span> Maximum constraints<br>
+    <span class="checkbox">□</span> Duplicates</p>
+
+    <h2>COMMON BUGS</h2>
+    <p><span class="checkbox">□</span> Off-by-one (i &lt; n vs i &lt;= n)<br>
+    <span class="checkbox">□</span> Array out of bounds<br>
+    <span class="checkbox">□</span> Forgot to increment loop<br>
+    <span class="checkbox">□</span> Wrong comparison operator<br>
+    <span class="checkbox">□</span> Mutating while iterating</p>
+
+    <h2>TS GOTCHAS</h2>
+    <p>⚠️ <code>arr.sort()</code> sorts as strings!<br>
+    ⚠️ <code>shift()/unshift()</code> is O(n)<br>
+    ⚠️ <code>Math.max(...huge)</code> crashes<br>
+    ⚠️ Always use <code>===</code> not <code>==</code></p>
+</div>
+
+<!-- PAGE 2: VOICE & VOCABULARY -->
+<div class="page">
+    <h1>PAGE 2: VOICE & VOCABULARY</h1>
+
+    <h2>F12 VOICE COMMANDS</h2>
+    <p><strong>Setup:</strong> <code>./setup-voice-hotkeys && ./voice-interview</code></p>
+
+    <h3>Session Commands:</h3>
+    <ul>
+        <li><strong>F12:</strong> "Claude, start session 1 1, ok submit"</li>
+        <li><strong>F12:</strong> "Give me the problem, ok submit"</li>
+        <li><strong>F12:</strong> "I watched the video, ok submit"</li>
+        <li><strong>F12:</strong> "I'm stuck, ok submit" (hint)</li>
+        <li><strong>F12:</strong> "Evaluate me, ok submit"</li>
+        <li><strong>F12:</strong> "Next problem, ok submit"</li>
+    </ul>
+
+    <p><strong>Shortcuts:</strong> "Go", "Hint", "Done", "Next", "Stats"</p>
+
+    <p class="highlight"><strong>Magic:</strong> F12 works from LeetCode! No window switching!</p>
+
+    <h2>THINKING-ALOUD PHRASES</h2>
+    <p><strong>Use these while coding:</strong></p>
+    <ul>
+        <li>"I'm creating a _____ to..."</li>
+        <li>"The time complexity is O of n because..."</li>
+        <li>"I'll iterate through..."</li>
+        <li>"Calculating the complement as..."</li>
+        <li>"This handles the edge case where..."</li>
+        <li>"Let me initialize..."</li>
+        <li>"Space-wise, I'm using..."</li>
+        <li>"The trade-off is..."</li>
+        <li>"What if the input is empty?"</li>
+        <li>"Let me trace through with..."</li>
+    </ul>
+
+    <h2>TECHNICAL VOCABULARY (Top 30)</h2>
+    <table>
+        <tr><th>Term</th><th>Meaning</th></tr>
+        <tr><td><strong>Complement</strong></td><td>Value needed (target - current)</td></tr>
+        <tr><td><strong>Iterate</strong></td><td>Go through one by one</td></tr>
+        <tr><td><strong>Traverse</strong></td><td>Visit each element</td></tr>
+        <tr><td><strong>Optimal</strong></td><td>Best possible solution</td></tr>
+        <tr><td><strong>Contiguous</strong></td><td>Connected, no gaps</td></tr>
+        <tr><td><strong>Adjacent</strong></td><td>Next to each other</td></tr>
+        <tr><td><strong>Index</strong></td><td>Position in array (0-based)</td></tr>
+        <tr><td><strong>Pointer</strong></td><td>Variable indicating position</td></tr>
+        <tr><td><strong>Initialize</strong></td><td>Set starting value</td></tr>
+        <tr><td><strong>Increment</strong></td><td>Add 1 (i++)</td></tr>
+        <tr><td><strong>Decrement</strong></td><td>Subtract 1 (i--)</td></tr>
+        <tr><td><strong>Accumulate</strong></td><td>Build up total</td></tr>
+        <tr><td><strong>Node</strong></td><td>Element in tree/graph</td></tr>
+        <tr><td><strong>Edge</strong></td><td>Connection between nodes</td></tr>
+        <tr><td><strong>Leaf</strong></td><td>Node with no children</td></tr>
+        <tr><td><strong>Root</strong></td><td>Top node in tree</td></tr>
+        <tr><td><strong>Linear</strong></td><td>O(n) - proportional growth</td></tr>
+        <tr><td><strong>Quadratic</strong></td><td>O(n²) - nested loops</td></tr>
+        <tr><td><strong>Logarithmic</strong></td><td>O(log n) - halving</td></tr>
+        <tr><td><strong>Constant</strong></td><td>O(1) - fixed time</td></tr>
+        <tr><td><strong>Memoization</strong></td><td>Cache results</td></tr>
+        <tr><td><strong>Subarray</strong></td><td>Contiguous portion</td></tr>
+        <tr><td><strong>Prefix</strong></td><td>From start to position</td></tr>
+        <tr><td><strong>Suffix</strong></td><td>From position to end</td></tr>
+        <tr><td><strong>Base case</strong></td><td>Stopping condition (recursion)</td></tr>
+    </table>
+
+    <h2>WORKFLOW</h2>
+    <pre><strong>Setup:</strong>
+Browser Tab 1: Videos/learning materials
+Browser Tab 2: LeetCode.com ← CODE HERE!
+Terminal: ./setup-voice-hotkeys && ./voice-interview
+
+<strong>Session:</strong>
+F12 → Speak command → Auto-types → "ok submit" presses Enter
+Code in LeetCode → Think aloud → I respond in real-time!
+
+<strong>Time Targets:</strong> Easy &lt;15min | Medium &lt;30min | Hard &lt;45min</pre>
+</div>
+
+</body>
+</html>

@@ -30,12 +30,22 @@ main() {
     notify "🎤 Voice Input" "Listening... Speak now!" "normal"
 
     # Record and transcribe using voice detector
-    TEXT=$("$SCRIPT_DIR/utils/voice_detector.py" 2>/dev/null)
+    # Capture both stdout (transcription) and exit code
+    TEXT=$("$SCRIPT_DIR/utils/voice_detector.py" 2>&1)
+    EXIT_CODE=$?
 
-    # Check if transcription was successful
-    if [ -z "$TEXT" ] || [ "$TEXT" == "" ]; then
-        notify "⚠️ Voice Input" "No speech detected or transcription failed" "critical"
+    # Check if script failed (not just silence)
+    if [ $EXIT_CODE -ne 0 ]; then
+        notify "❌ Voice Input" "Error: Voice detection failed" "critical"
+        echo "Error running voice detector. Check that whisper-env is set up." >&2
         exit 1
+    fi
+
+    # Check if transcription was successful (might be empty if just silence/noise)
+    if [ -z "$TEXT" ] || [ "$TEXT" == "" ]; then
+        # Silence is okay, just notify softly
+        notify "🔇 Voice Input" "No speech detected (silence or noise only)" "low"
+        exit 0  # Exit gracefully, not an error
     fi
 
     # Show what was transcribed

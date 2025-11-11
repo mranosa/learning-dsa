@@ -133,3 +133,4 @@ dist/
 # Git auto-generated
 *.orig
 *.rej
+*.docx
