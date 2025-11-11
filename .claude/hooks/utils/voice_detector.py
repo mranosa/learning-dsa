@@ -21,10 +21,12 @@ import whisper
 CONFIG_FILE = Path(__file__).parent / "voice_config.json"
 
 DEFAULT_CONFIG = {
-    "whisper_model": "base",      # tiny, base, small, medium, large
+    "whisper_model": "large-v3-turbo",  # tiny, base, small, medium, large-v3-turbo
     "language": "en",              # Or "auto" for auto-detect
+    "device": "cuda",              # cuda for GPU, cpu for CPU
+    "compute_type": "float16",     # float16 for GPU, float32 for CPU
     "sample_rate": 16000,          # Whisper expects 16kHz
-    "silence_threshold": 0.01,     # RMS amplitude threshold
+    "silence_threshold": 0.02,     # RMS amplitude threshold (higher = less sensitive)
     "silence_duration": 1.5,       # Seconds of silence to stop recording
     "min_recording_duration": 0.5, # Minimum seconds to consider valid
     "max_recording_duration": 30,  # Maximum seconds per recording
@@ -43,10 +45,13 @@ class VoiceDetector:
             with open(CONFIG_FILE, 'w') as f:
                 json.dump(DEFAULT_CONFIG, f, indent=2)
 
-        # Load Whisper model
-        print(f"Loading Whisper model '{self.config['whisper_model']}'...", file=sys.stderr)
-        self.model = whisper.load_model(self.config['whisper_model'])
-        print("✅ Whisper model loaded", file=sys.stderr)
+        # Load Whisper model with GPU support
+        model_name = self.config['whisper_model']
+        device = self.config.get('device', 'cpu')
+
+        print(f"Loading Whisper model '{model_name}' on {device.upper()}...", file=sys.stderr)
+        self.model = whisper.load_model(model_name, device=device)
+        print(f"✅ Whisper model loaded on {device.upper()}", file=sys.stderr)
 
         # Audio recording state
         self.is_recording = False
@@ -143,11 +148,14 @@ class VoiceDetector:
         """Transcribe audio file with Whisper"""
         print("🔄 Transcribing...", file=sys.stderr)
 
+        # Determine FP16 usage based on device
+        use_fp16 = self.config.get('device', 'cpu') == 'cuda'
+
         # Transcribe with Whisper
         result = self.model.transcribe(
             audio_path,
             language=self.config['language'] if self.config['language'] != 'auto' else None,
-            fp16=False  # Use FP32 for CPU
+            fp16=use_fp16  # FP16 for GPU (faster), FP32 for CPU
         )
 
         text = result['text'].strip()

@@ -1,8 +1,10 @@
 {
-  "whisper_model": "base",
+  "whisper_model": "large-v3-turbo",
   "language": "en",
+  "device": "cuda",
+  "compute_type": "float16",
   "sample_rate": 16000,
-  "silence_threshold": 0.01,
+  "silence_threshold": 0.02,
   "silence_duration": 1.5,
   "min_recording_duration": 0.5,
   "max_recording_duration": 30
