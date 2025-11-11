@@ -1,9 +1,6 @@
 #!/bin/bash
-"""
-System Check - Verify Interactive Voice Interview System
-
-Run this before starting to ensure all components are working.
-"""
+# System Check - Verify Interactive Voice Interview System
+# Run this before starting to ensure all components are working.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

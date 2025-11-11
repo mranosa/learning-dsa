@@ -1,14 +1,11 @@
 #!/bin/bash
-"""
-Voice Interview Quick Start Script
-
-Simple wrapper to start voice-interactive interview sessions.
-
-Usage:
-    ./voice-interview               # Start/resume interactive mode
-    ./voice-interview test          # Test voice system
-    ./voice-interview stop          # Stop interactive mode
-"""
+# Voice Interview Quick Start Script
+# Simple wrapper to start voice-interactive interview sessions.
+#
+# Usage:
+#   ./voice-interview        # Start/resume interactive mode
+#   ./voice-interview test   # Test voice system
+#   ./voice-interview stop   # Stop interactive mode
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

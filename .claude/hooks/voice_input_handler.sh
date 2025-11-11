@@ -1,16 +1,13 @@
 #!/bin/bash
-"""
-F12 Voice Input Handler
-
-Press F12 → Speak → Auto-types into Claude Code → "ok submit" presses Enter
-
-Features:
-- Works from any window (targets Claude Code)
-- Detects "ok submit" / "okay submit" / "submit"
-- Auto-presses Enter if submit detected
-- Shows visual notifications
-- Handles errors gracefully
-"""
+# F12 Voice Input Handler
+# Press F12 → Speak → Auto-types into Claude Code → "ok submit" presses Enter
+#
+# Features:
+# - Works from any window (targets Claude Code)
+# - Detects "ok submit" / "okay submit" / "submit"
+# - Auto-presses Enter if submit detected
+# - Shows visual notifications
+# - Handles errors gracefully
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/badong/Projects/learning-dsa/whisper-env/bin/python3
 """
 Interactive Coding Mode - Real-time voice conversation during problem-solving
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/badong/Projects/learning-dsa/whisper-env/bin/python3
 """
 Voice Activity Detection (VAD) System
 

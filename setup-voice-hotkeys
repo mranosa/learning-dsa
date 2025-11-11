@@ -1,10 +1,7 @@
 #!/bin/bash
-"""
-Setup Voice Hotkeys
-
-Activates F12 voice input for Claude Code.
-Run this once per session or add to startup.
-"""
+# Setup Voice Hotkeys
+# Activates F12 voice input for Claude Code.
+# Run this once per session or add to startup.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_FILE="$SCRIPT_DIR/.xbindkeysrc"
