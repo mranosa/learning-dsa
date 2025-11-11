@@ -1,0 +1,62 @@
+#!/bin/bash
+"""
+Voice Interview Quick Start Script
+
+Simple wrapper to start voice-interactive interview sessions.
+
+Usage:
+    ./voice-interview               # Start/resume interactive mode
+    ./voice-interview test          # Test voice system
+    ./voice-interview stop          # Stop interactive mode
+"""
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+case "${1:-start}" in
+    start)
+        echo "🎤 Starting Voice Interview Mode..."
+        echo ""
+        echo "Instructions:"
+        echo "  1. Speak naturally into your microphone"
+        echo "  2. I'll listen and respond with voice"
+        echo "  3. Say 'Claude, pause' to stop"
+        echo "  4. Think aloud while coding!"
+        echo ""
+        echo "Starting in 3 seconds..."
+        sleep 3
+        exec "$SCRIPT_DIR/.claude/hooks/interactive_mode.py" start
+        ;;
+
+    stop)
+        echo "🛑 Stopping interactive mode..."
+        exec "$SCRIPT_DIR/.claude/hooks/interactive_mode.py" stop
+        ;;
+
+    status)
+        exec "$SCRIPT_DIR/.claude/hooks/interactive_mode.py" status
+        ;;
+
+    test)
+        echo "🧪 Testing Voice System..."
+        echo ""
+        echo "=== Testing TTS (Voice Output) ==="
+        "$SCRIPT_DIR/.claude/hooks/elevenlabs_tts.py" "Voice output test. Can you hear me?"
+        echo ""
+        echo "=== Testing Voice Detection (Voice Input) ==="
+        echo "Speak into your microphone now..."
+        TEXT=$("$SCRIPT_DIR/.claude/hooks/utils/voice_detector.py")
+        echo "Transcribed: $TEXT"
+        echo ""
+        echo "=== Testing Command Parser ==="
+        echo "Parsing: 'give me the problem'"
+        echo "give me the problem" | "$SCRIPT_DIR/.claude/hooks/utils/command_parser.py"
+        echo ""
+        echo "✅ All systems tested!"
+        ;;
+
+    *)
+        echo "Unknown command: $1"
+        echo "Usage: ./voice-interview [start|stop|status|test]"
+        exit 1
+        ;;
+esac

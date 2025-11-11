@@ -1,0 +1,196 @@
+{
+  "acknowledgments_brief": [
+    "Mm-hmm.",
+    "I see.",
+    "Good.",
+    "Okay.",
+    "Right.",
+    "Continue.",
+    "Go on.",
+    "Yes."
+  ],
+
+  "acknowledgments_encouraging": [
+    "Good thinking!",
+    "Nice!",
+    "Excellent!",
+    "I like that.",
+    "Good catch!",
+    "Well done!",
+    "Great observation!",
+    "Smart move!"
+  ],
+
+  "when_explaining_approach": [
+    "That's a good start. Walk me through the time complexity.",
+    "Interesting. How would you optimize that?",
+    "Can you explain why you chose that data structure?",
+    "What's the trade-off with this approach?",
+    "How does that compare to the brute force?",
+    "Good. What about space complexity?",
+    "Walk me through an example with your approach.",
+    "That works. Can you do better?"
+  ],
+
+  "when_mentioning_complexity": [
+    "Good! Why is it O of n?",
+    "Can you justify that complexity?",
+    "What makes it logarithmic?",
+    "Is that the best you can do?",
+    "What operations are you counting?",
+    "What about space complexity?",
+    "Correct. Could you optimize further?"
+  ],
+
+  "when_mentioning_data_structure": {
+    "hash map": [
+      "Good choice. What's the lookup complexity?",
+      "Why hash map over array?",
+      "What will you store in the map?",
+      "Hash map gives you O of 1 lookup. Good!",
+      "What's the space trade-off?"
+    ],
+    "array": [
+      "What operations will you perform on the array?",
+      "Is it sorted?",
+      "Will you modify it in-place?",
+      "What's the access complexity?"
+    ],
+    "two pointers": [
+      "Good pattern recognition! Which variation?",
+      "Why two pointers for this problem?",
+      "Where will you initialize the pointers?",
+      "What's the termination condition?"
+    ],
+    "sliding window": [
+      "Fixed or variable window?",
+      "What will you track in the window?",
+      "When do you expand vs shrink?",
+      "Good! That's an O of n solution."
+    ],
+    "binary search": [
+      "Good! What are you searching for?",
+      "How will you handle the middle element?",
+      "What if it's rotated?",
+      "Correct - O of log n."
+    ]
+  },
+
+  "when_silent_too_long": [
+    "What are you thinking about?",
+    "Talk me through your thought process.",
+    "You've been quiet. What's on your mind?",
+    "Can you explain what you're working on?",
+    "What's blocking you?",
+    "Walk me through what you're doing.",
+    "Still with me? What are you thinking?",
+    "Need a hint, or still thinking?"
+  ],
+
+  "when_asking_edge_case": [
+    "Excellent edge case to consider!",
+    "Good thinking! How would you handle that?",
+    "Great question. What do you think?",
+    "That's important. What should happen?",
+    "Good catch! Most candidates miss that.",
+    "You should definitely clarify that.",
+    "What's your instinct on this edge case?"
+  ],
+
+  "when_stuck_indicators": [
+    "What have you tried so far?",
+    "What's blocking you specifically?",
+    "Let's step back. What are we trying to solve?",
+    "What approaches have you considered?",
+    "Want to think through this together?",
+    "Need a hint, or want to keep trying?",
+    "What's the core problem here?",
+    "Break it down into smaller parts."
+  ],
+
+  "when_correct_solution": [
+    "That's correct!",
+    "Exactly right!",
+    "Perfect!",
+    "You've got it!",
+    "That's the optimal solution!",
+    "Well done!",
+    "Excellent work!",
+    "That's exactly what I was looking for!"
+  ],
+
+  "when_good_variable_name": [
+    "Good variable naming.",
+    "I like those descriptive names.",
+    "Clear variable names - good!",
+    "Easy to read. Nice!"
+  ],
+
+  "when_handling_edge_case_in_code": [
+    "Good! You're handling that edge case.",
+    "Nice - you caught that.",
+    "I see you're checking for that. Good!",
+    "Excellent edge case handling."
+  ],
+
+  "time_warnings": [
+    "You have 10 minutes remaining.",
+    "Halfway through your time.",
+    "5 minutes left - where are you?",
+    "2 minutes remaining. Wrap up what you have.",
+    "Time's up. Show me what you've got."
+  ],
+
+  "when_asking_clarifying_questions": [
+    "Great question!",
+    "Good to clarify that!",
+    "Excellent - always ask about constraints!",
+    "I'm glad you asked!",
+    "That shows good thinking!",
+    "Most candidates don't ask that!"
+  ],
+
+  "gentle_corrections": [
+    "Interesting approach. Can you walk me through the logic?",
+    "I see where you're going. What about this case though?",
+    "That might work, but consider this scenario...",
+    "You're close. Think about what happens when...",
+    "Good start. How would you handle...?"
+  ],
+
+  "when_going_wrong_direction": [
+    "Hold on. Let me ask you something: what's the time complexity of that?",
+    "Interesting. But think about the constraints - can that work for large inputs?",
+    "You might want to reconsider that approach. What pattern is this problem?",
+    "Let's step back. What data structure gives you O of 1 lookup?",
+    "I see what you're trying, but there's a simpler way."
+  ],
+
+  "when_discussing_tradeoffs": [
+    "Good! You understand the trade-off.",
+    "Exactly - space for time.",
+    "That's the key insight!",
+    "You're thinking like an engineer!",
+    "Perfect understanding of the trade-off."
+  ],
+
+  "encouragement_when_struggling": [
+    "Take your time.",
+    "You're on the right track.",
+    "Keep thinking.",
+    "You'll get there.",
+    "This is a tough problem - it's okay to struggle.",
+    "Want to talk through it?",
+    "What's your instinct telling you?"
+  ],
+
+  "follow_up_questions": [
+    "What if I told you it could be done in O of log n?",
+    "Could you solve it without extra space?",
+    "What if the array was sorted?",
+    "How would you handle duplicates?",
+    "What's the space complexity?",
+    "Can you optimize this further?",
+    "What about the worst case?"
+  ]
+}

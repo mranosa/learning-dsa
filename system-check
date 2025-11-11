@@ -1,0 +1,129 @@
+#!/bin/bash
+"""
+System Check - Verify Interactive Voice Interview System
+
+Run this before starting to ensure all components are working.
+"""
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+echo "🔍 Checking Interactive Voice Interview System..."
+echo "=================================================="
+echo ""
+
+ERRORS=0
+
+# Check TTS (ElevenLabs)
+echo -n "📢 TTS (ElevenLabs): "
+if [ -f "$SCRIPT_DIR/.claude/hooks/elevenlabs_tts.py" ]; then
+    if [ -f "$SCRIPT_DIR/.env" ] && grep -q "ELEVENLABS_API_KEY" "$SCRIPT_DIR/.env"; then
+        echo "✅ Configured"
+    else
+        echo "❌ Missing ELEVENLABS_API_KEY in .env"
+        ERRORS=$((ERRORS+1))
+    fi
+else
+    echo "❌ TTS script missing"
+    ERRORS=$((ERRORS+1))
+fi
+
+# Check Whisper (STT)
+echo -n "🎤 Whisper (STT): "
+if whisper-env/bin/python3 -c "import whisper" &>/dev/null; then
+    echo "✅ Installed"
+else
+    echo "❌ Not installed - see VOICE-SETUP.md"
+    ERRORS=$((ERRORS+1))
+fi
+
+# Check xdotool (F12 automation)
+echo -n "⌨️  xdotool (F12): "
+if command -v xdotool &>/dev/null; then
+    echo "✅ Installed"
+else
+    echo "❌ Install: sudo apt-get install xdotool"
+    ERRORS=$((ERRORS+1))
+fi
+
+# Check xbindkeys (Hotkey system)
+echo -n "🔑 xbindkeys (Hotkeys): "
+if command -v xbindkeys &>/dev/null; then
+    if pgrep -x xbindkeys &>/dev/null; then
+        echo "✅ Running"
+    else
+        echo "⚠️  Installed but not running"
+        echo "   Run: ./setup-voice-hotkeys"
+    fi
+else
+    echo "❌ Install: sudo apt-get install xbindkeys"
+    ERRORS=$((ERRORS+1))
+fi
+
+# Check voice scripts
+echo -n "🗣️  Voice scripts: "
+if [ -f "$SCRIPT_DIR/.claude/hooks/voice_input_handler.sh" ] && \
+   [ -f "$SCRIPT_DIR/.claude/hooks/utils/voice_detector.py" ] && \
+   [ -f "$SCRIPT_DIR/.claude/hooks/interactive_mode.py" ]; then
+    echo "✅ All present"
+else
+    echo "❌ Missing voice scripts"
+    ERRORS=$((ERRORS+1))
+fi
+
+# Check session files
+echo -n "📚 Session 1 files: "
+if [ -f "$SCRIPT_DIR/day-1/session-1-big-o-arrays/PROBLEMS.md" ]; then
+    echo "✅ Ready"
+else
+    echo "❌ Missing session files"
+    ERRORS=$((ERRORS+1))
+fi
+
+# Check printable materials
+echo -n "🖨️  Printables: "
+if [ -f "$SCRIPT_DIR/DOCX-CONTENT.md" ] && \
+   [ -f "$SCRIPT_DIR/QUICK-START-CARD.md" ] && \
+   [ -f "$SCRIPT_DIR/VOICE-COMMANDS-CARD.md" ]; then
+    echo "✅ All created"
+else
+    echo "⚠️  Some printables missing"
+fi
+
+# Check vocabulary guides
+echo -n "📖 Vocabulary guides: "
+if [ -f "$SCRIPT_DIR/THINKING-ALOUD-PHRASES.md" ] && \
+   [ -f "$SCRIPT_DIR/TECHNICAL-VOCABULARY.md" ]; then
+    echo "✅ Both ready"
+else
+    echo "❌ Missing vocabulary guides"
+    ERRORS=$((ERRORS+1))
+fi
+
+echo ""
+echo "=================================================="
+
+if [ $ERRORS -eq 0 ]; then
+    echo "✅ ALL SYSTEMS GO!"
+    echo ""
+    echo "Your system is ready for voice-interactive interviews."
+    echo ""
+    echo "📋 Quick Start:"
+    echo "  1. ./setup-voice-hotkeys    # Activate F12 (if not running)"
+    echo "  2. ./voice-interview         # Start interactive mode"
+    echo "  3. Press F12 and say: 'Claude, start session 1 1, ok submit'"
+    echo ""
+    echo "📖 Helpful Commands:"
+    echo "  ./voice-interview test  # Test voice system only"
+    echo "  F12: 'My progress, ok submit'  # See your stats"
+    echo ""
+    echo "🎯 Recommended: Start with Session 0 (test session)"
+    echo "  F12: 'Claude, start session 0 0, ok submit'"
+    echo ""
+else
+    echo "⚠️  Found $ERRORS issue(s) - please fix before starting"
+    echo ""
+    echo "See VOICE-SETUP.md for troubleshooting"
+    echo "Or INSTALL.md for first-time setup"
+fi
+
+exit $ERRORS
