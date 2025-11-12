@@ -1,20 +1,20 @@
-# Lesson: Two Pointers Technique
+# Lesson: Two Pointers
 
-## 📹 Video Assignment (20 minutes)
+## Videos (20 min)
 
-**Primary Video:**
-"Two Pointers - LeetCode Pattern" by NeetCode
+**Primary:**
+Two Pointers - NeetCode (20 min)
 https://www.youtube.com/watch?v=On03HWe2tZM
 
-**Alternative Videos** (if you need different explanations):
-- "Two Pointers Technique" by Take U Forward (15 min): https://www.youtube.com/watch?v=0wvj8tLv2L8
-- "Master Two Pointers" by AlgoExpert (25 min): https://www.youtube.com/watch?v=Rh43o-5CXaA
+**Alternatives:**
+- Take U Forward (15 min): https://www.youtube.com/watch?v=0wvj8tLv2L8
+- AlgoExpert (25 min): https://www.youtube.com/watch?v=Rh43o-5CXaA
 
-**What to focus on:**
-- Understanding when two pointers is optimal
-- Opposite direction vs same direction patterns
-- How two pointers reduces time complexity
-- Common problem types that use two pointers
+**Focus on:**
+- When two pointers is optimal
+- Opposite vs same direction patterns
+- Complexity improvements
+- Common problem types
 
 ---
 

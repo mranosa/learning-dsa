@@ -1,580 +1,719 @@
-# Heaps & Priority Queues - Complete Guide
-
-## Video Resource
-**NeetCode - Heap / Priority Queue Explained:** https://www.youtube.com/watch?v=HqPJF2L5h9U
-
-Watch this 15-minute video for visual understanding of heap operations.
+# Lesson: Heaps & Priority Queues
 
 ---
 
-## What is a Heap?
+## 📹 Video 1: Heap Fundamentals (15 min)
 
-A **heap** is a specialized tree-based data structure that satisfies the heap property:
-- **Max Heap:** Parent >= all children
-- **Min Heap:** Parent <= all children
+**"Heap / Priority Queue - Full Course" by NeetCode**
+https://www.youtube.com/watch?v=HqPJF2L5h9U
 
-### Key Properties
-1. **Complete Binary Tree** - All levels filled except possibly the last
-2. **Heap Property** - Parent-child relationship maintained
-3. **Array Representation** - Efficient storage and access
+**Focus on:**
+- Complete binary tree structure
+- Heap property (min vs max)
+- Array representation
+- Parent/child index formulas
 
 ---
 
-## Array Representation
+## 📹 Video 2: Min Heap vs Max Heap (10 min)
+
+**"Min Heap and Max Heap Implementation" by Abdul Bari**
+https://www.youtube.com/watch?v=HqPJF2L5h9U
+
+**Alternative - Interactive Visualization:**
+https://visualgo.net/en/heap
+
+**Focus on:**
+- Differences between min and max heaps
+- When to use each type
+- Bubble up vs bubble down operations
+- Building heaps from arrays
+
+---
+
+## 📹 Video 3: Priority Queue Patterns (15 min)
+
+**"Top K Elements Pattern" by NeetCode**
+https://www.youtube.com/watch?v=hOjcdrqMoQ8
+
+**Alternative:**
+https://www.youtube.com/watch?v=XEmy13g1Qxc
+
+**Focus on:**
+- K-element problems
+- Two-heap technique
+- Merge patterns
+- When heaps beat sorting
+
+---
+
+## 🎯 Heap Fundamentals
+
+### What is a Heap?
+
+A heap is a **complete binary tree** that satisfies the **heap property**:
+- **Min Heap:** Parent <= all children (smallest at root)
+- **Max Heap:** Parent >= all children (largest at root)
 
 ```typescript
-// For 0-indexed array:
-parent(i) = Math.floor((i - 1) / 2)
-leftChild(i) = 2 * i + 1
-rightChild(i) = 2 * i + 2
+// Min Heap Example
+//       1
+//      / \
+//     3   2
+//    / \ / \
+//   7  5 6  4
 
-// Example heap: [10, 7, 8, 5, 2, 6, 3]
-//       10
-//      /  \
-//     7    8
-//    / \  / \
-//   5  2 6  3
+// Array: [1, 3, 2, 7, 5, 6, 4]
+// Parent of i: Math.floor((i - 1) / 2)
+// Left child:  2 * i + 1
+// Right child: 2 * i + 2
 ```
 
 ---
 
-## Core Operations
+### Why Use Heaps?
 
-### 1. Insert (Push) - O(log n)
+**Problem:** Find K largest elements in array.
+
+**Naive:** Sort array O(n log n), take first K.
+**Better:** Use min heap of size K - O(n log K).
+
+When K << n, this is much faster!
+
+---
+
+## 🏗️ Heap Implementation
+
+### Creating Arrays for Heaps
+
 ```typescript
-class MinHeap {
-    private heap: number[] = [];
+// Initialize empty heap
+const minHeap: number[] = [];
 
-    push(val: number): void {
-        this.heap.push(val);
-        this.bubbleUp(this.heap.length - 1);
-    }
+// With initial capacity (optimization)
+const minHeap: number[] = new Array(10);
+let size = 0;
 
-    private bubbleUp(index: number): void {
-        while (index > 0) {
-            const parentIdx = Math.floor((index - 1) / 2);
-            if (this.heap[parentIdx] <= this.heap[index]) break;
+// From existing array (needs heapify)
+const minHeap = [...arr];
+heapify(minHeap);
+```
 
-            [this.heap[parentIdx], this.heap[index]] =
-            [this.heap[index], this.heap[parentIdx]];
+---
 
-            index = parentIdx;
-        }
-    }
+### Index Formulas (Critical!)
+
+```typescript
+// For 0-indexed arrays:
+function parent(i: number): number {
+  return Math.floor((i - 1) / 2);
+}
+
+function leftChild(i: number): number {
+  return 2 * i + 1;
+}
+
+function rightChild(i: number): number {
+  return 2 * i + 2;
+}
+
+// Example with index 3:
+// parent(3) = floor((3-1)/2) = 1
+// leftChild(3) = 2*3 + 1 = 7
+// rightChild(3) = 2*3 + 2 = 8
+```
+
+---
+
+## 🔧 Core Heap Operations
+
+### Operation 1: Insert (Push) - O(log n)
+
+Add element at end, then bubble up to restore heap property.
+
+```typescript
+function push(heap: number[], val: number): void {
+  // Add to end
+  heap.push(val);
+
+  // Bubble up from last position
+  bubbleUp(heap, heap.length - 1);
+}
+
+function bubbleUp(heap: number[], index: number): void {
+  while (index > 0) {
+    const parentIdx = Math.floor((index - 1) / 2);
+
+    // Min heap: stop if parent <= current
+    if (heap[parentIdx] <= heap[index]) break;
+
+    // Swap with parent
+    [heap[parentIdx], heap[index]] = [heap[index], heap[parentIdx]];
+    index = parentIdx;
+  }
 }
 ```
 
-### 2. Extract Min/Max (Pop) - O(log n)
+**Visual:**
+```
+Insert 1 into [3, 5, 4, 7, 6]:
+   3              3              1
+  / \            / \            / \
+ 5   4    →     5   4    →     5   3
+/ \            / \ /          / \ / \
+7  6          7  6 1         7  6 4
+
+Bubble up: 1 < 4, swap → 1 < 3, swap → done
+```
+
+---
+
+### Operation 2: Extract Min (Pop) - O(log n)
+
+Remove root, replace with last element, bubble down.
+
 ```typescript
-pop(): number | undefined {
+function pop(heap: number[]): number | undefined {
+  if (heap.length === 0) return undefined;
+  if (heap.length === 1) return heap.pop();
+
+  // Save root (minimum)
+  const min = heap[0];
+
+  // Move last to root
+  heap[0] = heap.pop()!;
+
+  // Bubble down from root
+  bubbleDown(heap, 0);
+
+  return min;
+}
+
+function bubbleDown(heap: number[], index: number): void {
+  while (true) {
+    let minIndex = index;
+    const left = 2 * index + 1;
+    const right = 2 * index + 2;
+
+    // Check left child
+    if (left < heap.length && heap[left] < heap[minIndex]) {
+      minIndex = left;
+    }
+
+    // Check right child
+    if (right < heap.length && heap[right] < heap[minIndex]) {
+      minIndex = right;
+    }
+
+    // If no change, done
+    if (minIndex === index) break;
+
+    // Swap with smaller child
+    [heap[index], heap[minIndex]] = [heap[minIndex], heap[index]];
+    index = minIndex;
+  }
+}
+```
+
+**Visual:**
+```
+Extract from [1, 3, 2, 7, 5, 6, 4]:
+   1              4              2
+  / \            / \            / \
+ 3   2    →     3   2    →     3   4
+/ \ / \        / \            / \ /
+7  5 6  4     7  5 6         7  5 6
+
+Move 4 to root → bubble down: 4 > 2, swap → done
+```
+
+---
+
+### Operation 3: Peek - O(1)
+
+```typescript
+function peek(heap: number[]): number | undefined {
+  return heap[0];
+}
+```
+
+---
+
+### Operation 4: Heapify - O(n)
+
+Build heap from unsorted array efficiently.
+
+```typescript
+function heapify(arr: number[]): void {
+  // Start from last non-leaf node
+  const startIdx = Math.floor(arr.length / 2) - 1;
+
+  // Bubble down from each internal node
+  for (let i = startIdx; i >= 0; i--) {
+    bubbleDown(arr, i);
+  }
+}
+
+// Why O(n) not O(n log n)?
+// Most nodes are near bottom (small bubble down)
+// Mathematical proof: sum of heights = O(n)
+```
+
+---
+
+## 🎭 Min Heap vs Max Heap
+
+### Min Heap Implementation
+
+```typescript
+class MinHeap {
+  private heap: number[] = [];
+
+  push(val: number): void {
+    this.heap.push(val);
+    this.bubbleUp(this.heap.length - 1);
+  }
+
+  pop(): number | undefined {
     if (this.heap.length === 0) return undefined;
     if (this.heap.length === 1) return this.heap.pop();
 
     const min = this.heap[0];
     this.heap[0] = this.heap.pop()!;
     this.bubbleDown(0);
-
     return min;
-}
+  }
 
-private bubbleDown(index: number): void {
-    while (true) {
-        let minIndex = index;
-        const left = 2 * index + 1;
-        const right = 2 * index + 2;
-
-        if (left < this.heap.length &&
-            this.heap[left] < this.heap[minIndex]) {
-            minIndex = left;
-        }
-
-        if (right < this.heap.length &&
-            this.heap[right] < this.heap[minIndex]) {
-            minIndex = right;
-        }
-
-        if (minIndex === index) break;
-
-        [this.heap[index], this.heap[minIndex]] =
-        [this.heap[minIndex], this.heap[index]];
-
-        index = minIndex;
-    }
-}
-```
-
-### 3. Peek - O(1)
-```typescript
-peek(): number | undefined {
+  peek(): number | undefined {
     return this.heap[0];
-}
-```
+  }
 
-### 4. Heapify - O(n)
-Build heap from array efficiently:
-```typescript
-heapify(arr: number[]): void {
-    this.heap = [...arr];
-    // Start from last non-leaf node
-    for (let i = Math.floor(arr.length / 2) - 1; i >= 0; i--) {
-        this.bubbleDown(i);
+  size(): number {
+    return this.heap.length;
+  }
+
+  private bubbleUp(index: number): void {
+    while (index > 0) {
+      const parentIdx = Math.floor((index - 1) / 2);
+      if (this.heap[parentIdx] <= this.heap[index]) break;
+      [this.heap[parentIdx], this.heap[index]] =
+        [this.heap[index], this.heap[parentIdx]];
+      index = parentIdx;
     }
-}
-```
+  }
 
----
+  private bubbleDown(index: number): void {
+    while (true) {
+      let minIndex = index;
+      const left = 2 * index + 1;
+      const right = 2 * index + 2;
 
-## Priority Queue with Custom Comparator
+      if (left < this.heap.length &&
+          this.heap[left] < this.heap[minIndex]) {
+        minIndex = left;
+      }
 
-```typescript
-class PriorityQueue<T> {
-    private heap: T[] = [];
-    private compare: (a: T, b: T) => number;
+      if (right < this.heap.length &&
+          this.heap[right] < this.heap[minIndex]) {
+        minIndex = right;
+      }
 
-    constructor(compareFn: (a: T, b: T) => number) {
-        this.compare = compareFn;
+      if (minIndex === index) break;
+
+      [this.heap[index], this.heap[minIndex]] =
+        [this.heap[minIndex], this.heap[index]];
+      index = minIndex;
     }
-
-    push(val: T): void {
-        this.heap.push(val);
-        this.bubbleUp(this.heap.length - 1);
-    }
-
-    private bubbleUp(index: number): void {
-        while (index > 0) {
-            const parentIdx = Math.floor((index - 1) / 2);
-            if (this.compare(this.heap[parentIdx], this.heap[index]) <= 0) {
-                break;
-            }
-            [this.heap[parentIdx], this.heap[index]] =
-            [this.heap[index], this.heap[parentIdx]];
-            index = parentIdx;
-        }
-    }
-
-    // Similar pop, bubbleDown methods...
+  }
 }
 ```
 
 ---
 
-## Common Patterns
+### Max Heap Implementation
 
-### Pattern 1: K-th Largest/Smallest
-Use a heap of size K:
 ```typescript
-function findKthLargest(nums: number[], k: number): number {
-    // Min heap of size k for k-th largest
-    const minHeap = new MinHeap();
+class MaxHeap {
+  private heap: number[] = [];
 
-    for (const num of nums) {
-        minHeap.push(num);
-        if (minHeap.size() > k) {
-            minHeap.pop();
-        }
+  push(val: number): void {
+    this.heap.push(val);
+    this.bubbleUp(this.heap.length - 1);
+  }
+
+  pop(): number | undefined {
+    if (this.heap.length === 0) return undefined;
+    if (this.heap.length === 1) return this.heap.pop();
+
+    const max = this.heap[0];
+    this.heap[0] = this.heap.pop()!;
+    this.bubbleDown(0);
+    return max;
+  }
+
+  peek(): number | undefined {
+    return this.heap[0];
+  }
+
+  private bubbleUp(index: number): void {
+    while (index > 0) {
+      const parentIdx = Math.floor((index - 1) / 2);
+      // ONLY DIFFERENCE: >= instead of <=
+      if (this.heap[parentIdx] >= this.heap[index]) break;
+      [this.heap[parentIdx], this.heap[index]] =
+        [this.heap[index], this.heap[parentIdx]];
+      index = parentIdx;
     }
+  }
 
-    return minHeap.peek()!;
-}
-```
+  private bubbleDown(index: number): void {
+    while (true) {
+      let maxIndex = index;
+      const left = 2 * index + 1;
+      const right = 2 * index + 2;
 
-### Pattern 2: Top K Elements
-```typescript
-function topKFrequent(nums: number[], k: number): number[] {
-    // Count frequencies
-    const freq = new Map<number, number>();
-    for (const num of nums) {
-        freq.set(num, (freq.get(num) || 0) + 1);
+      // ONLY DIFFERENCE: > instead of <
+      if (left < this.heap.length &&
+          this.heap[left] > this.heap[maxIndex]) {
+        maxIndex = left;
+      }
+
+      if (right < this.heap.length &&
+          this.heap[right] > this.heap[maxIndex]) {
+        maxIndex = right;
+      }
+
+      if (maxIndex === index) break;
+
+      [this.heap[index], this.heap[maxIndex]] =
+        [this.heap[maxIndex], this.heap[index]];
+      index = maxIndex;
     }
-
-    // Min heap based on frequency
-    const minHeap = new PriorityQueue<[number, number]>(
-        (a, b) => a[1] - b[1]  // Compare by frequency
-    );
-
-    for (const [num, count] of freq) {
-        minHeap.push([num, count]);
-        if (minHeap.size() > k) {
-            minHeap.pop();
-        }
-    }
-
-    return minHeap.toArray().map(([num]) => num);
-}
-```
-
-### Pattern 3: Two Heaps (Median)
-```typescript
-class MedianFinder {
-    private maxHeap: PriorityQueue<number>;  // Left half
-    private minHeap: PriorityQueue<number>;  // Right half
-
-    constructor() {
-        // Max heap for smaller half
-        this.maxHeap = new PriorityQueue((a, b) => b - a);
-        // Min heap for larger half
-        this.minHeap = new PriorityQueue((a, b) => a - b);
-    }
-
-    addNum(num: number): void {
-        // Always add to max heap first
-        this.maxHeap.push(num);
-
-        // Balance the heaps
-        if (this.maxHeap.size() > this.minHeap.size() + 1) {
-            this.minHeap.push(this.maxHeap.pop()!);
-        }
-
-        // Maintain invariant: max heap top <= min heap top
-        if (this.minHeap.size() > 0 &&
-            this.maxHeap.peek()! > this.minHeap.peek()!) {
-            const temp = this.maxHeap.pop()!;
-            this.maxHeap.push(this.minHeap.pop()!);
-            this.minHeap.push(temp);
-        }
-    }
-
-    findMedian(): number {
-        if (this.maxHeap.size() > this.minHeap.size()) {
-            return this.maxHeap.peek()!;
-        }
-        return (this.maxHeap.peek()! + this.minHeap.peek()!) / 2;
-    }
-}
-```
-
-### Pattern 4: Merge K Sorted
-```typescript
-function mergeKLists(lists: ListNode[]): ListNode | null {
-    const minHeap = new PriorityQueue<ListNode>(
-        (a, b) => a.val - b.val
-    );
-
-    // Add first node from each list
-    for (const head of lists) {
-        if (head) minHeap.push(head);
-    }
-
-    const dummy = new ListNode(0);
-    let curr = dummy;
-
-    while (minHeap.size() > 0) {
-        const node = minHeap.pop()!;
-        curr.next = node;
-        curr = curr.next;
-
-        if (node.next) {
-            minHeap.push(node.next);
-        }
-    }
-
-    return dummy.next;
+  }
 }
 ```
 
 ---
 
-## Time & Space Complexity
+### When to Use Which?
+
+```typescript
+// K LARGEST elements → MIN heap of size K
+// Why? We remove smallest of the K largest
+function kLargest(nums: number[], k: number): number[] {
+  const minHeap = new MinHeap();
+  for (const num of nums) {
+    minHeap.push(num);
+    if (minHeap.size() > k) minHeap.pop(); // Remove smallest
+  }
+  return minHeap.toArray();
+}
+
+// K SMALLEST elements → MAX heap of size K
+// Why? We remove largest of the K smallest
+function kSmallest(nums: number[], k: number): number[] {
+  const maxHeap = new MaxHeap();
+  for (const num of nums) {
+    maxHeap.push(num);
+    if (maxHeap.size() > k) maxHeap.pop(); // Remove largest
+  }
+  return maxHeap.toArray();
+}
+```
+
+**Critical insight:** Think about what you're REMOVING, not keeping!
+
+---
+
+## 📊 Heap Complexity
 
 | Operation | Time | Space | Notes |
 |-----------|------|-------|-------|
-| Insert | O(log n) | O(1) | Bubble up |
-| Extract | O(log n) | O(1) | Bubble down |
-| Peek | O(1) | O(1) | Top element |
-| Heapify | O(n) | O(1) | Bottom-up build |
-| Delete | O(log n) | O(1) | Find + bubble |
-| Search | O(n) | O(1) | Not optimized |
+| Insert | O(log n) | O(1) | Bubble up height |
+| Extract | O(log n) | O(1) | Bubble down height |
+| Peek | O(1) | O(1) | Just return root |
+| Heapify | O(n) | O(1) | Build from array |
+| Search | O(n) | O(1) | Not optimized for search |
+
+**Height of heap:** O(log n) for n elements
 
 ---
 
-## When to Use Heaps
+## 🧩 Common Heap Patterns
 
-### Use Heaps When:
-- Finding K largest/smallest elements
-- Processing elements by priority
-- Maintaining running median
-- Merging sorted sequences
-- Scheduling tasks by priority
+### Pattern 1: K-th Largest/Smallest
 
-### Don't Use Heaps When:
-- Need sorted order (use sorting)
-- Frequent searches by value
-- Need to access middle elements
-- Small, fixed-size data
-
----
-
-## TypeScript Implementation Tips
+**Problem:** Find Kth largest in array.
+**Solution:** Min heap of size K.
 
 ```typescript
-// Using built-in sort as priority queue
-class SimpleHeap {
-    private data: number[] = [];
+function findKthLargest(nums: number[], k: number): number {
+  const minHeap = new MinHeap();
 
-    push(val: number): void {
-        this.data.push(val);
-        this.data.sort((a, b) => a - b);  // O(n log n) - inefficient!
+  for (const num of nums) {
+    minHeap.push(num);
+    if (minHeap.size() > k) {
+      minHeap.pop(); // Remove smallest
+    }
+  }
+
+  return minHeap.peek()!;
+}
+```
+
+**Time:** O(n log k) | **Space:** O(k)
+
+**Why this works:**
+- Keep K largest elements in heap
+- Smallest of K largest is at root
+- That's the Kth largest overall!
+
+---
+
+### Pattern 2: Top K Frequent Elements
+
+**Problem:** Most frequent K elements.
+**Solution:** Count frequencies, min heap of size K by frequency.
+
+```typescript
+function topKFrequent(nums: number[], k: number): number[] {
+  // Count frequencies
+  const freq = new Map<number, number>();
+  for (const num of nums) {
+    freq.set(num, (freq.get(num) || 0) + 1);
+  }
+
+  // Min heap comparing by frequency
+  const minHeap = new PriorityQueue<[number, number]>(
+    (a, b) => a[1] - b[1]  // Compare frequencies
+  );
+
+  for (const [num, count] of freq) {
+    minHeap.push([num, count]);
+    if (minHeap.size() > k) {
+      minHeap.pop(); // Remove least frequent
+    }
+  }
+
+  return minHeap.toArray().map(([num]) => num);
+}
+```
+
+**Time:** O(n log k) | **Space:** O(n)
+
+---
+
+### Pattern 3: Two Heaps (Median)
+
+**Problem:** Find median of data stream.
+**Solution:** Max heap for left half, min heap for right half.
+
+```typescript
+class MedianFinder {
+  private maxHeap: MaxHeap; // Smaller half
+  private minHeap: MinHeap; // Larger half
+
+  constructor() {
+    this.maxHeap = new MaxHeap();
+    this.minHeap = new MinHeap();
+  }
+
+  addNum(num: number): void {
+    // Add to max heap first
+    this.maxHeap.push(num);
+
+    // Balance: move max heap top to min heap
+    if (this.maxHeap.size() > this.minHeap.size() + 1) {
+      this.minHeap.push(this.maxHeap.pop()!);
     }
 
-    pop(): number | undefined {
-        return this.data.shift();  // O(n) - inefficient!
+    // Maintain: all in max <= all in min
+    if (this.minHeap.size() > 0 &&
+        this.maxHeap.peek()! > this.minHeap.peek()!) {
+      const temp = this.maxHeap.pop()!;
+      this.maxHeap.push(this.minHeap.pop()!);
+      this.minHeap.push(temp);
     }
-}
+  }
 
-// Better: Implement proper heap or use library
-// npm install @datastructures-js/priority-queue
-```
-
----
-
-## Interview Tips
-
-1. **Clarify heap type** - Min or max? Custom comparator?
-2. **Consider K** - Many problems involve K elements
-3. **Think streaming** - Heaps excel at online algorithms
-4. **Two heaps trick** - For median and balanced partitions
-5. **Implementation choice** - Library vs custom implementation
-
----
-
-## Practice Problems
-
-Start with these patterns:
-1. **Basic K-element** - Kth Largest Element
-2. **Frequency-based** - Top K Frequent Elements
-3. **Streaming** - Find Median from Data Stream
-4. **Merge** - Merge K Sorted Lists
-5. **Scheduling** - Task Scheduler
-
-Master each pattern before moving to the next!
-
----
-
-## Advanced Topics
-
-### Binary Heap Variants
-
-#### D-ary Heap
-Instead of binary (2 children), use D children:
-```typescript
-// For D-ary heap
-parent(i) = Math.floor((i + D - 2) / D)
-kthChild(i, k) = D * i + k - D + 2  // k ∈ [1, D]
-
-// Benefits:
-// - Shallower tree (log_D n height)
-// - Better cache locality for large D
-// - Faster decrease-key operations
-```
-
-#### Indexed Priority Queue
-Maintain element positions for O(log n) updates:
-```typescript
-class IndexedPQ<T> {
-    private heap: T[] = [];
-    private indexMap: Map<T, number> = new Map();
-
-    update(oldVal: T, newVal: T): void {
-        const index = this.indexMap.get(oldVal);
-        if (index !== undefined) {
-            this.heap[index] = newVal;
-            this.indexMap.delete(oldVal);
-            this.indexMap.set(newVal, index);
-            // Bubble up or down as needed
-            this.heapify(index);
-        }
+  findMedian(): number {
+    if (this.maxHeap.size() > this.minHeap.size()) {
+      return this.maxHeap.peek()!;
     }
+    return (this.maxHeap.peek()! + this.minHeap.peek()!) / 2;
+  }
 }
 ```
+
+**Time:** addNum O(log n), findMedian O(1) | **Space:** O(n)
 
 ---
 
-## Common Interview Follow-ups
+### Pattern 4: Merge K Sorted
 
-### "What if we need to update priorities?"
-Use an indexed heap or map to track positions.
+**Problem:** Merge K sorted lists.
+**Solution:** Min heap with one element from each list.
 
-### "How would you handle ties?"
-Add a secondary comparison or timestamp:
 ```typescript
-compare(a, b) {
-    if (a.priority !== b.priority) {
-        return a.priority - b.priority;
+function mergeKLists(lists: ListNode[]): ListNode | null {
+  const minHeap = new PriorityQueue<ListNode>(
+    (a, b) => a.val - b.val
+  );
+
+  // Add first node from each list
+  for (const head of lists) {
+    if (head) minHeap.push(head);
+  }
+
+  const dummy = new ListNode(0);
+  let curr = dummy;
+
+  while (minHeap.size() > 0) {
+    const node = minHeap.pop()!;
+    curr.next = node;
+    curr = curr.next;
+
+    if (node.next) {
+      minHeap.push(node.next);
     }
-    return a.timestamp - b.timestamp;
+  }
+
+  return dummy.next;
 }
 ```
 
-### "Can you make this thread-safe?"
-Add locks or use lock-free algorithms:
-```typescript
-class ThreadSafeHeap {
-    private mutex = new Mutex();
-
-    async push(val: number): Promise<void> {
-        await this.mutex.lock();
-        try {
-            // Heap operations
-        } finally {
-            this.mutex.unlock();
-        }
-    }
-}
-```
-
-### "How would you persist this?"
-Serialize the array representation:
-```typescript
-save(): string {
-    return JSON.stringify(this.heap);
-}
-
-load(data: string): void {
-    this.heap = JSON.parse(data);
-    // Validate heap property
-}
-```
+**Time:** O(n log k) where n = total nodes, k = lists | **Space:** O(k)
 
 ---
 
-## Real-World Implementation
+## 💡 Interview Tips
 
-### Production-Ready Priority Queue
+### Heap Type Selection
+
+**Quick rules:**
+- K largest → Min heap of size K
+- K smallest → Max heap of size K
+- Running median → Two heaps (max + min)
+- Merge sorted → Min heap
+- Priority scheduling → Max heap
+
+**Say this:**
+- "I'll use a min heap of size K to track the K largest elements. This gives O(n log k) instead of O(n log n) sorting."
+- "For median, I'll maintain two heaps: max heap for smaller half, min heap for larger half."
+- "Heap is better than sorting here because we only need K elements, not full sort."
+
+---
+
+### Complexity Analysis
+
 ```typescript
+// ❌ Wrong approach
+nums.sort((a, b) => a - b);  // O(n log n)
+return nums.slice(-k);        // Get K largest
+
+// ✅ Better with heap
+const minHeap = new MinHeap();
+for (const num of nums) {     // O(n log k)
+  minHeap.push(num);
+  if (minHeap.size() > k) minHeap.pop();
+}
+```
+
+When k << n, O(n log k) << O(n log n)!
+
+---
+
+### TypeScript Implementation
+
+```typescript
+// Generic Priority Queue with custom comparator
 class PriorityQueue<T> {
-    private heap: T[] = [];
-    private compare: (a: T, b: T) => number;
-    private positions: Map<T, number> = new Map();
+  private heap: T[] = [];
 
-    constructor(
-        compareFn: (a: T, b: T) => number,
-        initialValues?: T[]
-    ) {
-        this.compare = compareFn;
-        if (initialValues) {
-            this.heapify(initialValues);
-        }
+  constructor(
+    private compare: (a: T, b: T) => number
+  ) {}
+
+  push(val: T): void {
+    this.heap.push(val);
+    this.bubbleUp(this.heap.length - 1);
+  }
+
+  pop(): T | undefined {
+    if (this.heap.length === 0) return undefined;
+    if (this.heap.length === 1) return this.heap.pop();
+
+    const result = this.heap[0];
+    this.heap[0] = this.heap.pop()!;
+    this.bubbleDown(0);
+    return result;
+  }
+
+  peek(): T | undefined {
+    return this.heap[0];
+  }
+
+  size(): number {
+    return this.heap.length;
+  }
+
+  private bubbleUp(index: number): void {
+    while (index > 0) {
+      const parentIdx = Math.floor((index - 1) / 2);
+      if (this.compare(this.heap[parentIdx], this.heap[index]) <= 0) break;
+      [this.heap[parentIdx], this.heap[index]] =
+        [this.heap[index], this.heap[parentIdx]];
+      index = parentIdx;
     }
+  }
 
-    push(val: T): void {
-        this.heap.push(val);
-        const index = this.heap.length - 1;
-        this.positions.set(val, index);
-        this.bubbleUp(index);
+  private bubbleDown(index: number): void {
+    while (true) {
+      let minIndex = index;
+      const left = 2 * index + 1;
+      const right = 2 * index + 2;
+
+      if (left < this.heap.length &&
+          this.compare(this.heap[left], this.heap[minIndex]) < 0) {
+        minIndex = left;
+      }
+
+      if (right < this.heap.length &&
+          this.compare(this.heap[right], this.heap[minIndex]) < 0) {
+        minIndex = right;
+      }
+
+      if (minIndex === index) break;
+
+      [this.heap[index], this.heap[minIndex]] =
+        [this.heap[minIndex], this.heap[index]];
+      index = minIndex;
     }
-
-    pop(): T | undefined {
-        if (this.heap.length === 0) return undefined;
-        if (this.heap.length === 1) {
-            const val = this.heap.pop()!;
-            this.positions.delete(val);
-            return val;
-        }
-
-        const result = this.heap[0];
-        this.positions.delete(result);
-
-        const last = this.heap.pop()!;
-        this.heap[0] = last;
-        this.positions.set(last, 0);
-        this.bubbleDown(0);
-
-        return result;
-    }
-
-    peek(): T | undefined {
-        return this.heap[0];
-    }
-
-    size(): number {
-        return this.heap.length;
-    }
-
-    isEmpty(): boolean {
-        return this.heap.length === 0;
-    }
-
-    contains(val: T): boolean {
-        return this.positions.has(val);
-    }
-
-    remove(val: T): boolean {
-        const index = this.positions.get(val);
-        if (index === undefined) return false;
-
-        this.positions.delete(val);
-
-        if (index === this.heap.length - 1) {
-            this.heap.pop();
-            return true;
-        }
-
-        const last = this.heap.pop()!;
-        this.heap[index] = last;
-        this.positions.set(last, index);
-
-        // Heapify at index
-        const parentIdx = Math.floor((index - 1) / 2);
-        if (index > 0 && this.compare(this.heap[index], this.heap[parentIdx]) < 0) {
-            this.bubbleUp(index);
-        } else {
-            this.bubbleDown(index);
-        }
-
-        return true;
-    }
-
-    private bubbleUp(index: number): void {
-        while (index > 0) {
-            const parentIdx = Math.floor((index - 1) / 2);
-            if (this.compare(this.heap[parentIdx], this.heap[index]) <= 0) break;
-
-            this.swap(index, parentIdx);
-            index = parentIdx;
-        }
-    }
-
-    private bubbleDown(index: number): void {
-        while (true) {
-            let minIndex = index;
-            const left = 2 * index + 1;
-            const right = 2 * index + 2;
-
-            if (left < this.heap.length &&
-                this.compare(this.heap[left], this.heap[minIndex]) < 0) {
-                minIndex = left;
-            }
-
-            if (right < this.heap.length &&
-                this.compare(this.heap[right], this.heap[minIndex]) < 0) {
-                minIndex = right;
-            }
-
-            if (minIndex === index) break;
-
-            this.swap(index, minIndex);
-            index = minIndex;
-        }
-    }
-
-    private swap(i: number, j: number): void {
-        [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
-        this.positions.set(this.heap[i], i);
-        this.positions.set(this.heap[j], j);
-    }
-
-    private heapify(arr: T[]): void {
-        this.heap = [...arr];
-        for (let i = 0; i < this.heap.length; i++) {
-            this.positions.set(this.heap[i], i);
-        }
-        for (let i = Math.floor(this.heap.length / 2) - 1; i >= 0; i--) {
-            this.bubbleDown(i);
-        }
-    }
+  }
 }
+
+// Usage:
+const minHeap = new PriorityQueue<number>((a, b) => a - b);
+const maxHeap = new PriorityQueue<number>((a, b) => b - a);
+const customHeap = new PriorityQueue<[number, number]>(
+  (a, b) => a[1] - b[1]  // Compare by second element
+);
 ```
 
 ---
 
-**Ready to practice?** Start with Problem 1 in PROBLEMS.md
+## ✅ Ready to Practice
+
+**Say:** `"Claude, I watched the videos"` for concept check!
+
+**Quick Reference:**
+- **Insert:** O(log n) - bubble up
+- **Extract:** O(log n) - bubble down
+- **Peek:** O(1) - root element
+- **K largest:** Min heap of size K
+- **K smallest:** Max heap of size K
+- **Median:** Two heaps (max + min)
+
+---
+
+[Back to Session README](./README.md)

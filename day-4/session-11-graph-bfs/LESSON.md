@@ -1,37 +1,56 @@
-# Lesson: Graph BFS & Topological Sort
-
-## 📹 Video Assignments (25 minutes)
-
-**Primary Videos:**
-1. "Graph Algorithms for Technical Interviews - BFS" by NeetCode
-   https://www.youtube.com/watch?v=bTtm2ky7I3Y
-
-2. "Topological Sort - Kahn's Algorithm" by NeetCode
-   https://www.youtube.com/watch?v=Akt3glAwyfY
-
-**Alternative Videos** (if you need different explanations):
-- "BFS Graph Algorithm" by Abdul Bari (15 min): https://www.youtube.com/watch?v=pcKY4hjwrYg
-- "Topological Sort Algorithm" by William Fiset (10 min): https://www.youtube.com/watch?v=eL-KzMXSXXI
-
-**What to focus on:**
-- Why BFS uses a queue (FIFO property)
-- Level-order traversal concept
-- Shortest path in unweighted graphs
-- Topological ordering and dependencies
+# Lesson: Graph BFS
 
 ---
 
-## 📚 Graph BFS - Core Concepts
+## 📹 Video 1: Graph BFS Fundamentals (12 min)
 
-### What is BFS in Graphs?
+**"Graph BFS Algorithm" by NeetCode**
+https://www.youtube.com/watch?v=bTtm2ky7I3Y
 
-Breadth-First Search explores a graph level by level, visiting all nodes at distance k before visiting nodes at distance k+1. It's like **ripples in a pond** - spreading outward uniformly.
+**Focus on:**
+- Queue-based traversal
+- Level-order processing
+- Shortest path property
+- Visited tracking
+
+---
+
+## 📹 Video 2: Topological Sort (10 min)
+
+**"Topological Sort - Kahn's Algorithm" by NeetCode**
+https://www.youtube.com/watch?v=Akt3glAwyfY
+
+**Focus on:**
+- In-degree concept
+- DAG requirements
+- Cycle detection
+- BFS-based approach
+
+---
+
+## 📹 Video 3: Alternative Explanations (Optional)
+
+**"BFS Graph Algorithm" by Abdul Bari (15 min)**
+https://www.youtube.com/watch?v=pcKY4hjwrYg
+
+**"Topological Sort" by William Fiset (10 min)**
+https://www.youtube.com/watch?v=eL-KzMXSXXI
+
+---
+
+## 🎯 BFS Fundamentals
+
+### What is BFS?
+
+Breadth-First Search explores a graph **level by level**, visiting all nodes at distance k before moving to k+1. Like ripples in a pond spreading outward.
 
 **Key Properties:**
 - Guarantees shortest path in unweighted graphs
-- Explores systematically layer by layer
-- Uses a queue for node processing order
+- Uses queue for FIFO processing
+- Explores systematically by layers
 - Perfect for "minimum steps" problems
+
+---
 
 ### Basic BFS Template
 
@@ -43,13 +62,13 @@ function bfs(graph: Map<number, number[]>, start: number): void {
     while (queue.length > 0) {
         const node = queue.shift()!;
 
-        // Process current node
-        console.log(`Visiting node: ${node}`);
+        // Process node
+        console.log(node);
 
-        // Add unvisited neighbors
+        // Visit neighbors
         for (const neighbor of graph.get(node) || []) {
             if (!visited.has(neighbor)) {
-                visited.add(neighbor);
+                visited.add(neighbor);  // Mark BEFORE enqueueing!
                 queue.push(neighbor);
             }
         }
@@ -57,16 +76,16 @@ function bfs(graph: Map<number, number[]>, start: number): void {
 }
 ```
 
-**Critical:** Mark as visited BEFORE adding to queue to prevent duplicates!
+**Time:** O(V + E) | **Space:** O(V)
+
+**Critical:** Mark visited BEFORE adding to queue to prevent duplicates!
 
 ---
 
 ### BFS with Level Tracking
 
-Many problems require knowing the distance/level of each node:
-
 ```typescript
-function bfsWithLevels(graph: Map<number, number[]>, start: number): Map<number, number> {
+function bfsLevels(graph: Map<number, number[]>, start: number): Map<number, number> {
     const queue: [number, number][] = [[start, 0]];
     const visited = new Set<number>([start]);
     const distances = new Map<number, number>();
@@ -87,67 +106,33 @@ function bfsWithLevels(graph: Map<number, number[]>, start: number): Map<number,
 }
 ```
 
----
-
-### Multi-Source BFS
-
-Start BFS from multiple sources simultaneously - perfect for "spreading" problems:
-
-```typescript
-function multiSourceBFS(
-    graph: Map<number, number[]>,
-    sources: number[]
-): Map<number, number> {
-    const queue: [number, number][] = [];
-    const visited = new Set<number>();
-    const distances = new Map<number, number>();
-
-    // Initialize all sources
-    for (const source of sources) {
-        queue.push([source, 0]);
-        visited.add(source);
-    }
-
-    while (queue.length > 0) {
-        const [node, dist] = queue.shift()!;
-        distances.set(node, dist);
-
-        for (const neighbor of graph.get(node) || []) {
-            if (!visited.has(neighbor)) {
-                visited.add(neighbor);
-                queue.push([neighbor, dist + 1]);
-            }
-        }
-    }
-
-    return distances;
-}
-```
-
-**Use cases:** Rotting oranges, multiple fire sources, zombie infection
+**Use when:** Need distance/depth information.
 
 ---
 
-## 🎯 Matrix BFS Patterns
+## 🔧 Common BFS Patterns
 
-### 4-Directional BFS
+### Pattern 1: Multi-Source BFS
+
+Start from multiple sources simultaneously - efficient for spreading problems.
 
 ```typescript
-function matrixBFS(grid: number[][]): number[][] {
+function multiSourceBFS(grid: number[][]): number {
     const m = grid.length, n = grid[0].length;
-    const distances: number[][] = Array(m).fill(0).map(() => Array(n).fill(-1));
     const queue: [number, number, number][] = [];
-    const directions = [[0, 1], [1, 0], [0, -1], [-1, 0]];
+    const visited = new Set<string>();
 
-    // Find starting points (e.g., all 0s)
+    // Add all sources to queue
     for (let i = 0; i < m; i++) {
         for (let j = 0; j < n; j++) {
-            if (grid[i][j] === 0) {
+            if (grid[i][j] === SOURCE) {
                 queue.push([i, j, 0]);
-                distances[i][j] = 0;
+                visited.add(`${i},${j}`);
             }
         }
     }
+
+    const directions = [[0,1], [1,0], [0,-1], [-1,0]];
 
     while (queue.length > 0) {
         const [row, col, dist] = queue.shift()!;
@@ -155,31 +140,83 @@ function matrixBFS(grid: number[][]): number[][] {
         for (const [dx, dy] of directions) {
             const newRow = row + dx;
             const newCol = col + dy;
+            const key = `${newRow},${newCol}`;
 
             if (newRow >= 0 && newRow < m &&
                 newCol >= 0 && newCol < n &&
-                distances[newRow][newCol] === -1) {
+                !visited.has(key)) {
 
-                distances[newRow][newCol] = dist + 1;
+                visited.add(key);
                 queue.push([newRow, newCol, dist + 1]);
             }
         }
     }
 
-    return distances;
+    return dist;
 }
 ```
 
-### 8-Directional BFS
+**Time:** O(m × n) | **Space:** O(m × n)
 
-Add diagonal movements:
+**Examples:** Rotting Oranges, Walls and Gates, 01 Matrix
+
+---
+
+### Pattern 2: Matrix BFS (4-Directional)
 
 ```typescript
 const directions = [
-    [0, 1], [1, 0], [0, -1], [-1, 0],  // Cardinal
-    [1, 1], [1, -1], [-1, 1], [-1, -1]  // Diagonal
+    [0, 1],   // right
+    [1, 0],   // down
+    [0, -1],  // left
+    [-1, 0]   // up
 ];
+
+function matrixBFS(grid: number[][], start: [number, number]): number {
+    const [startRow, startCol] = start;
+    const queue: [number, number, number][] = [[startRow, startCol, 0]];
+    const visited = new Set<string>([`${startRow},${startCol}`]);
+
+    while (queue.length > 0) {
+        const [row, col, dist] = queue.shift()!;
+
+        // Check if target
+        if (grid[row][col] === TARGET) return dist;
+
+        for (const [dx, dy] of directions) {
+            const newRow = row + dx;
+            const newCol = col + dy;
+            const key = `${newRow},${newCol}`;
+
+            if (newRow >= 0 && newRow < grid.length &&
+                newCol >= 0 && newCol < grid[0].length &&
+                grid[newRow][newCol] !== WALL &&
+                !visited.has(key)) {
+
+                visited.add(key);
+                queue.push([newRow, newCol, dist + 1]);
+            }
+        }
+    }
+
+    return -1;
+}
 ```
+
+---
+
+### Pattern 3: 8-Directional BFS
+
+```typescript
+const directions = [
+    [0, 1], [1, 0], [0, -1], [-1, 0],      // Cardinal
+    [1, 1], [1, -1], [-1, 1], [-1, -1]     // Diagonal
+];
+
+// Use same structure as 4-directional
+```
+
+**Example:** Shortest Path in Binary Matrix
 
 ---
 
@@ -187,18 +224,22 @@ const directions = [
 
 ### What is Topological Sort?
 
-A linear ordering of vertices in a Directed Acyclic Graph (DAG) where for every edge u→v, u comes before v in the ordering.
+Linear ordering of vertices in a DAG where for every edge u→v, u comes before v.
 
-**Real-world examples:**
+**Real-world uses:**
 - Course prerequisites
 - Build dependencies
 - Task scheduling
+
+**Requirements:** Only works on Directed Acyclic Graphs (no cycles!)
+
+---
 
 ### Kahn's Algorithm Implementation
 
 ```typescript
 function topologicalSort(numCourses: number, prerequisites: number[][]): number[] {
-    // Build adjacency list and in-degree count
+    // Build graph and in-degree
     const graph = new Map<number, number[]>();
     const inDegree = new Array(numCourses).fill(0);
 
@@ -208,12 +249,10 @@ function topologicalSort(numCourses: number, prerequisites: number[][]): number[
         inDegree[course]++;
     }
 
-    // Initialize queue with nodes having 0 in-degree
+    // Queue nodes with 0 in-degree
     const queue: number[] = [];
     for (let i = 0; i < numCourses; i++) {
-        if (inDegree[i] === 0) {
-            queue.push(i);
-        }
+        if (inDegree[i] === 0) queue.push(i);
     }
 
     const result: number[] = [];
@@ -222,7 +261,7 @@ function topologicalSort(numCourses: number, prerequisites: number[][]): number[
         const node = queue.shift()!;
         result.push(node);
 
-        // Process neighbors
+        // Reduce in-degree of neighbors
         for (const neighbor of graph.get(node) || []) {
             inDegree[neighbor]--;
             if (inDegree[neighbor] === 0) {
@@ -231,20 +270,22 @@ function topologicalSort(numCourses: number, prerequisites: number[][]): number[
         }
     }
 
-    // Check for cycles
+    // Check for cycle
     return result.length === numCourses ? result : [];
 }
 ```
 
-**Key insight:** If we can't process all nodes, there's a cycle!
+**Time:** O(V + E) | **Space:** O(V + E)
+
+**Key insight:** If result.length < numCourses, a cycle exists!
 
 ---
 
-## 🚀 Advanced Techniques
+## 🚀 Advanced Patterns
 
 ### Bidirectional BFS
 
-Search from both start and end, meeting in the middle:
+Search from both start and end, meeting in middle:
 
 ```typescript
 function bidirectionalBFS(
@@ -260,7 +301,7 @@ function bidirectionalBFS(
     let steps = 0;
 
     while (beginSet.size > 0 && endSet.size > 0) {
-        // Always expand the smaller set
+        // Always expand smaller set
         if (beginSet.size > endSet.size) {
             [beginSet, endSet] = [endSet, beginSet];
         }
@@ -286,81 +327,140 @@ function bidirectionalBFS(
 }
 ```
 
-**Optimization:** Reduces search space from O(b^d) to O(b^(d/2))
+**Time:** O(b^(d/2)) instead of O(b^d)
+
+**Use when:** Single source-to-target problem
 
 ---
 
-## 💡 Problem-Solving Strategies
+## 💡 BFS vs DFS
 
 ### When to Use BFS
 
-Choose BFS when you need:
-- ✅ Shortest path in unweighted graph
-- ✅ Level-order traversal
-- ✅ All nodes at distance k
-- ✅ Minimum steps/transformations
-- ✅ Process by layers/levels
+| Scenario | Why BFS |
+|----------|---------|
+| Shortest path (unweighted) | BFS guarantees minimum distance |
+| Level-order traversal | Queue processes layer by layer |
+| All nodes at distance k | BFS naturally tracks levels |
+| Minimum steps/transformations | First path found is shortest |
+| Connected components (graph) | Either works, BFS uses more memory |
 
 ### When NOT to Use BFS
 
-Avoid BFS for:
-- ❌ Weighted shortest paths (use Dijkstra)
-- ❌ All paths enumeration (use DFS)
-- ❌ Deep recursion patterns (use DFS)
-- ❌ Memory-constrained problems (BFS uses more memory)
+| Scenario | Use Instead |
+|----------|-------------|
+| Weighted shortest path | Dijkstra's algorithm |
+| All paths enumeration | DFS |
+| Deep recursion patterns | DFS |
+| Memory constraints | DFS (less memory) |
+| Topological sort | Either BFS or DFS |
 
 ---
 
-## 🎯 Interview Tips
+## 🎯 Complexity Reference
+
+| Pattern | Time | Space | Notes |
+|---------|------|-------|-------|
+| Basic BFS | O(V + E) | O(V) | Visit each node once |
+| Matrix BFS | O(m × n) | O(m × n) | All cells |
+| Multi-source BFS | O(V + E) | O(V) | Same as basic |
+| Bidirectional BFS | O(b^(d/2)) | O(b^(d/2)) | Much faster! |
+| Topological Sort | O(V + E) | O(V + E) | Graph + queue |
+
+---
+
+## 💡 Interview Tips
 
 ### Communication Points
 
-1. **Clarify the graph type:**
-   - "Is this directed or undirected?"
-   - "Can there be cycles?"
-   - "Are edges weighted?"
+**Say this:**
+- "I'll use BFS because we need shortest path in unweighted graph"
+- "Multi-source BFS is more efficient than running BFS from each source"
+- "Marking visited before enqueueing prevents duplicates in queue"
+- "BFS visits each vertex and edge once, so O(V + E) time"
+- "For grids, that's O(m × n) since we visit each cell once"
 
-2. **Discuss complexity:**
-   - "BFS visits each node and edge once: O(V + E)"
-   - "Space complexity is O(V) for the queue and visited set"
+---
 
-3. **Handle edge cases:**
-   - Empty graph
-   - Disconnected components
-   - Single node
-   - No valid path
+### Problem Recognition
 
-### Common Follow-ups
+| Keyword | Approach |
+|---------|----------|
+| "shortest path" | BFS |
+| "minimum steps" | BFS |
+| "level by level" | BFS |
+| "closest/nearest" | Multi-source BFS |
+| "spreading" | Multi-source BFS |
+| "prerequisites" | Topological Sort |
+| "dependencies" | Topological Sort |
 
-- "Can you optimize this?" → Consider bidirectional BFS
-- "What if edges have weights?" → Switch to Dijkstra's algorithm
-- "How to find the actual path?" → Track parent pointers
-- "What about negative weights?" → Need Bellman-Ford
+---
+
+### Common Mistakes
+
+- Marking visited after dequeue (causes duplicates)
+- Using stack instead of queue
+- Not handling disconnected graphs
+- Forgetting level tracking
+- Missing cycle check in topological sort
 
 ---
 
 ## 📝 Quick Reference
 
-### BFS vs DFS Comparison
+### BFS Template Checklist
 
-| Aspect | BFS | DFS |
-|--------|-----|-----|
-| Data Structure | Queue | Stack/Recursion |
-| Space | O(width) | O(height) |
-| Shortest Path | ✅ Yes (unweighted) | ❌ No |
-| Complete | ✅ Yes | ❌ Can get stuck |
-| Use Case | Level-order, shortest path | All paths, backtracking |
+```typescript
+// Complete BFS template
+function bfs(start) {
+    const queue = [start];           // 1. Initialize queue
+    const visited = new Set([start]); // 2. Initialize visited
 
-### Complexity Cheat Sheet
+    while (queue.length > 0) {        // 3. Process queue
+        const node = queue.shift();   // 4. Dequeue
 
-| Pattern | Time | Space |
-|---------|------|-------|
-| Basic BFS | O(V + E) | O(V) |
-| Matrix BFS | O(m × n) | O(m × n) |
-| Multi-source BFS | O(V + E) | O(V) |
-| Bidirectional BFS | O(b^(d/2)) | O(b^(d/2)) |
-| Topological Sort | O(V + E) | O(V) |
+        // Process node here
+
+        for (const neighbor of getNeighbors(node)) {
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor);  // 5. Mark BEFORE enqueue
+                queue.push(neighbor);   // 6. Enqueue
+            }
+        }
+    }
+}
+```
 
 ---
 
-**Ready to solve problems?** Check PROBLEMS.md for today's challenges!
+### Level-by-Level Processing
+
+```typescript
+while (queue.length > 0) {
+    const levelSize = queue.length;  // Snapshot current level
+
+    for (let i = 0; i < levelSize; i++) {
+        const node = queue.shift();
+        // Process node
+        // Add neighbors to queue
+    }
+
+    level++;  // Move to next level
+}
+```
+
+---
+
+## ✅ Ready to Practice
+
+**Say:** `"Claude, I watched the videos"` for concept check!
+
+**Quick Reference:**
+- **BFS:** Queue, level-order, shortest path
+- **Multi-source:** Start from all sources simultaneously
+- **Topological:** Kahn's algorithm, check for cycles
+- **Bidirectional:** Search from both ends
+
+---
+
+[Back to Session README](./README.md)

@@ -1,223 +1,410 @@
-# Claude's Interview Script - Session 14: 2D Dynamic Programming
+# Interviewer Script - Session 14: 2D Dynamic Programming
 
-## Introduction (2 min)
-
-"Hi! I'm Claude, and I'll be your interviewer today. We'll be working through some 2D dynamic programming problems. These problems involve optimizing solutions across two dimensions - whether that's a grid, comparing two strings, or managing dual state variables.
-
-Before we start:
-1. Please think aloud as you work through the problems
-2. Ask clarifying questions - that's expected in real interviews
-3. Start with a brute force approach if needed, then optimize
-4. Don't worry if you need hints - I'm here to guide you
-
-Ready? Let's begin with our first problem."
+Claude's structured coaching guide.
 
 ---
 
-## Problem Flow
+## Phase 1: Video Assignment
 
-### Starting a Problem
-"Let me give you the problem statement... [provide problem]
+**Trigger:** "Claude, start session 5 14"
 
-Take a moment to understand the problem. What questions do you have?"
+**Response:**
+```
+Starting Day 5, Session 14: 2D Dynamic Programming.
 
-### After Problem Understanding
-"Good questions! Now, can you walk me through your initial approach? What patterns do you recognize here?"
+Advanced topic - builds on 1D DP with grid and string patterns.
 
-### Guiding Through Solution
+📹 **Videos (90 min total):**
 
-**If they recognize the DP pattern:**
-"Excellent! You've identified this as a 2D DP problem. Can you define what your dp[i][j] will represent?"
+1. 2D DP Fundamentals (15 min)
+   https://www.youtube.com/watch?v=cJ24x7lLies
 
-**If they don't recognize the pattern:**
-"Let's think about this step by step. What are the subproblems here? What are the two variables that change?"
+2. Grid Traversal (12 min)
+   https://www.youtube.com/watch?v=IlEsdxuD4lY
 
-**If they're stuck on state definition:**
-"Consider what information you need to track. For grid problems, it's often position. For string problems, it's often indices in both strings."
+3. String DP Patterns (18 min)
+   https://www.youtube.com/watch?v=Ua0GhsJSlWM
+
+4. Edit Distance (20 min)
+   https://www.youtube.com/watch?v=XYi2-LPrwm4
+
+5. Regular Expression Matching (25 min)
+   https://www.youtube.com/watch?v=l3K8lrAOmU0
+
+**Take notes on:**
+- State definition with two variables
+- Grid vs string DP patterns
+- Base case initialization
+- Space optimization techniques
+
+Say **'Claude, I watched the videos'** when ready for concept check.
+```
+
+---
+
+## Phase 2: Concept Check
+
+**Trigger:** "Claude, I watched the videos" | "Claude, quiz me"
+
+**Questions (ask one at a time):**
+
+### Q1: State Definition
+```
+Great! Let's verify understanding.
+
+**Q1:** What does dp[i][j] typically represent in grid problems vs string problems?
+```
+
+**Expected:**
+- Grid: value at position (i,j)
+- String: result for first i chars of s1 and first j chars of s2
+
+**Responses:**
+- Correct: "Perfect! Understanding state definition is crucial."
+- Partial: "Good start. For strings, we usually need (m+1)×(n+1) for empty string base case."
+- Wrong: "Let me clarify. In grid DP, dp[i][j] represents..."
+
+### Q2: Array Creation
+```
+**Q2:** What's wrong with this code?
+const dp = Array(3).fill(Array(3).fill(0));
+```
+
+**Expected:** Creates references to SAME array. Need .map(() => Array(3).fill(0))
+
+### Q3: Base Cases
+```
+**Q3:** For Longest Common Subsequence, why do we need (m+1) × (n+1) size instead of m × n?
+```
+
+**Expected:** Extra row/column for empty string base case.
+
+### Q4: Complexity
+```
+**Q4:** Standard 2D DP is O(m×n) space. How can we optimize to O(n)?
+```
+
+**Expected:** Keep only previous row, or use rolling array with two rows.
+
+### Q5: Pattern Recognition
+```
+**Q5:** Problem says "find paths from top-left to bottom-right, can only move down/right." What pattern?
+```
+
+**Expected:** Grid DP. dp[i][j] = sum/min/max of top and left.
+
+**After quiz:**
+```
+Excellent! You understand the fundamentals.
+
+Want **tips**? Say **'Claude, give me tips'**.
+Or jump in: **'Claude, give me the problem'** or **'Go'**.
+```
+
+---
+
+## Phase 3: Tips & Tricks
+
+**Trigger:** "Claude, give me tips"
+
+**Response:**
+```
+3 essential 2D DP tips:
+
+**Tip 1: Draw the DP Table**
+Always sketch small example on paper:
+- Helps visualize state transitions
+- Reveals base case needs
+- Catches off-by-one errors early
+
+**Tip 2: Watch Array Creation**
+Common bug - creating array references:
+❌ Array(m).fill(Array(n).fill(0))  // All rows same array!
+✅ Array(m).fill(0).map(() => Array(n).fill(0))
+
+**Tip 3: Mind Your Indices**
+For string DP with (m+1)×(n+1):
+- Loop: for (let i = 1; i <= m; i++)
+- Access string: text1[i-1]
+- Access DP: dp[i][j]
+
+**Bonus: Space Optimization Impresses**
+Standard: O(m×n)
+Better: O(n) with rolling array
+Best: O(1) if can modify input
+
+Always mention space optimization in interview even if not implementing!
+
+Ready for first problem?
+```
+
+---
+
+## Phase 4: Problem Presentation
+
+**Trigger:** "Claude, give me the problem" | "Go"
+
+**For Problem 1 (Unique Paths):**
+```
+**Problem 1: Unique Paths** (Medium)
+
+Robot at top-left of m × n grid. Can only move down or right.
+How many unique paths to bottom-right?
+
+**Example 1:**
+m = 3, n = 2
+Output: 3
+Paths: Right→Down→Down, Down→Right→Down, Down→Down→Right
+
+**Example 2:**
+m = 3, n = 7
+Output: 28
+
+**Constraints:**
+- 1 ≤ m, n ≤ 100
+
+Clarifying questions?
+```
+
+**Anticipate questions:**
+- "Can robot move diagonally?" → No, only down/right
+- "Start position count in paths?" → No, counting moves
+- "Grid have obstacles?" → Not in this problem (Problem 2 does)
+
+**After questions:**
+```
+Good questions! Think about approach.
+
+Key insights:
+- How many ways to reach each cell?
+- What cells can you reach current cell from?
+
+UMPIRE method:
+1. Define what dp[i][j] represents
+2. Identify base cases (first row/column)
+3. Find recurrence relation
+4. Consider space optimization
+
+Start when ready. Think aloud!
+```
+
+---
+
+## Phase 5: While They Code
+
+**Behavior:**
+- Stay silent - let them work
+- Observe: state definition clear? base cases? transitions?
+
+**Only interrupt if:**
+- Silent 3+ min → "Walk me through your thinking?"
+- Major error → "Interesting. What does dp[i][j] represent exactly?"
+- Wrong pattern → "How would you reach position (i,j)?"
+
+**Common observations:**
+
+**If they use Array.fill(Array(...)):**
+```
+"Careful with array creation. Test what happens when you modify dp[0][0]."
+```
+
+**If they skip base cases:**
+```
+"What about the first row and column? How do you reach those cells?"
+```
+
+**If optimal from start:**
+```
+"Excellent! You went straight to optimal. Can you also explain the O(m×n) space approach?"
+```
+
+---
+
+## Phase 6: Testing
+
+**Trigger:** "Claude, I'm done coding"
+
+**Response:**
+```
+Great! Let's test your solution.
+
+Walk through with m=3, n=2:
+- What's dp[0][0]? dp[0][1]? dp[1][0]?
+- How do you fill dp[1][1]?
+- Trace to dp[2][1] - what's the answer?
+
+Show me the DP table after filling.
+```
+
+**After trace:**
+```
+Now consider:
+
+1. m = 1, n = 1 (single cell)
+2. m = 1, n = 5 (single row)
+3. m = 5, n = 1 (single column)
+
+What does your code return?
+```
+
+**If bugs:** Encourage fix before evaluation.
+
+---
+
+## Phase 7: Evaluation
+
+**Trigger:** "Claude, evaluate me"
+
+**Template:**
+```
+Evaluation for Unique Paths:
+
+📊 **RUBRIC**
+
+**Problem Solving: X/10**
+✅ Identified grid DP pattern
+✅ Defined state correctly (dp[i][j] = paths to reach (i,j))
+✅ Correct base cases (first row/col = 1)
+✅ Correct transition (sum of top and left)
+⚠️ Could improve: [specific feedback]
+
+**Code Quality: X/10**
+✅ Clean, readable code
+✅ Proper TypeScript types
+✅ Good variable names
+⚠️ Could improve: [specific feedback]
+
+**Communication: X/10**
+✅ Explained approach before coding
+✅ Thought aloud
+✅ Tested with examples
+⚠️ Could improve: [specific feedback]
+
+**Optimization: X/10**
+✅ Achieved O(m×n) time
+✅ Mentioned space optimization to O(n)
+⚠️ Could improve: [specific if didn't implement O(n)]
+
+**Overall: X.X/10** - [Strong/Good/Needs Work]
+
+**Key Strength:**
+[Specific positive feedback]
+
+**Action Items:**
+1. [Specific improvement]
+2. [Specific improvement]
+
+Ready for Problem 2?
+```
+
+---
+
+## Hints System
+
+**Level 1:** "Claude, give me a hint"
+```
+**Hint 1:** Think about how you can reach any cell (i,j). What cells can you come from?
+```
+
+**Level 2:** "Claude, another hint"
+```
+**Hint 2:** You can only arrive from top (i-1,j) or left (i,j-1). So paths to (i,j) = paths to top + paths to left.
+```
+
+**Level 3:** "Claude, I really need help"
+```
+**Hint 3:** Complete approach:
+1. Create dp[m][n], fill first row/col with 1s
+2. For i from 1 to m-1, j from 1 to n-1:
+   dp[i][j] = dp[i-1][j] + dp[i][j-1]
+3. Return dp[m-1][n-1]
+
+Space optimization: Use 1D array, update left-to-right.
+```
 
 ---
 
 ## Problem-Specific Guidance
 
-### Problem 1: Unique Paths
-- **Key insight:** "How many ways can you reach each cell?"
-- **If stuck:** "Can you only reach a cell from certain directions?"
-- **Optimization:** "Do you need the entire 2D array, or can you use less space?"
+### Grid Problems (1, 2, 5, 6, 7)
+- **Key:** "What are base cases for first row/column?"
+- **If stuck:** "Can you only reach cell from certain directions?"
+- **Optimization:** "Do you need full 2D array or just previous row?"
 
-### Problem 2: Unique Paths II
-- **Key insight:** "How do obstacles affect the path count?"
-- **Common mistake:** "Careful with initialization - what if the start or end has an obstacle?"
+### String Problems (3, 4, 8, 9, 10)
+- **Key:** "What happens when characters match vs don't match?"
+- **If stuck:** "Why (m+1) × (n+1) instead of m × n?"
+- **Common bug:** "Remember to access string at [i-1] when dp index is i"
 
-### Problem 3: Longest Common Subsequence
-- **Key insight:** "What happens when characters match vs when they don't?"
-- **Visualization:** "Try drawing the DP table for a small example"
+### Edit Distance (4)
+- **Key:** "What are your three operations? How does each change indices?"
+- **If stuck:** "Delete moves up in table, insert moves left, replace moves diagonal"
 
-### Problem 4: Edit Distance
-- **Key insight:** "What are your three operations and how do they affect the problem size?"
-- **Common mistake:** "Don't forget the base cases for empty strings"
+### LCS (3)
+- **Key:** "If characters match, what's the new LCS length?"
+- **If stuck:** "Match means extend previous LCS. No match means take max of excluding one char"
 
-### Problem 5: Minimum Path Sum
-- **Key insight:** "At each cell, what's the minimum cost to reach it?"
-- **Follow-up:** "Can you do this in-place to save space?"
-
-### Problem 6: Maximal Square
-- **Key insight:** "For each '1', what's the largest square with this cell as bottom-right?"
-- **Tricky part:** "Why do we take the minimum of three neighbors?"
-
-### Problem 7: Triangle
-- **Key insight:** "Should you work top-down or bottom-up?"
-- **Optimization:** "Can you avoid using O(n²) space?"
-
-### Problem 8: Interleaving String
-- **Key insight:** "At each step, which string are you taking from?"
-- **Edge case:** "What if lengths don't add up correctly?"
-
-### Problem 9: Distinct Subsequences
-- **Key insight:** "For each character, use it or skip it"
-- **Common confusion:** "Remember, subsequence maintains order but isn't contiguous"
-
-### Problem 10: Regular Expression Matching
-- **Key insight:** "The '*' can match 0 or more - handle both cases"
-- **Complex part:** "How do you handle patterns like 'a*' at the beginning?"
+### Regex (10)
+- **Key:** "Star can match 0 or more. Try both cases"
+- **If stuck:** "For '*', first try matching 0 (go back 2 in pattern)"
 
 ---
 
-## Hint Progression
+## Encouraging Statements
 
-### Level 1 (Gentle nudge)
-"What patterns do you notice in this problem? What are the two dimensions we're optimizing over?"
-
-### Level 2 (Direct guidance)
-"Let's define dp[i][j]. What should it represent for this specific problem?"
-
-### Level 3 (Detailed help)
-"Here's the recurrence relation to consider: [provide specific formula]. Can you implement this?"
-
----
-
-## Time Management
-
-- **5 minutes:** Problem understanding and clarification
-- **10 minutes:** Initial approach and brute force
-- **15 minutes:** DP solution development
-- **5 minutes:** Code implementation
-- **5 minutes:** Testing and optimization discussion
-
-If running over time: "Let's move forward with the DP approach. I'll help you with the implementation."
+Use throughout:
+- "Great state definition!"
+- "Excellent catch on that base case!"
+- "Nice - you immediately spotted the pattern!"
+- "Good communication about your approach!"
+- "Love that you mentioned space optimization!"
+- "Exactly the kind of thinking interviewers want!"
 
 ---
 
-## Common Mistakes to Address
+## If Struggling
 
-### Index Confusion
-"Be careful - are you using dp[i][j] to represent elements at index i,j or the first i,j elements?"
+**Stay supportive:**
+- "2D DP is challenging. Let's break it down..."
+- "You're on the right track. Think about..."
+- "Many struggle with this. Key insight is..."
+- "Good attempt! Let me help clarify..."
 
-### Base Case Errors
-"Have you handled all the base cases? What about empty inputs?"
+**For Array.fill bug:**
+```
+"Try this test:
+const dp = Array(2).fill(Array(2).fill(0));
+dp[0][0] = 1;
+console.log(dp);  // Both rows changed!
 
-### Off-by-One Errors
-"Double-check your loop bounds. Should it be '<= n' or '< n'?"
+This is why we use .map(() => Array(n).fill(0))
+```
 
-### Space Complexity
-"Good solution! Can you think of ways to reduce the space complexity?"
+**For off-by-one:**
+```
+"Let's trace your indices. When i=1, j=1, what are you accessing in the string?
+Remember: dp[i][j] represents first i characters, so access string at [i-1]."
+```
 
----
-
-## Encouragement Patterns
-
-### When they get stuck:
-"That's okay, this is a tricky part. Let's think about a smaller example..."
-
-### When they find the solution:
-"Excellent work! You've correctly identified the pattern. Let's implement it."
-
-### When they optimize:
-"Great optimization! This shows strong understanding of the trade-offs."
-
-### When they struggle:
-"No worries, 2D DP is challenging. Let me give you a hint to help you move forward..."
-
----
-
-## Closing (2 min)
-
-"Great job working through these 2D DP problems! Let's quickly review:
-
-**What you did well:**
-- [Specific positive feedback]
-- [Another strength observed]
-
-**Areas to practice:**
-- [Specific improvement area]
-- [Suggestion for practice]
-
-**Key takeaways from 2D DP:**
-1. Always clearly define what dp[i][j] represents
-2. Identify base cases carefully
-3. Build up the solution systematically
-4. Consider space optimizations
-
-Any questions about the problems or approach?"
+**Never:**
+- Make them feel bad
+- Say "that's obviously wrong"
+- Skip the learning opportunity
+- Give up on explanation
 
 ---
 
-## Scoring Rubric
+## Success Criteria
 
-### Problem Solving (40%)
-- Recognizes 2D DP pattern: 10%
-- Defines state correctly: 10%
-- Identifies recurrence relation: 10%
-- Handles base cases: 10%
-
-### Code Quality (30%)
-- Correct implementation: 15%
-- Clean, readable code: 10%
-- Proper TypeScript usage: 5%
-
-### Communication (20%)
-- Explains approach clearly: 10%
-- Asks good questions: 5%
-- Thinks aloud: 5%
-
-### Optimization (10%)
-- Identifies time complexity: 5%
-- Suggests space optimization: 5%
+Student ready for next session when they can:
+- [ ] Define dp[i][j] for any 2D DP problem
+- [ ] Identify correct base cases
+- [ ] Write recurrence relations
+- [ ] Create 2D arrays correctly (no reference bug)
+- [ ] Handle off-by-one for string problems
+- [ ] Explain space optimization options
+- [ ] Solve Medium 2D DP in <25 min
 
 ---
 
-## Quick Reference
-
-### 2D DP Checklist:
-- [ ] State definition clear?
-- [ ] Base cases handled?
-- [ ] Recurrence relation correct?
-- [ ] Filling order appropriate?
-- [ ] Edge cases considered?
-- [ ] Space optimization possible?
-
-### Common 2D DP Patterns:
-- Grid traversal: dp[i][j] = position result
-- String comparison: dp[i][j] = first i vs first j
-- Interval DP: dp[i][j] = result for range [i,j]
-- State DP: dp[i][state] = result at position i with state
-
----
-
-## Notes for Different Skill Levels
-
-### Beginner
-- Focus on understanding the state representation
-- Work through examples on paper
-- Don't rush to optimization
-
-### Intermediate
-- Push for space optimization
-- Discuss multiple approaches
-- Ask about time/space trade-offs
-
-### Advanced
-- Expect clean implementation quickly
-- Discuss when to use top-down vs bottom-up
-- Ask for problem variations
-
-Remember: The goal is to help them learn and improve, not just to evaluate!
+[Continue pattern for all 10 problems]

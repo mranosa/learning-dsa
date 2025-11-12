@@ -1,285 +1,302 @@
-# Hints: Hash Maps
+# Hints - Session 2: Hash Maps
+
+Progressive hints for 10 problems. Struggle first, learn deeper.
+
+---
 
 ## Problem 1: Contains Duplicate
 
-### Hint Level 1 (Gentle)
-Think about what data structure automatically handles uniqueness for you.
+### Level 1
+What data structure automatically handles uniqueness?
 
-### Hint Level 2 (Direct)
-A Set only stores unique values. What happens if you try to add a duplicate?
+### Level 2
+Set stores only unique values. If add fails, duplicate found.
 
-### Hint Level 3 (Detailed)
+### Level 3
 ```typescript
-// Pseudocode approach:
-// 1. Create an empty Set
-// 2. For each number in the array:
-//    - If the number is already in the Set, return true
-//    - Otherwise, add it to the Set
-// 3. If we finish the loop, return false
+const seen = new Set();
+for (const num of nums) {
+  if (seen.has(num)) return true;
+  seen.add(num);
+}
+return false;
 ```
 
 ---
 
 ## Problem 2: Valid Anagram
 
-### Hint Level 1 (Gentle)
-Anagrams have the same characters with the same frequencies. How can you count character frequencies?
+### Level 1
+Anagrams have same characters with same frequencies. How to count?
 
-### Hint Level 2 (Direct)
-Use a Map to count character frequencies in the first string, then verify the second string matches exactly.
+### Level 2
+Use Map to count chars in first string. Decrement counts for second string. All should reach zero.
 
-### Hint Level 3 (Detailed)
+### Level 3
 ```typescript
-// Pseudocode approach:
-// 1. If lengths differ, return false immediately
-// 2. Create a Map to count characters in string s
-// 3. For each character in string t:
-//    - Decrement its count in the Map
-//    - If count goes negative or character doesn't exist, return false
-// 4. Check if all counts are zero
+if (s.length !== t.length) return false;
+const charCount = new Map();
+for (const char of s) {
+  charCount.set(char, (charCount.get(char) || 0) + 1);
+}
+for (const char of t) {
+  if (!charCount.has(char)) return false;
+  charCount.set(char, charCount.get(char) - 1);
+}
+// Check all counts are 0
 ```
 
 ---
 
 ## Problem 3: Two Sum
 
-### Hint Level 1 (Gentle)
-For each number, you need to find if its complement (target - number) exists. How can you check this efficiently?
+### Level 1
+For each number, need to find if complement exists. What gives O(1) lookup?
 
-### Hint Level 2 (Direct)
-Use a Map to store numbers you've seen along with their indices. For each new number, check if its complement exists in the Map.
+### Level 2
+Hash map stores value→index. For each num, check if `(target - num)` exists in map.
 
-### Hint Level 3 (Detailed)
+### Level 3
 ```typescript
-// Pseudocode approach:
-// 1. Create a Map<number, index>
-// 2. For each number at index i:
-//    - Calculate complement = target - number
-//    - If complement exists in Map, return [map.get(complement), i]
-//    - Add current number and index to Map
-// 3. No solution found (shouldn't happen per problem constraints)
+const seen = new Map();
+for (let i = 0; i < nums.length; i++) {
+  const complement = target - nums[i];
+  if (seen.has(complement)) {
+    return [seen.get(complement), i];
+  }
+  seen.set(nums[i], i);
+}
 ```
 
 ---
 
 ## Problem 4: Group Anagrams
 
-### Hint Level 1 (Gentle)
-Anagrams become identical when sorted. Can you use this property to group them?
+### Level 1
+Anagrams become identical when sorted. Use this as grouping key?
 
-### Hint Level 2 (Direct)
-Create a Map where the key is the sorted string and the value is an array of original strings that match that sorted form.
+### Level 2
+Map with sorted string as key. Each key holds array of original strings.
 
-### Hint Level 3 (Detailed)
+### Level 3
 ```typescript
-// Pseudocode approach:
-// 1. Create a Map<sortedString, string[]>
-// 2. For each string:
-//    - Sort its characters to create a key
-//    - If key doesn't exist in Map, create empty array
-//    - Add original string to the array for this key
-// 3. Return all values from the Map
+const groups = new Map();
+for (const str of strs) {
+  const key = str.split('').sort().join('');
+  if (!groups.has(key)) groups.set(key, []);
+  groups.get(key).push(str);
+}
+return Array.from(groups.values());
 ```
 
 ---
 
 ## Problem 5: Top K Frequent Elements
 
-### Hint Level 1 (Gentle)
-First count frequencies, then you need to find the k most frequent. Think about how to avoid full sorting.
+### Level 1
+Count frequencies first. How to find top k without full sorting?
 
-### Hint Level 2 (Direct)
-After counting frequencies with a Map, you can use bucket sort since frequencies are bounded by array length.
+### Level 2
+Bucket sort. Index = frequency, value = array of numbers with that frequency.
 
-### Hint Level 3 (Detailed)
+### Level 3
 ```typescript
-// Pseudocode approach:
-// 1. Count frequencies using Map<number, frequency>
-// 2. Create buckets array where index = frequency
-// 3. Place each number in its frequency bucket
-// 4. Iterate from highest frequency down, collecting k elements
-// Note: Frequency can't exceed array length, so bucket sort is O(n)
+// Count frequencies
+const freq = new Map();
+for (const num of nums) {
+  freq.set(num, (freq.get(num) || 0) + 1);
+}
+
+// Bucket sort
+const buckets = Array.from({ length: nums.length + 1 }, () => []);
+for (const [num, count] of freq) {
+  buckets[count].push(num);
+}
+
+// Collect top k from highest
+const result = [];
+for (let i = buckets.length - 1; i >= 0 && result.length < k; i--) {
+  result.push(...buckets[i]);
+}
 ```
 
 ---
 
 ## Problem 6: Product of Array Except Self
 
-### Hint Level 1 (Gentle)
-The product at index i equals the product of all elements to its left multiplied by the product of all elements to its right.
+### Level 1
+Product at i = product of all left × product of all right.
 
-### Hint Level 2 (Direct)
-Build two arrays: leftProducts[i] = product of all elements before i, rightProducts[i] = product of all elements after i.
+### Level 2
+Build prefix products left-to-right in result array. Then multiply by suffix products right-to-left using variable.
 
-### Hint Level 3 (Detailed)
+### Level 3
 ```typescript
-// Pseudocode approach:
-// 1. Create result array
-// 2. First pass (left to right):
-//    - result[i] = product of all elements before i
-// 3. Second pass (right to left):
-//    - Maintain running product from right
-//    - result[i] *= running product
-// This way you use the result array for left products and a variable for right
+const result = new Array(n).fill(1);
+// Prefix
+for (let i = 1; i < n; i++) {
+  result[i] = result[i - 1] * nums[i - 1];
+}
+// Suffix
+let suffix = 1;
+for (let i = n - 1; i >= 0; i--) {
+  result[i] *= suffix;
+  suffix *= nums[i];
+}
 ```
 
 ---
 
 ## Problem 7: Valid Sudoku
 
-### Hint Level 1 (Gentle)
-You need to check three constraints: rows, columns, and 3×3 boxes. How can you track what numbers you've seen in each?
+### Level 1
+Need to check three constraints: rows, columns, 3×3 boxes. How to track seen numbers?
 
-### Hint Level 2 (Direct)
-Use 9 Sets for rows, 9 for columns, and 9 for boxes. The tricky part is mapping (row, col) to box index.
+### Level 2
+9 Sets for rows, 9 for cols, 9 for boxes. Box index: `Math.floor(r/3) * 3 + Math.floor(c/3)`.
 
-### Hint Level 3 (Detailed)
+### Level 3
 ```typescript
-// Pseudocode approach:
-// 1. Create 9 Sets each for rows, cols, and boxes
-// 2. For each cell (r, c):
-//    - Skip if empty ('.')
-//    - Calculate box index: floor(r/3) * 3 + floor(c/3)
-//    - Check if value exists in row[r], col[c], or box[boxIndex]
-//    - If duplicate found, return false
-//    - Add value to all three sets
-// 3. Return true if no duplicates found
+const rows = Array.from({ length: 9 }, () => new Set());
+const cols = Array.from({ length: 9 }, () => new Set());
+const boxes = Array.from({ length: 9 }, () => new Set());
+
+for (let r = 0; r < 9; r++) {
+  for (let c = 0; c < 9; c++) {
+    if (board[r][c] === '.') continue;
+    const val = board[r][c];
+    const boxIdx = Math.floor(r/3) * 3 + Math.floor(c/3);
+
+    if (rows[r].has(val) || cols[c].has(val) || boxes[boxIdx].has(val)) {
+      return false;
+    }
+
+    rows[r].add(val);
+    cols[c].add(val);
+    boxes[boxIdx].add(val);
+  }
+}
 ```
 
 ---
 
 ## Problem 8: Encode and Decode Strings
 
-### Hint Level 1 (Gentle)
-You need a way to know where one string ends and another begins. What if the delimiter you choose appears in the string?
+### Level 1
+Need delimiter, but what if delimiter appears in string?
 
-### Hint Level 2 (Direct)
-Prefix each string with its length followed by a delimiter. This way, you know exactly how many characters to read.
+### Level 2
+Prefix each string with its length: `length#string`. Know exactly how many chars to read.
 
-### Hint Level 3 (Detailed)
+### Level 3
 ```typescript
-// Encode pseudocode:
-// For each string: append "length#string"
-// Example: ["abc", "de"] becomes "3#abc2#de"
+encode(strs: string[]): string {
+  let result = '';
+  for (const str of strs) {
+    result += str.length + '#' + str;
+  }
+  return result;
+}
 
-// Decode pseudocode:
-// 1. Start at index 0
-// 2. Find next '#' to get length
-// 3. Read that many characters after '#'
-// 4. Move index to after the string
-// 5. Repeat until end
+decode(s: string): string[] {
+  const result = [];
+  let i = 0;
+  while (i < s.length) {
+    let j = i;
+    while (s[j] !== '#') j++;
+    const length = parseInt(s.substring(i, j));
+    result.push(s.substring(j + 1, j + 1 + length));
+    i = j + 1 + length;
+  }
+  return result;
+}
 ```
 
 ---
 
 ## Problem 9: Longest Consecutive Sequence
 
-### Hint Level 1 (Gentle)
-You need O(n) time, so sorting is out. What if you could instantly check if a number exists?
+### Level 1
+Need O(n) time, so no sorting. What gives O(1) membership check?
 
-### Hint Level 2 (Direct)
-Put all numbers in a Set. For each number, check if it's the start of a sequence (num-1 doesn't exist), then count how long the sequence extends.
+### Level 2
+Put all in Set. For each number, check if it's sequence start (num-1 doesn't exist). Then count upward.
 
-### Hint Level 3 (Detailed)
+### Level 3
 ```typescript
-// Pseudocode approach:
-// 1. Add all numbers to a Set
-// 2. For each number in Set:
-//    - If (num - 1) exists, skip (not start of sequence)
-//    - Otherwise, count consecutive numbers: num, num+1, num+2, ...
-//    - Track maximum sequence length
-// 3. Each number is visited at most twice (once in loop, once in counting)
+const numSet = new Set(nums);
+let maxLength = 0;
+
+for (const num of numSet) {
+  // Only start from sequence beginnings
+  if (!numSet.has(num - 1)) {
+    let current = num;
+    let length = 1;
+
+    while (numSet.has(current + 1)) {
+      current++;
+      length++;
+    }
+
+    maxLength = Math.max(maxLength, length);
+  }
+}
 ```
 
 ---
 
 ## Problem 10: Subarray Sum Equals K
 
-### Hint Level 1 (Gentle)
-If you know the sum from index 0 to i and from 0 to j, can you calculate the sum from i+1 to j?
+### Level 1
+If know sum from 0 to i and 0 to j, can calculate sum from i+1 to j?
 
-### Hint Level 2 (Direct)
-Use prefix sums. If prefixSum[j] - prefixSum[i] = k, then the subarray from i+1 to j sums to k. Store prefix sum frequencies in a Map.
+### Level 2
+Prefix sum. If `prefixSum[j] - prefixSum[i] = k`, then subarray [i+1,j] sums to k. Store prefix sum frequencies in Map.
 
-### Hint Level 3 (Detailed)
+### Level 3
 ```typescript
-// Pseudocode approach:
-// 1. Initialize: count = 0, currentSum = 0, Map with (0, 1)
-// 2. For each number:
-//    - Add to currentSum
-//    - If (currentSum - k) exists in Map, add its frequency to count
-//    - Add/increment currentSum in Map
-// 3. Why (0, 1)? For subarrays starting at index 0
-// Example: [1, 1, 1], k=2
-// - After [1]: sum=1, check for -1 (not found)
-// - After [1,1]: sum=2, check for 0 (found! count=1)
-// - After [1,1,1]: sum=3, check for 1 (found! count=2)
+let count = 0;
+let sum = 0;
+const sumFreq = new Map();
+sumFreq.set(0, 1);  // Empty subarray
+
+for (const num of nums) {
+  sum += num;
+
+  // Check if (sum - k) exists
+  if (sumFreq.has(sum - k)) {
+    count += sumFreq.get(sum - k);
+  }
+
+  sumFreq.set(sum, (sumFreq.get(sum) || 0) + 1);
+}
 ```
 
 ---
 
-## Progressive Difficulty Tips
+## Pattern Hints
 
-### Starting Out (Problems 1-3)
-- Focus on basic Map/Set operations
-- Don't worry about optimization yet
-- Draw out the hash map state at each step
+**"Find duplicate"** → Set for O(1) membership
 
-### Building Skills (Problems 4-6)
-- Start recognizing patterns (grouping, frequency)
-- Think about space-time tradeoffs
-- Practice explaining your approach out loud
+**"Count frequencies"** → `map.set(key, (map.get(key) || 0) + 1)`
 
-### Advanced Patterns (Problems 7-10)
-- Combine multiple hash maps
-- Use hash maps with other techniques (prefix sums)
-- Focus on optimal solutions
+**"Find pair with sum"** → Two Sum pattern with hash map
+
+**"Group by property"** → Map with property as key
+
+**"Check existence"** → Set for O(1) vs array O(n)
 
 ---
 
-## General Hash Map Tips
+## Using Hints Effectively
 
-1. **Always check if key exists before accessing**
-   ```typescript
-   // Good
-   if (map.has(key)) {
-       const value = map.get(key)!;
-   }
+1. Try 15+ min before Level 1
+2. Try 10+ min after each hint
+3. If use Level 3, review and redo tomorrow
+4. Hints are learning tools, not cheating
 
-   // Also good
-   const value = map.get(key) || defaultValue;
-   ```
+Goal: Learn pattern recognition, not memorize solutions.
 
-2. **Initialize counts properly**
-   ```typescript
-   // For counting
-   map.set(key, (map.get(key) || 0) + 1);
-   ```
+---
 
-3. **Consider Set when you only need membership**
-   ```typescript
-   // If you only need to check existence, Set is clearer
-   const seen = new Set();
-   if (seen.has(value)) { /* ... */ }
-   ```
-
-4. **Use Map over Object for non-string keys**
-   ```typescript
-   // Map handles any key type
-   const map = new Map<number, string>();
-   map.set(1, "one");
-
-   // Object converts keys to strings
-   const obj = {};
-   obj[1] = "one"; // Actually obj["1"] = "one"
-   ```
-
-5. **Remember Map preserves insertion order**
-   ```typescript
-   // Useful when order matters
-   const map = new Map();
-   map.set("c", 3);
-   map.set("a", 1);
-   map.set("b", 2);
-   // Iteration order: c, a, b (not alphabetical)
-   ```
+[Back to Problems](./PROBLEMS.md) | [Back to Solutions](./SOLUTIONS.md)

@@ -1,40 +1,47 @@
 # Hints - Session 7: Tree Traversals
 
-Progressive hints for all 10 problems. Use sparingly - struggling is part of learning!
+Progressive hints for 10 problems. Struggling is part of learning.
 
 ---
 
 ## Problem 1: Binary Tree Inorder Traversal
 
-### Hint Level 1 (Gentle Nudge)
-Remember the order: Left → Root → Right. For the iterative approach, think about how you can simulate the recursion stack manually.
+### Level 1
+Inorder: Left → Root → Right. Iterative: simulate recursion with stack.
 
-### Hint Level 2 (More Direct)
-For iterative: Use a stack and a pointer. Keep going left and pushing nodes onto the stack. When you can't go left anymore, pop from stack, process that node, then go right.
+### Level 2
+Use stack and pointer. Keep going left, push nodes. When can't go left, pop, process, go right.
 
-### Hint Level 3 (Step-by-Step)
-Complete iterative algorithm:
-1. Initialize empty `stack` and `current = root`
-2. While `current` exists OR stack not empty:
-   - While `current` exists: push to stack, go left
-   - Pop from stack, add value to result
-   - Set `current = popped.right`
+### Level 3
+```typescript
+const stack: TreeNode[] = [];
+let current = root;
+while (current || stack.length > 0) {
+  while (current) {
+    stack.push(current);
+    current = current.left;
+  }
+  current = stack.pop()!;
+  result.push(current.val);
+  current = current.right;
+}
+```
 
 ---
 
 ## Problem 2: Binary Tree Preorder Traversal
 
-### Hint Level 1
-Preorder means process the root BEFORE its children. For iterative, you'll process nodes as soon as you encounter them.
+### Level 1
+Preorder: Root → Left → Right. Process node immediately when encountered.
 
-### Hint Level 2
-Use a stack. Process node immediately when popped. Push right child first, then left child (so left is processed first due to LIFO).
+### Level 2
+Use stack. Process node when popped. Push right first, then left (LIFO).
 
-### Hint Level 3
+### Level 3
 ```typescript
 const stack = [root];
 while (stack.length > 0) {
-  const node = stack.pop();
+  const node = stack.pop()!;
   result.push(node.val);
   if (node.right) stack.push(node.right);
   if (node.left) stack.push(node.left);
@@ -45,18 +52,17 @@ while (stack.length > 0) {
 
 ## Problem 3: Binary Tree Postorder Traversal
 
-### Hint Level 1
-Postorder is tricky iteratively. Think: what's the reverse of postorder? Can you modify another traversal and reverse the result?
+### Level 1
+Postorder is tricky. What's reverse of postorder? Modified preorder!
 
-### Hint Level 2
-Postorder (L→R→Root) reversed is (Root→R→L). This is like preorder but visiting right before left! Do modified preorder and reverse.
+### Level 2
+Postorder (L→R→Root) reversed is (Root→R→L). Do modified preorder, reverse result.
 
-### Hint Level 3
-Do preorder but visit right child before left. Add values to front of result (or reverse at end):
+### Level 3
 ```typescript
 stack.push(root);
 while (stack.length) {
-  const node = stack.pop();
+  const node = stack.pop()!;
   result.unshift(node.val); // Add to front
   if (node.left) stack.push(node.left);
   if (node.right) stack.push(node.right);
@@ -67,36 +73,41 @@ while (stack.length) {
 
 ## Problem 4: Binary Tree Level Order Traversal
 
-### Hint Level 1
-BFS uses a queue, not a stack. Process all nodes at the current level before moving to the next level.
+### Level 1
+BFS uses queue. Process all nodes at current level before next.
 
-### Hint Level 2
-Key insight: Before processing each level, record the queue size. That's how many nodes are in the current level. Process exactly that many nodes.
+### Level 2
+Key: Capture `queue.length` before processing level. That's how many nodes in current level.
 
-### Hint Level 3
-Algorithm:
-1. Queue starts with [root]
-2. While queue not empty:
-   - `levelSize = queue.length`
-   - Create empty `currentLevel` array
-   - Loop `levelSize` times:
-     - Dequeue node, add value to `currentLevel`
-     - Enqueue left and right children if they exist
-   - Add `currentLevel` to result
+### Level 3
+```typescript
+const queue = [root];
+while (queue.length > 0) {
+  const levelSize = queue.length;
+  const currentLevel: number[] = [];
+  for (let i = 0; i < levelSize; i++) {
+    const node = queue.shift()!;
+    currentLevel.push(node.val);
+    if (node.left) queue.push(node.left);
+    if (node.right) queue.push(node.right);
+  }
+  result.push(currentLevel);
+}
+```
 
 ---
 
 ## Problem 5: Binary Tree Zigzag Level Order Traversal
 
-### Hint Level 1
-This is level order with alternating direction. Use a boolean flag to track whether you're going left-to-right or right-to-left.
+### Level 1
+Level order with alternating direction. Use boolean flag.
 
-### Hint Level 2
+### Level 2
 Two approaches:
-1. Add to current level array differently based on direction (push vs unshift)
-2. Always add normally but reverse alternate levels
+1. Add differently based on direction (push vs unshift)
+2. Always add normally, reverse alternate levels
 
-### Hint Level 3
+### Level 3
 ```typescript
 let leftToRight = true;
 // In level processing:
@@ -113,21 +124,20 @@ leftToRight = !leftToRight;
 
 ## Problem 6: Binary Tree Right Side View
 
-### Hint Level 1
-You want the rightmost node at each level. This is a level order traversal variant. When would you see a node from the right side?
+### Level 1
+Want rightmost node at each level. Level order variant.
 
-### Hint Level 2
-BFS approach: In level order traversal, the LAST node of each level is what you see from the right. Only add that node to result.
+### Level 2
+BFS: Last node of each level is visible from right. Only add that to result.
 
-### Hint Level 3
-In the level processing loop:
+### Level 3
 ```typescript
 for (let i = 0; i < levelSize; i++) {
-  const node = queue.shift();
-  if (i === levelSize - 1) { // Last node in level
+  const node = queue.shift()!;
+  if (i === levelSize - 1) { // Last node
     result.push(node.val);
   }
-  // Add children as normal
+  // Add children
 }
 ```
 
@@ -135,18 +145,18 @@ for (let i = 0; i < levelSize; i++) {
 
 ## Problem 7: Average of Levels in Binary Tree
 
-### Hint Level 1
-Level order traversal, but instead of collecting all values, calculate the sum and count for each level.
+### Level 1
+Level order, but calculate sum and count per level.
 
-### Hint Level 2
-For each level, sum all node values and divide by the number of nodes in that level (which you already know from levelSize).
+### Level 2
+For each level, sum all values, divide by number of nodes (levelSize).
 
-### Hint Level 3
+### Level 3
 ```typescript
 const levelSize = queue.length;
 let levelSum = 0;
 for (let i = 0; i < levelSize; i++) {
-  const node = queue.shift();
+  const node = queue.shift()!;
   levelSum += node.val;
   // Add children
 }
@@ -157,19 +167,19 @@ result.push(levelSum / levelSize);
 
 ## Problem 8: N-ary Tree Level Order Traversal
 
-### Hint Level 1
-Same as binary tree level order, but instead of left/right children, you have a children array.
+### Level 1
+Same as binary tree level order, but children array instead of left/right.
 
-### Hint Level 2
-When adding children to queue, iterate through the entire children array instead of just checking left/right.
+### Level 2
+When adding children, iterate through children array.
 
-### Hint Level 3
-Replace this binary tree pattern:
+### Level 3
+Replace:
 ```typescript
 if (node.left) queue.push(node.left);
 if (node.right) queue.push(node.right);
 ```
-With this n-ary pattern:
+With:
 ```typescript
 for (const child of node.children) {
   queue.push(child);
@@ -180,41 +190,71 @@ for (const child of node.children) {
 
 ## Problem 9: Vertical Order Traversal of a Binary Tree
 
-### Hint Level 1
-Assign coordinates to each node: (row, col). Root is at (0, 0). Left child is at (row+1, col-1), right child is at (row+1, col+1).
+### Level 1
+Assign (row, col) to each node. Root at (0, 0). Left child (row+1, col-1), right (row+1, col+1).
 
-### Hint Level 2
-Use a Map to group nodes by column. Within each column, sort by row, then by value if they're in the same row. Use BFS or DFS to traverse and collect coordinates.
+### Level 2
+Use Map to group by column. Within each column, sort by row then value.
 
-### Hint Level 3
-Data structure and algorithm:
-1. `Map<col, Array<[row, value]>>`
-2. BFS with queue containing `[node, row, col]`
-3. Group nodes by column in the map
-4. For each column from min to max:
-   - Sort by row, then value
-   - Extract just values for result
+### Level 3
+```typescript
+// Map<col, Array<[row, value]>>
+const columnTable = new Map<number, [number, number][]>();
+// BFS with [node, row, col]
+const queue: [TreeNode, number, number][] = [[root, 0, 0]];
+// Group by column
+// Sort each column by row, then value
+nodes.sort((a, b) => a[0] === b[0] ? a[1] - b[1] : a[0] - b[0]);
+```
 
 ---
 
 ## Problem 10: Binary Tree Level Order Traversal II
 
-### Hint Level 1
-This is regular level order traversal but bottom-up. The easiest approach is to do normal level order then reverse.
+### Level 1
+Regular level order, but bottom-up. Easiest: reverse result.
 
-### Hint Level 2
+### Level 2
 Two options:
-1. Do normal level order and call `result.reverse()` at the end
-2. Use `result.unshift(currentLevel)` to add each level to the beginning
+1. Normal level order, call `result.reverse()` at end
+2. Use `result.unshift(currentLevel)` to add at beginning
 
-### Hint Level 3
-Simplest solution - just add one line:
+### Level 3
 ```typescript
-// Do normal level order traversal...
-// Then before returning:
+// Option 1: Reverse at end
 return result.reverse();
-```
-Or during traversal:
-```typescript
+
+// Option 2: Insert at beginning
 result.unshift(currentLevel); // Instead of push
 ```
+
+---
+
+## Pattern Hints
+
+**"Level order"** → BFS with queue, capture levelSize
+
+**"Right/left view"** → Last/first node per level
+
+**"Zigzag"** → Alternate direction flag
+
+**"Vertical"** → Track coordinates, group by column
+
+**"Inorder BST"** → Gives sorted order
+
+**"Postorder"** → Process children before parent
+
+---
+
+## Using Hints Effectively
+
+1. Try 10+ min before Level 1
+2. Try 5+ min after each hint
+3. If use Level 3, mark for review
+4. Don't feel bad - hints aid learning
+
+Goal: Learn pattern, not just solve one problem.
+
+---
+
+[Back to Problems](./PROBLEMS.md) | [Back to Solutions](./SOLUTIONS.md)

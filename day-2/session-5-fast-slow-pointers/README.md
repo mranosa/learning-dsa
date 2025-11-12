@@ -1,45 +1,37 @@
 # Day 2, Session 5: Fast/Slow Pointers
 
 ## Overview
-Master the tortoise and hare algorithm pattern for cycle detection and linked list manipulation.
 
-**Duration:** 2-4 hours
-**Problems:** 10 (5 Easy, 5 Medium)
-**Prerequisites:** Linked Lists, Basic pointer manipulation
+Master Floyd's tortoise and hare algorithm for cycle detection and linked list manipulation.
+
+**Duration:** 2-4 hours | **Problems:** 10 (5 Easy, 5 Medium)
 
 ---
 
 ## Learning Objectives
 
-By the end of this session, you will:
-- ✅ Understand Floyd's cycle detection algorithm
-- ✅ Apply fast/slow pointer pattern to various problems
-- ✅ Detect cycles in linked lists and sequences
-- ✅ Find middle elements efficiently
-- ✅ Solve intersection and reordering problems
+- ✅ Understand Floyd's cycle detection
+- ✅ Apply fast/slow pointer pattern
+- ✅ Detect cycles efficiently
+- ✅ Find middle elements in O(1) space
+- ✅ Solve intersection problems
 
 ---
 
 ## Session Flow
 
-### 1. Video (20 min)
-Watch the assigned video on Fast/Slow Pointers and Floyd's algorithm.
+### 1. Videos (22 min)
+- Fast/Slow Pointers Fundamentals (9 min)
+- Floyd's Algorithm Deep Dive (8 min)
+- Advanced Applications (5 min)
 
 ### 2. Concept Check (10 min)
-Claude will quiz you on:
-- Floyd's cycle detection principle
-- Fast vs slow pointer movement rates
-- Cycle detection mathematics
-- Common fast/slow pointer patterns
+Quiz on Floyd's algorithm, pointer speeds, cycle detection.
 
 ### 3. Tips & Tricks (5 min)
-Learn interview-specific insights about:
-- When to use fast/slow pointers
-- Choosing pointer speeds
-- Handling edge cases in linked lists
+Pattern recognition, edge cases, TypeScript null handling.
 
-### 4. Problem Solving (2-3 hours)
-Solve 10 carefully selected problems:
+### 4. Problems (2-3 hours)
 1. Linked List Cycle (Easy)
 2. Linked List Cycle II (Medium)
 3. Happy Number (Easy)
@@ -56,51 +48,38 @@ Solve 10 carefully selected problems:
 ## Key Concepts
 
 ### Floyd's Cycle Detection
-- **Tortoise:** Moves one step at a time
-- **Hare:** Moves two steps at a time
-- **Cycle exists:** If they meet
-- **No cycle:** If hare reaches end
+- **Slow:** 1 step per iteration
+- **Fast:** 2 steps per iteration
+- **Cycle exists:** Pointers meet
+- **No cycle:** Fast reaches end
 
-### Fast/Slow Pointer Speeds
-- **Standard:** Slow = 1 step, Fast = 2 steps
-- **Finding middle:** Fast moves 2x speed
-- **Nth from end:** Fast leads by n nodes
-- **Cycle entry:** Reset one to head after meeting
+### Pointer Speeds
+- **1 and 2:** Standard cycle detection
+- **Same speed:** Finding cycle entry after detection
+- **Gap of n:** Finding nth from end
 
-### Common Applications
-- Cycle detection in lists
-- Finding middle element
-- Detecting loops in sequences
-- Finding duplicate numbers
-- Palindrome checking with reversal
-
-### Time Complexity Benefits
-- **Cycle detection:** O(n) time, O(1) space
-- **Middle finding:** O(n) time, O(1) space
-- **No extra data structures needed**
+### Applications
+- Cycle detection: O(n) time, O(1) space
+- Middle element: O(n) time, O(1) space
+- Duplicate numbers in arrays
+- Palindrome checking
 
 ---
 
 ## Prerequisites
 
 **Must know:**
-- Linked list structure and traversal
-- Pointer manipulation in TypeScript
-- Basic modular arithmetic
-
-**Nice to have:**
-- Understanding of graph cycles
-- Mathematical proof concepts
-- Two-pointer technique basics
+- Linked list structure
+- Pointer manipulation
+- Basic TypeScript syntax
 
 ---
 
 ## Success Criteria
 
-You're ready to move on when you can:
 - [ ] Implement Floyd's algorithm from memory
 - [ ] Identify when to use fast/slow pointers
-- [ ] Handle edge cases (null, single node, etc.)
+- [ ] Handle edge cases (null, single node)
 - [ ] Find cycle entry points
 - [ ] Apply pattern to array problems
 
@@ -108,52 +87,45 @@ You're ready to move on when you can:
 
 ## Resources
 
-**Video:** See LESSON.md for link
-
-**Readings:**
-- Floyd's Algorithm: https://en.wikipedia.org/wiki/Cycle_detection
-- Linked List patterns: TYPESCRIPT-LEETCODE.md
-
-**Practice:**
-- All problems in PROBLEMS.md
-- Solutions in SOLUTIONS.md
-- Hints in HINTS.md
+**Video:** LESSON.md
+**Practice:** PROBLEMS.md
+**Solutions:** SOLUTIONS.md
+**Hints:** HINTS.md
 
 ---
 
-## Tips for Success
+## Tips
 
-1. **Draw diagrams** - Visualize pointer movement
-2. **Test edge cases** - Empty list, single node, no cycle
-3. **Count steps carefully** - Track distance relationships
-4. **Consider pointer speeds** - Not always 1 and 2
-5. **Practice null checks** - TypeScript type safety
-6. **Understand the math** - Why they meet in cycles
-7. **Time yourself** - Build speed with practice
+1. Draw diagrams - visualize pointer movement
+2. Test edge cases - empty, single node, no cycle
+3. Count steps carefully - track relationships
+4. Practice null checks - TypeScript safety
+5. Understand the math - why they meet
+6. Time yourself - build speed
+7. Review solutions even if correct
 
 ---
 
 ## Common Mistakes
 
-**Avoid these:**
-- ❌ Forgetting null checks for linked lists
-- ❌ Incorrect loop termination conditions
-- ❌ Not handling single-node lists
+- ❌ Forgetting null checks
+- ❌ Wrong loop condition (use `fast && fast.next`)
 - ❌ Confusing cycle detection with cycle entry
-- ❌ Using extra space when O(1) is possible
+- ❌ Not handling single-node lists
+- ❌ Using extra space when O(1) possible
 
 ---
 
 ## What's Next
 
-After completing this session:
-1. Take a 10-minute break
-2. Review your performance scores
-3. Note patterns you struggled with
-4. Move to Session 6: Merge Intervals
+After completion:
+1. 10-minute break
+2. Review scores
+3. Note action items
+4. Session 6: Merge Intervals
 
-Session 6 introduces interval manipulation and overlap detection patterns.
+Session 6 introduces interval manipulation and overlap detection.
 
 ---
 
-**Ready to start?** Say: `"Claude, start session 2 5"`
+**Ready?** Say: `"Claude, start session 2 5"`

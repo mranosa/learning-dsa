@@ -1,55 +1,47 @@
-# Day 3, Session 9: Binary Search Trees (BST)
+# Day 3, Session 9: Binary Search Trees
 
 ## Overview
-Master the fundamental tree data structure that enables efficient searching, insertion, and deletion operations.
 
-**Duration:** 3-5 hours
-**Problems:** 10 (3 Easy, 6 Medium, 1 Hard)
-**Prerequisites:** Basic tree traversal, recursion concepts
+Master BSTs - the foundation for efficient searching, insertion, and sorted data operations.
+
+**Duration:** 2-4 hours | **Problems:** 10 (3 Easy, 7 Medium)
 
 ---
 
 ## Learning Objectives
 
-By the end of this session, you will:
 - ✅ Understand BST properties and invariants
 - ✅ Implement BST operations (search, insert, delete)
 - ✅ Validate BST structure efficiently
-- ✅ Solve BST-specific problems using properties
-- ✅ Convert between BST and other data structures
+- ✅ Solve problems using BST properties
+- ✅ Convert between BST and arrays
 
 ---
 
 ## Session Flow
 
-### 1. Video (25 min)
-Watch the assigned video on Binary Search Tree fundamentals and operations.
+### 1. Videos (42 min)
+- BST Fundamentals (15 min)
+- BST Operations (15 min)
+- BST Problem Patterns (12 min)
 
 ### 2. Concept Check (10 min)
-Claude will quiz you on:
-- BST property (left < root < right)
-- Inorder traversal produces sorted sequence
-- Time complexity of operations
-- Balanced vs unbalanced BST
+Quiz on BST property, operations, complexity, validation.
 
 ### 3. Tips & Tricks (5 min)
-Learn interview-specific insights about:
-- Using BST properties to optimize solutions
-- When to use iterative vs recursive approaches
-- Common BST patterns in interviews
+BST patterns, recursion vs iteration, TypeScript gotchas.
 
-### 4. Problem Solving (3-4 hours)
-Solve 10 carefully selected problems:
+### 4. Problems (2-3 hours)
 1. Search in a BST (Easy)
 2. Validate Binary Search Tree (Medium)
-3. Kth Smallest Element in a BST (Medium)
-4. Lowest Common Ancestor of a BST (Medium)
+3. Kth Smallest Element in BST (Medium)
+4. Lowest Common Ancestor of BST (Medium)
 5. Insert into a BST (Medium)
 6. Delete Node in a BST (Medium)
 7. Convert Sorted Array to BST (Easy)
-8. Two Sum IV - Input is a BST (Easy)
+8. Two Sum IV - Input is BST (Easy)
 9. Serialize and Deserialize BST (Medium)
-10. Recover Binary Search Tree (Hard)
+10. Inorder Successor in BST (Medium)
 
 ---
 
@@ -58,100 +50,85 @@ Solve 10 carefully selected problems:
 ### BST Properties
 - **Left subtree:** All values < root
 - **Right subtree:** All values > root
-- **Recursive property:** Each subtree is also a BST
-- **Inorder traversal:** Gives sorted sequence
-- **No duplicates:** Standard BST has unique values
+- **Recursive:** Each subtree is also BST
+- **Inorder:** Gives sorted sequence
 
-### BST Operations Complexity
+### BST Operations
 - **Search:** O(h) where h = height
 - **Insert:** O(h)
 - **Delete:** O(h)
 - **Min/Max:** O(h)
-- **Balanced BST:** h = O(log n)
-- **Skewed BST:** h = O(n)
+- **Balanced:** h = O(log n)
+- **Skewed:** h = O(n)
 
-### Common Patterns
+### Patterns
+- Range validation with min/max
 - Inorder traversal for sorted access
-- Range validation using min/max bounds
-- Successor/predecessor finding
+- Two pointers on sorted BST
 - BST construction from sorted data
-- Two-pointer on BST (using sorted property)
 
 ---
 
 ## Prerequisites
 
 **Must know:**
-- Binary tree traversals (inorder, preorder, postorder)
+- Binary tree structure
+- Tree traversals (inorder, preorder, postorder)
 - Recursion fundamentals
-- Tree node structure in TypeScript
-
-**Nice to have:**
-- Understanding of balanced trees
-- Iterator pattern knowledge
-- Serialization concepts
 
 ---
 
 ## Success Criteria
 
-You're ready to move on when you can:
-- [ ] Validate if a tree is a BST efficiently
+- [ ] Validate BST correctly
 - [ ] Implement all basic BST operations
-- [ ] Find kth smallest/largest element
-- [ ] Convert between BST and arrays
-- [ ] Handle BST deletion cases correctly
+- [ ] Find kth element in O(k) time
+- [ ] Handle BST deletion cases
+- [ ] Explain BST time complexity
 
 ---
 
 ## Resources
 
-**Video:** See LESSON.md for link
-
-**Readings:**
-- BST Visualization: https://visualgo.net/en/bst
-- TypeScript tree patterns: TYPESCRIPT-LEETCODE.md
-
-**Practice:**
-- All problems in PROBLEMS.md
-- Solutions in SOLUTIONS.md
-- Hints in HINTS.md
+**Video:** LESSON.md
+**Practice:** PROBLEMS.md
+**Solutions:** SOLUTIONS.md
+**Hints:** HINTS.md
 
 ---
 
-## Tips for Success
+## Tips
 
-1. **Draw the tree** - Visualize operations step by step
-2. **Use BST property** - Many problems become easier
-3. **Consider edge cases** - Single node, skewed tree
-4. **Practice inorder traversal** - It's used frequently
-5. **Understand deletion** - Most complex BST operation
-6. **Try both approaches** - Recursive and iterative
-7. **Watch for overflow** - When dealing with ranges
+1. Draw trees - visualization is critical
+2. Use BST property to eliminate half
+3. Inorder traversal gives sorted order
+4. Start recursive, optimize to iterative
+5. Watch for integer overflow in bounds
+6. Handle null cases carefully
+7. Practice deletion - most complex
 
 ---
 
 ## Common Mistakes
 
-**Avoid these:**
-- ❌ Forgetting to check both subtrees for BST validation
-- ❌ Using node values instead of subtree min/max
-- ❌ Not handling null nodes in recursion
-- ❌ Modifying tree structure without permission
-- ❌ Assuming balanced tree when not specified
+- ❌ Validating only immediate children
+- ❌ Forgetting BST property applies to ALL nodes
+- ❌ Not handling null pointers
+- ❌ Assuming balanced tree
+- ❌ Using node value instead of subtree min/max
 
 ---
 
 ## What's Next
 
-After completing this session:
-1. Take a 15-minute break
-2. Review your performance scores
-3. Note patterns you struggled with
-4. Move to Session 10: Tries
+After completion:
+1. 10-minute break
+2. Review scores
+3. Note action items
+4. Session 10: Tries
 
-Session 10 introduces prefix trees for efficient string operations.
+Session 10 introduces prefix trees for string operations.
 
 ---
 
-**Ready to start?** Say: `"Claude, start session 3 9"`
+**Ready?** Say: `"Claude, start session 3 9"`

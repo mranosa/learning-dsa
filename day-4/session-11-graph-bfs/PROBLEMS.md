@@ -1,140 +1,193 @@
-# Problems: Graph BFS
+# Problems - Session 11: Graph BFS
+
+10 problems in order. Use UMPIRE method.
+
+**Targets:** Medium <30 min | Hard <45 min
+
+---
 
 ## Problem 1: Rotting Oranges
-**Difficulty:** Medium
-**LeetCode:** [994. Rotting Oranges](https://leetcode.com/problems/rotting-oranges/)
-**NeetCode:** https://www.youtube.com/watch?v=y704fEOx0s0
 
-You are given an `m x n` grid where each cell can have one of three values:
-- 0 representing an empty cell,
-- 1 representing a fresh orange, or
-- 2 representing a rotten orange.
+**Difficulty:** Medium | **Pattern:** Multi-source BFS
+**LeetCode:** https://leetcode.com/problems/rotting-oranges/
 
-Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten.
+### Problem
 
-Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.
+Given m x n grid where each cell has one of three values:
+- 0 = empty cell
+- 1 = fresh orange
+- 2 = rotten orange
 
-**Example 1:**
+Every minute, any fresh orange 4-directionally adjacent to rotten orange becomes rotten.
+
+Return minimum minutes until no cell has fresh orange. If impossible, return -1.
+
+### Examples
+
 ```
-Input: grid = [[2,1,1],[1,1,0],[0,1,1]]
+grid = [[2,1,1],[1,1,0],[0,1,1]]
 Output: 4
-```
 
-**Example 2:**
-```
-Input: grid = [[2,1,1],[0,1,1],[1,0,1]]
+grid = [[2,1,1],[0,1,1],[1,0,1]]
 Output: -1
-Explanation: The orange in the bottom left corner (row 2, column 0) is never rotten, because rotting only happens 4-directionally.
+Explanation: Bottom left corner orange never rots
 ```
 
-**Example 3:**
-```
-Input: grid = [[0,2]]
-Output: 0
-Explanation: Since there are already no fresh oranges at minute 0, the answer is just 0.
-```
+### Constraints
+
+- m == grid.length
+- n == grid[i].length
+- 1 ≤ m, n ≤ 10
+- grid[i][j] is 0, 1, or 2
+
+### Hints
+- Multi-source BFS from all rotten oranges
+- Process level by level (each level = 1 minute)
+- Track fresh orange count
+- O(m × n) time, O(m × n) space
 
 ---
 
 ## Problem 2: Course Schedule
-**Difficulty:** Medium
-**LeetCode:** [207. Course Schedule](https://leetcode.com/problems/course-schedule/)
-**NeetCode:** https://www.youtube.com/watch?v=EgI5nU9etnU
 
-There are a total of `numCourses` courses you have to take, labeled from 0 to `numCourses - 1`. You are given an array `prerequisites` where `prerequisites[i] = [ai, bi]` indicates that you must take course `bi` first if you want to take course `ai`.
+**Difficulty:** Medium | **Pattern:** Cycle Detection
+**LeetCode:** https://leetcode.com/problems/course-schedule/
 
-Return `true` if you can finish all courses. Otherwise, return `false`.
+### Problem
 
-**Example 1:**
+numCourses courses labeled 0 to numCourses - 1. Array prerequisites where prerequisites[i] = [ai, bi] means must take course bi before ai.
+
+Return true if can finish all courses. Otherwise, false.
+
+### Examples
+
 ```
-Input: numCourses = 2, prerequisites = [[1,0]]
+numCourses = 2, prerequisites = [[1,0]]
 Output: true
-Explanation: There are a total of 2 courses to take.
-To take course 1 you should have finished course 0. So it is possible.
+Explanation: Take course 0, then course 1
+
+numCourses = 2, prerequisites = [[1,0],[0,1]]
+Output: false
+Explanation: Cannot take 0 before 1 and 1 before 0
 ```
 
-**Example 2:**
-```
-Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
-Output: false
-Explanation: There are a total of 2 courses to take.
-To take course 1 you should have finished course 0, and to take course 0 you should also have finished course 1. So it is impossible.
-```
+### Constraints
+
+- 1 ≤ numCourses ≤ 2000
+- 0 ≤ prerequisites.length ≤ 5000
+- prerequisites[i].length == 2
+- 0 ≤ ai, bi < numCourses
+- All pairs [ai, bi] are unique
+
+### Hints
+- Detect cycle in directed graph
+- Use topological sort (Kahn's algorithm)
+- Track in-degrees
+- If can process all nodes, no cycle exists
+- O(V + E) time, O(V + E) space
 
 ---
 
 ## Problem 3: Course Schedule II
-**Difficulty:** Medium
-**LeetCode:** [210. Course Schedule II](https://leetcode.com/problems/course-schedule-ii/)
-**NeetCode:** https://www.youtube.com/watch?v=Akt3glAwyfY
 
-There are a total of `numCourses` courses you have to take, labeled from 0 to `numCourses - 1`. You are given an array `prerequisites` where `prerequisites[i] = [ai, bi]` indicates that you must take course `bi` first if you want to take course `ai`.
+**Difficulty:** Medium | **Pattern:** Topological Sort
+**LeetCode:** https://leetcode.com/problems/course-schedule-ii/
 
-Return the ordering of courses you should take to finish all courses. If there are many valid answers, return any of them. If it is impossible to finish all courses, return an empty array.
+### Problem
 
-**Example 1:**
+Return ordering of courses to finish all courses. If many valid answers, return any. If impossible, return empty array.
+
+### Examples
+
 ```
-Input: numCourses = 2, prerequisites = [[1,0]]
+numCourses = 2, prerequisites = [[1,0]]
 Output: [0,1]
-Explanation: There are a total of 2 courses to take. To take course 1 you should have finished course 0. So the correct course order is [0,1].
+
+numCourses = 4, prerequisites = [[1,0],[2,0],[3,1],[3,2]]
+Output: [0,2,1,3] or [0,1,2,3]
+
+numCourses = 1, prerequisites = []
+Output: [0]
 ```
 
-**Example 2:**
-```
-Input: numCourses = 4, prerequisites = [[1,0],[2,0],[3,1],[3,2]]
-Output: [0,2,1,3]
-Explanation: There are a total of 4 courses to take. To take course 3 you should have finished both courses 1 and 2. Both courses 1 and 2 should be taken after you finished course 0.
-So one correct course order is [0,1,2,3]. Another correct ordering is [0,2,1,3].
-```
+### Constraints
+
+- 1 ≤ numCourses ≤ 2000
+- 0 ≤ prerequisites.length ≤ numCourses × (numCourses - 1)
+- prerequisites[i].length == 2
+- 0 ≤ ai, bi < numCourses
+- ai ≠ bi
+- All pairs unique
+
+### Hints
+- Topological sort with Kahn's algorithm
+- Track order as you process nodes
+- Processing order is the answer
+- Return empty if cycle detected
+- O(V + E) time, O(V + E) space
 
 ---
 
 ## Problem 4: Shortest Path in Binary Matrix
-**Difficulty:** Medium
-**LeetCode:** [1091. Shortest Path in Binary Matrix](https://leetcode.com/problems/shortest-path-in-binary-matrix/)
-**NeetCode:** https://www.youtube.com/watch?v=YnxUdAO7TAo
 
-Given an n x n binary matrix grid, return the length of the shortest clear path in the matrix. If there is no clear path, return -1.
+**Difficulty:** Medium | **Pattern:** 8-directional BFS
+**LeetCode:** https://leetcode.com/problems/shortest-path-in-binary-matrix/
 
-A clear path in a binary matrix is a path from the top-left cell (i.e., (0, 0)) to the bottom-right cell (i.e., (n - 1, n - 1)) such that:
-- All the visited cells of the path are 0.
-- All the adjacent cells of the path are 8-directionally connected.
+### Problem
 
-The length of a clear path is the number of visited cells of this path.
+Given n x n binary matrix grid, return length of shortest clear path. If no clear path, return -1.
 
-**Example 1:**
+Clear path from (0, 0) to (n-1, n-1) requires:
+- All visited cells are 0
+- All adjacent cells 8-directionally connected
+
+Length = number of visited cells.
+
+### Examples
+
 ```
-Input: grid = [[0,1],[1,0]]
+grid = [[0,1],[1,0]]
 Output: 2
-```
 
-**Example 2:**
-```
-Input: grid = [[0,0,0],[1,1,0],[1,1,0]]
+grid = [[0,0,0],[1,1,0],[1,1,0]]
 Output: 4
-```
 
-**Example 3:**
-```
-Input: grid = [[1,0,0],[1,1,0],[1,1,0]]
+grid = [[1,0,0],[1,1,0],[1,1,0]]
 Output: -1
 ```
 
+### Constraints
+
+- n == grid.length
+- n == grid[i].length
+- 1 ≤ n ≤ 100
+- grid[i][j] is 0 or 1
+
+### Hints
+- 8-directional BFS (includes diagonals)
+- Check if start/end blocked first
+- Track distance with each cell
+- Return distance when reach target
+- O(n²) time, O(n²) space
+
 ---
 
-## Problem 5: Walls and Gates (Premium)
-**Difficulty:** Medium
-**LeetCode:** [286. Walls and Gates](https://leetcode.com/problems/walls-and-gates/) (Premium)
-**NeetCode:** https://www.youtube.com/watch?v=e69C6xhiSQE
+## Problem 5: Walls and Gates
 
-You are given an m x n grid initialized with these three possible values:
-- -1 - A wall or an obstacle.
-- 0 - A gate.
-- INF - Infinity means an empty room.
+**Difficulty:** Medium | **Pattern:** Multi-source BFS
+**LeetCode:** https://leetcode.com/problems/walls-and-gates/ **(Premium)**
 
-Fill each empty room with the distance to its nearest gate. If it is impossible to reach a gate, it should be filled with INF.
+### Problem
 
-**Example:**
+Given m x n grid with three values:
+- -1 = Wall or obstacle
+- 0 = Gate
+- INF = Empty room
+
+Fill each empty room with distance to nearest gate. If impossible, leave INF.
+
+### Examples
+
 ```
 Input: rooms = [
   [INF, -1,  0,  INF],
@@ -151,161 +204,251 @@ Output: [
 ]
 ```
 
+### Constraints
+
+- m == rooms.length
+- n == rooms[i].length
+- 1 ≤ m, n ≤ 250
+- rooms[i][j] is -1, 0, or 2³¹ - 1
+
+### Hints
+- Multi-source BFS from all gates
+- Start from gates, spread outward
+- First time reaching room = shortest distance
+- Update rooms in-place
+- O(m × n) time, O(m × n) space
+
 ---
 
 ## Problem 6: Word Ladder
-**Difficulty:** Hard
-**LeetCode:** [127. Word Ladder](https://leetcode.com/problems/word-ladder/)
-**NeetCode:** https://www.youtube.com/watch?v=h9iTnkgv05E
 
-A transformation sequence from word `beginWord` to word `endWord` using a dictionary `wordList` is a sequence of words `beginWord -> s1 -> s2 -> ... -> sk` such that:
-- Every adjacent pair of words differs by a single letter.
-- Every si for 1 <= i <= k is in `wordList`. Note that `beginWord` does not need to be in `wordList`.
+**Difficulty:** Hard | **Pattern:** Transformation Graph
+**LeetCode:** https://leetcode.com/problems/word-ladder/
+
+### Problem
+
+Transformation sequence from beginWord to endWord using wordList:
+- Every adjacent pair differs by single letter
+- Every si is in wordList
 - sk == endWord
 
-Given two words, `beginWord` and `endWord`, and a dictionary `wordList`, return the number of words in the shortest transformation sequence from `beginWord` to `endWord`, or 0 if no such sequence exists.
+Return number of words in shortest transformation. Return 0 if no sequence exists.
 
-**Example 1:**
+### Examples
+
 ```
-Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]
+beginWord = "hit", endWord = "cog"
+wordList = ["hot","dot","dog","lot","log","cog"]
 Output: 5
-Explanation: One shortest transformation sequence is "hit" -> "hot" -> "dot" -> "dog" -> "cog", which is 5 words long.
+Explanation: "hit" -> "hot" -> "dot" -> "dog" -> "cog"
+
+beginWord = "hit", endWord = "cog"
+wordList = ["hot","dot","dog","lot","log"]
+Output: 0
+Explanation: endWord not in wordList
 ```
 
-**Example 2:**
-```
-Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log"]
-Output: 0
-Explanation: The endWord "cog" is not in wordList, therefore there is no valid transformation sequence.
-```
+### Constraints
+
+- 1 ≤ beginWord.length ≤ 10
+- endWord.length == beginWord.length
+- 1 ≤ wordList.length ≤ 5000
+- wordList[i].length == beginWord.length
+- Only lowercase English letters
+- beginWord ≠ endWord
+- All wordList strings unique
+
+### Hints
+- Build graph where words are nodes
+- Use pattern matching ("h*t", "hi*") for neighbors
+- BFS from beginWord to endWord
+- Track transformation count (levels)
+- O(M² × N) time where M = word length, N = word count
 
 ---
 
 ## Problem 7: 01 Matrix
-**Difficulty:** Medium
-**LeetCode:** [542. 01 Matrix](https://leetcode.com/problems/01-matrix/)
-**NeetCode:** https://www.youtube.com/watch?v=fqVT0QgvOQ
 
-Given an m x n binary matrix mat, return the distance of the nearest 0 for each cell.
+**Difficulty:** Medium | **Pattern:** Distance BFS
+**LeetCode:** https://leetcode.com/problems/01-matrix/
 
-The distance between two adjacent cells is 1.
+### Problem
 
-**Example 1:**
+Given m x n binary matrix mat, return distance of nearest 0 for each cell.
+
+Distance between two adjacent cells is 1.
+
+### Examples
+
 ```
-Input: mat = [[0,0,0],[0,1,0],[0,0,0]]
+mat = [[0,0,0],[0,1,0],[0,0,0]]
 Output: [[0,0,0],[0,1,0],[0,0,0]]
-```
 
-**Example 2:**
-```
-Input: mat = [[0,0,0],[0,1,0],[1,1,1]]
+mat = [[0,0,0],[0,1,0],[1,1,1]]
 Output: [[0,0,0],[0,1,0],[1,2,1]]
 ```
+
+### Constraints
+
+- m == mat.length
+- n == mat[i].length
+- 1 ≤ m, n ≤ 10⁴
+- 1 ≤ m × n ≤ 10⁴
+- mat[i][j] is 0 or 1
+- At least one 0 exists
+
+### Hints
+- Multi-source BFS from all 0s
+- Similar to Walls and Gates
+- Each level increases distance by 1
+- Mark visited to avoid reprocessing
+- O(m × n) time, O(m × n) space
 
 ---
 
 ## Problem 8: Open the Lock
-**Difficulty:** Medium
-**LeetCode:** [752. Open the Lock](https://leetcode.com/problems/open-the-lock/)
-**NeetCode:** https://www.youtube.com/watch?v=Pzg3bCDY87w
 
-You have a lock in front of you with 4 circular wheels. Each wheel has 10 slots: '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'. The wheels can rotate freely and wrap around. Each move consists of turning one wheel one slot.
+**Difficulty:** Medium | **Pattern:** State Space BFS
+**LeetCode:** https://leetcode.com/problems/open-the-lock/
 
-The lock initially starts at '0000'. You are given a list of `deadends`, meaning if the lock displays any of these codes, the wheels of the lock will stop turning and you will be unable to open it.
+### Problem
 
-Given a `target` representing the value of the wheels that will unlock the lock, return the minimum total number of turns required to open the lock, or -1 if it is impossible.
+Lock with 4 circular wheels. Each wheel has 10 slots: '0' to '9'. Wheels rotate freely and wrap.
 
-**Example 1:**
+Lock starts at '0000'. Given list of deadends. Given target, return minimum turns to unlock, or -1 if impossible.
+
+### Examples
+
 ```
-Input: deadends = ["0201","0101","0102","1212","2002"], target = "0202"
+deadends = ["0201","0101","0102","1212","2002"]
+target = "0202"
 Output: 6
-Explanation: A sequence of valid moves would be "0000" -> "1000" -> "1100" -> "1200" -> "1201" -> "1202" -> "0202".
+Explanation: "0000" -> "1000" -> "1100" -> "1200" -> "1201" -> "1202" -> "0202"
+
+deadends = ["8888"], target = "0009"
+Output: 1
+Explanation: "0000" -> "0009"
+
+deadends = ["0000"], target = "8888"
+Output: -1
 ```
 
-**Example 2:**
-```
-Input: deadends = ["8888"], target = "0009"
-Output: 1
-Explanation: We can turn the last wheel in reverse to move from "0000" -> "0009".
-```
+### Constraints
+
+- 1 ≤ deadends.length ≤ 500
+- deadends[i].length == 4
+- target.length == 4
+- target not in deadends
+- All strings consist of digits only
+
+### Hints
+- Each state is a node in graph
+- 8 neighbors per state (4 wheels × 2 directions)
+- BFS from "0000" to target
+- Skip deadends and visited states
+- O(10⁴) time and space (all possible states)
 
 ---
 
-## Problem 9: Minimum Knight Moves (Premium)
-**Difficulty:** Medium
-**LeetCode:** [1197. Minimum Knight Moves](https://leetcode.com/problems/minimum-knight-moves/) (Premium)
-**NeetCode:** Not available (Premium problem)
+## Problem 9: Minimum Knight Moves
 
-In an infinite chess board with coordinates from -infinity to +infinity, you have a knight at square [0, 0].
+**Difficulty:** Medium | **Pattern:** Chess BFS
+**LeetCode:** https://leetcode.com/problems/minimum-knight-moves/ **(Premium)**
 
-A knight has 8 possible moves it can make. Each move is two squares in a cardinal direction, then one square in an orthogonal direction.
+### Problem
 
-Return the minimum number of steps needed to move the knight to the square [x, y]. It is guaranteed the answer exists.
+Infinite chessboard from -∞ to +∞. Knight at [0, 0].
 
-**Example 1:**
+Knight has 8 possible moves. Return minimum steps to move knight to [x, y]. Answer guaranteed to exist.
+
+### Examples
+
 ```
-Input: x = 2, y = 1
+x = 2, y = 1
 Output: 1
-Explanation: [0, 0] → [2, 1]
+Explanation: [0, 0] -> [2, 1]
+
+x = 5, y = 5
+Output: 4
+Explanation: [0, 0] -> [2, 1] -> [4, 2] -> [3, 4] -> [5, 5]
 ```
 
-**Example 2:**
-```
-Input: x = 5, y = 5
-Output: 4
-Explanation: [0, 0] → [2, 1] → [4, 2] → [3, 4] → [5, 5]
-```
+### Constraints
+
+- -300 ≤ x, y ≤ 300
+- 0 ≤ |x| + |y| ≤ 300
+
+### Hints
+- BFS with 8 knight moves
+- Use symmetry: abs(x), abs(y)
+- Prune positions going too far negative
+- Track visited to avoid cycles
+- O(|x| × |y|) time and space
 
 ---
 
 ## Problem 10: Shortest Bridge
-**Difficulty:** Medium
-**LeetCode:** [934. Shortest Bridge](https://leetcode.com/problems/shortest-bridge/)
-**NeetCode:** https://www.youtube.com/watch?v=gkINMhbbIbU
 
-You are given an n x n binary matrix grid where 1 represents land and 0 represents water.
+**Difficulty:** Medium | **Pattern:** BFS + DFS
+**LeetCode:** https://leetcode.com/problems/shortest-bridge/
 
-An island is a 4-directionally connected group of 1's not connected to any other 1's. There are exactly two islands in grid.
+### Problem
 
-You may change 0's to 1's to connect the two islands to form one island.
+Given n x n binary matrix where 1 = land, 0 = water.
 
-Return the smallest number of 0's you must flip to connect the two islands.
+Island = 4-directionally connected group of 1s. Exactly two islands exist.
 
-**Example 1:**
+May change 0s to 1s to connect islands. Return smallest number of 0s to flip.
+
+### Examples
+
 ```
-Input: grid = [[0,1],[1,0]]
+grid = [[0,1],[1,0]]
 Output: 1
-```
 
-**Example 2:**
-```
-Input: grid = [[0,1,0],[0,0,0],[0,0,1]]
+grid = [[0,1,0],[0,0,0],[0,0,1]]
 Output: 2
-```
 
-**Example 3:**
-```
-Input: grid = [[1,1,1,1,1],[1,0,0,0,1],[1,0,1,0,1],[1,0,0,0,1],[1,1,1,1,1]]
+grid = [[1,1,1,1,1],[1,0,0,0,1],[1,0,1,0,1],[1,0,0,0,1],[1,1,1,1,1]]
 Output: 1
 ```
+
+### Constraints
+
+- n == grid.length
+- n == grid[i].length
+- 2 ≤ n ≤ 100
+- grid[i][j] is 0 or 1
+- Exactly two islands
+
+### Hints
+- DFS to find first island
+- BFS from first island to find second
+- Mark first island cells (change to 2)
+- BFS tracks distance (flips needed)
+- O(n²) time, O(n²) space
 
 ---
 
-## Problem Solving Order
+## Summary
 
-**Recommended sequence:**
-1. Start with **Rotting Oranges** (classic multi-source BFS)
-2. Then **01 Matrix** (similar pattern)
-3. Move to **Course Schedule** (cycle detection)
-4. Then **Course Schedule II** (topological sort)
-5. Try **Shortest Path in Binary Matrix** (8-directional BFS)
-6. Tackle **Open the Lock** (state space BFS)
-7. Challenge yourself with **Word Ladder** (harder transformation)
-8. Finish with **Shortest Bridge** (BFS + DFS combo)
+**Total:** 10 problems (7 Medium, 1 Hard, 2 Premium)
+
+**Patterns:**
+- Multi-source BFS
+- Topological Sort
+- Matrix BFS
+- State Space BFS
+- Bidirectional BFS
 
 **Time Guidelines:**
-- Easy: 15-20 minutes
 - Medium: 20-30 minutes
 - Hard: 30-45 minutes
 
-Remember: Focus on understanding the pattern, not just solving the problem!
+Focus on patterns, not just solutions!
+
+---
+
+**Ready?** Say: `"Claude, give me the problem"` or `"Go"`
+
+[Solutions](./SOLUTIONS.md) | [Hints](./HINTS.md)

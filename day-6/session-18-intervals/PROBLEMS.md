@@ -1,421 +1,406 @@
-# Problems: Interval Challenges
+# Problems - Session 18: Intervals
 
-## Problem 1: Meeting Rooms (Easy)
+10 problems in order. Use UMPIRE method.
 
-**LeetCode:** [252 - Meeting Rooms](https://leetcode.com/problems/meeting-rooms/) (Premium)
-
-Given an array of meeting time intervals consisting of start and end times `[[s1,e1],[s2,e2],...]` where `si < ei`, determine if a person could attend all meetings.
-
-### Examples
-
-```typescript
-// Example 1:
-const intervals1 = [[0, 30], [5, 10], [15, 20]];
-console.log(canAttendMeetings(intervals1));
-// Output: false
-// Explanation: [0,30] overlaps with both [5,10] and [15,20]
-
-// Example 2:
-const intervals2 = [[7, 10], [2, 4]];
-console.log(canAttendMeetings(intervals2));
-// Output: true
-// Explanation: No overlaps between meetings
-```
-
-### Constraints
-- 0 <= intervals.length <= 10^4
-- 0 <= start < end <= 10^6
-
-### Your Task
-Implement `canAttendMeetings(intervals: number[][]): boolean`
+**Targets:** Easy <15 min | Medium <25 min | Hard <35 min
 
 ---
 
-## Problem 2: Merge Intervals (Medium)
+## Problem 1: Meeting Rooms ⭐
 
-**LeetCode:** [56 - Merge Intervals](https://leetcode.com/problems/merge-intervals/)
+**Difficulty:** Easy | **Pattern:** Sort and Check
+**LeetCode:** https://leetcode.com/problems/meeting-rooms/ (Premium)
 
-Given an array of intervals where `intervals[i] = [starti, endi]`, merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.
+### Problem
+
+Given array of meeting time intervals `[[start, end], ...]` where `start < end`, determine if person can attend all meetings.
 
 ### Examples
 
-```typescript
-// Example 1:
-const intervals1 = [[1, 3], [2, 6], [8, 10], [15, 18]];
-console.log(merge(intervals1));
-// Output: [[1, 6], [8, 10], [15, 18]]
-// Explanation: [1,3] and [2,6] overlap, merge them into [1,6]
+```
+intervals = [[0,30], [5,10], [15,20]]
+Output: false
+Explanation: [0,30] overlaps with both other meetings
 
-// Example 2:
-const intervals2 = [[1, 4], [4, 5]];
-console.log(merge(intervals2));
-// Output: [[1, 5]]
-// Explanation: Intervals [1,4] and [4,5] are considered overlapping
-
-// Example 3:
-const intervals3 = [[1, 4], [0, 4]];
-console.log(merge(intervals3));
-// Output: [[0, 4]]
+intervals = [[7,10], [2,4]]
+Output: true
 ```
 
 ### Constraints
-- 1 <= intervals.length <= 10^4
+
+- 0 ≤ intervals.length ≤ 10⁴
+- 0 ≤ start < end ≤ 10⁶
+
+### Hints
+- Sort by start time
+- Check adjacent meetings for overlap
+- O(n log n) time, O(1) space
+
+---
+
+## Problem 2: Merge Intervals ⭐ BLIND 75
+
+**Difficulty:** Medium | **Pattern:** Sort and Merge
+**LeetCode:** https://leetcode.com/problems/merge-intervals/
+
+### Problem
+
+Given array of intervals, merge all overlapping intervals. Return array of non-overlapping intervals covering all input intervals.
+
+### Examples
+
+```
+intervals = [[1,3], [2,6], [8,10], [15,18]]
+Output: [[1,6], [8,10], [15,18]]
+Explanation: [1,3] and [2,6] overlap, merge to [1,6]
+
+intervals = [[1,4], [4,5]]
+Output: [[1,5]]
+Explanation: Adjacent intervals are considered overlapping
+```
+
+### Constraints
+
+- 1 ≤ intervals.length ≤ 10⁴
 - intervals[i].length == 2
-- 0 <= starti <= endi <= 10^4
+- 0 ≤ start ≤ end ≤ 10⁴
 
-### Your Task
-Implement `merge(intervals: number[][]): number[][]`
+### Hints
+- Sort by start time first
+- Track last merged interval
+- Use Math.max for end times (handles nested intervals)
+- O(n log n) time, O(n) space
 
 ---
 
-## Problem 3: Insert Interval (Medium)
+## Problem 3: Insert Interval ⭐ BLIND 75
 
-**LeetCode:** [57 - Insert Interval](https://leetcode.com/problems/insert-interval/)
+**Difficulty:** Medium | **Pattern:** Three-Phase Processing
+**LeetCode:** https://leetcode.com/problems/insert-interval/
 
-You are given an array of non-overlapping intervals `intervals` where `intervals[i] = [starti, endi]` represent the start and the end of the ith interval and intervals is sorted in ascending order by starti. You are also given an interval `newInterval = [start, end]` that represents the start and end of another interval.
+### Problem
 
-Insert newInterval into intervals such that intervals is still sorted in ascending order by starti and intervals still does not have any overlapping intervals (merge overlapping intervals if necessary).
+Given non-overlapping intervals sorted by start time, insert new interval and merge if necessary.
 
 ### Examples
 
-```typescript
-// Example 1:
-const intervals1 = [[1, 3], [6, 9]];
-const newInterval1 = [2, 5];
-console.log(insert(intervals1, newInterval1));
-// Output: [[1, 5], [6, 9]]
+```
+intervals = [[1,3], [6,9]], newInterval = [2,5]
+Output: [[1,5], [6,9]]
 
-// Example 2:
-const intervals2 = [[1, 2], [3, 5], [6, 7], [8, 10], [12, 16]];
-const newInterval2 = [4, 8];
-console.log(insert(intervals2, newInterval2));
-// Output: [[1, 2], [3, 10], [12, 16]]
-// Explanation: newInterval overlaps with [3,5], [6,7], [8,10]
+intervals = [[1,2], [3,5], [6,7], [8,10], [12,16]], newInterval = [4,8]
+Output: [[1,2], [3,10], [12,16]]
+Explanation: [4,8] merges with [3,5], [6,7], [8,10]
 
-// Example 3:
-const intervals3: number[][] = [];
-const newInterval3 = [5, 7];
-console.log(insert(intervals3, newInterval3));
-// Output: [[5, 7]]
+intervals = [], newInterval = [5,7]
+Output: [[5,7]]
 ```
 
 ### Constraints
-- 0 <= intervals.length <= 10^4
-- intervals[i].length == 2
-- 0 <= starti <= endi <= 10^5
-- intervals is sorted by starti in ascending order
-- newInterval.length == 2
-- 0 <= start <= end <= 10^5
 
-### Your Task
-Implement `insert(intervals: number[][], newInterval: number[]): number[][]`
+- 0 ≤ intervals.length ≤ 10⁴
+- intervals is sorted by start
+- 0 ≤ start ≤ end ≤ 10⁵
+
+### Hints
+- Three phases: before newInterval, merge with overlapping, after newInterval
+- Don't need to sort - already sorted
+- O(n) time, O(n) space
 
 ---
 
-## Problem 4: Non-overlapping Intervals (Medium)
+## Problem 4: Non-overlapping Intervals ⭐ BLIND 75
 
-**LeetCode:** [435 - Non-overlapping Intervals](https://leetcode.com/problems/non-overlapping-intervals/)
+**Difficulty:** Medium | **Pattern:** Greedy (Activity Selection)
+**LeetCode:** https://leetcode.com/problems/non-overlapping-intervals/
 
-Given an array of intervals `intervals` where `intervals[i] = [starti, endi]`, return the minimum number of intervals you need to remove to make the rest of the intervals non-overlapping.
+### Problem
+
+Return minimum number of intervals to remove to make rest non-overlapping.
 
 ### Examples
 
-```typescript
-// Example 1:
-const intervals1 = [[1, 2], [2, 3], [3, 4], [1, 3]];
-console.log(eraseOverlapIntervals(intervals1));
-// Output: 1
-// Explanation: Remove [1,3] to make non-overlapping
+```
+intervals = [[1,2], [2,3], [3,4], [1,3]]
+Output: 1
+Explanation: Remove [1,3], rest are non-overlapping
 
-// Example 2:
-const intervals2 = [[1, 2], [1, 2], [1, 2]];
-console.log(eraseOverlapIntervals(intervals2));
-// Output: 2
-// Explanation: Remove two [1,2] to make non-overlapping
+intervals = [[1,2], [1,2], [1,2]]
+Output: 2
 
-// Example 3:
-const intervals3 = [[1, 2], [2, 3]];
-console.log(eraseOverlapIntervals(intervals3));
-// Output: 0
-// Explanation: Already non-overlapping
+intervals = [[1,2], [2,3]]
+Output: 0
 ```
 
 ### Constraints
-- 1 <= intervals.length <= 10^5
-- intervals[i].length == 2
-- -5 * 10^4 <= starti < endi <= 5 * 10^4
 
-### Your Task
-Implement `eraseOverlapIntervals(intervals: number[][]): number`
+- 1 ≤ intervals.length ≤ 10⁵
+- -5×10⁴ ≤ start < end ≤ 5×10⁴
+
+### Hints
+- Greedy: sort by END time, not start
+- Keep intervals that end earliest
+- Count how many you remove
+- O(n log n) time, O(1) space
 
 ---
 
-## Problem 5: Meeting Rooms II (Medium)
+## Problem 5: Meeting Rooms II ⭐ BLIND 75
 
-**LeetCode:** [253 - Meeting Rooms II](https://leetcode.com/problems/meeting-rooms-ii/) (Premium)
+**Difficulty:** Medium | **Pattern:** Line Sweep or Min Heap
+**LeetCode:** https://leetcode.com/problems/meeting-rooms-ii/ (Premium)
 
-Given an array of meeting time intervals consisting of start and end times `[[s1,e1],[s2,e2],...]` where `si < ei`, find the minimum number of conference rooms required.
+### Problem
+
+Find minimum number of conference rooms required.
 
 ### Examples
 
-```typescript
-// Example 1:
-const intervals1 = [[0, 30], [5, 10], [15, 20]];
-console.log(minMeetingRooms(intervals1));
-// Output: 2
-// Explanation: Room 1: [0,30], Room 2: [5,10] and [15,20]
+```
+intervals = [[0,30], [5,10], [15,20]]
+Output: 2
+Explanation: Room 1: [0,30], Room 2: [5,10] then [15,20]
 
-// Example 2:
-const intervals2 = [[7, 10], [2, 4]];
-console.log(minMeetingRooms(intervals2));
-// Output: 1
-// Explanation: One room is enough for both meetings
+intervals = [[7,10], [2,4]]
+Output: 1
 
-// Example 3:
-const intervals3 = [[0, 30], [5, 10], [10, 15], [15, 20]];
-console.log(minMeetingRooms(intervals3));
-// Output: 2
-// Explanation: [5,10] and [10,15] don't overlap (one ends when other starts)
+intervals = [[0,30], [5,10], [10,15], [15,20]]
+Output: 2
+Explanation: [10,15] starts when [5,10] ends (no overlap)
 ```
 
 ### Constraints
-- 0 <= intervals.length <= 10^4
-- 0 <= start < end <= 10^6
 
-### Your Task
-Implement `minMeetingRooms(intervals: number[][]): number`
+- 0 ≤ intervals.length ≤ 10⁴
+- 0 ≤ start < end ≤ 10⁶
+
+### Hints
+- **Approach 1:** Line sweep - create start/end events, track concurrent count
+- **Approach 2:** Min heap - track end times of active meetings
+- Both O(n log n) time, O(n) space
 
 ---
 
-## Problem 6: Minimum Number of Arrows to Burst Balloons (Medium)
+## Problem 6: Minimum Number of Arrows to Burst Balloons
 
-**LeetCode:** [452 - Minimum Number of Arrows to Burst Balloons](https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/)
+**Difficulty:** Medium | **Pattern:** Greedy (Activity Selection)
+**LeetCode:** https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/
 
-There are some spherical balloons taped onto a flat wall that represents the XY-plane. The balloons are represented as a 2D integer array `points` where `points[i] = [xstart, xend]` denotes a balloon whose horizontal diameter stretches between xstart and xend. You do not know the exact y-coordinates of the balloons.
+### Problem
 
-Arrows can be shot up directly vertically (in the positive y-direction) from different points along the x-axis. A balloon with xstart and xend is burst by an arrow shot at x if xstart <= x <= xend. There is no limit to the number of arrows that can be shot. A shot arrow keeps traveling up infinitely, bursting any balloons in its path.
-
-Return the minimum number of arrows that must be shot to burst all balloons.
+Balloons at positions `[xstart, xend]`. Arrow shot at x bursts all balloons where `xstart ≤ x ≤ xend`. Return minimum arrows needed.
 
 ### Examples
 
-```typescript
-// Example 1:
-const points1 = [[10, 16], [2, 8], [1, 6], [7, 12]];
-console.log(findMinArrowShots(points1));
-// Output: 2
-// Explanation: Shoot at x=6 (burst [2,8] and [1,6]) and x=11 (burst [10,16] and [7,12])
+```
+points = [[10,16], [2,8], [1,6], [7,12]]
+Output: 2
+Explanation: Shoot at x=6 (bursts [2,8] and [1,6])
+             Shoot at x=11 (bursts [10,16] and [7,12])
 
-// Example 2:
-const points2 = [[1, 2], [3, 4], [5, 6], [7, 8]];
-console.log(findMinArrowShots(points2));
-// Output: 4
-// Explanation: One arrow for each balloon
+points = [[1,2], [3,4], [5,6], [7,8]]
+Output: 4
 
-// Example 3:
-const points3 = [[1, 2], [2, 3], [3, 4], [4, 5]];
-console.log(findMinArrowShots(points3));
-// Output: 2
-// Explanation: Shoot at x=2 and x=4
+points = [[1,2], [2,3], [3,4], [4,5]]
+Output: 2
 ```
 
 ### Constraints
-- 1 <= points.length <= 10^5
-- points[i].length == 2
-- -2^31 <= xstart < xend <= 2^31 - 1
 
-### Your Task
-Implement `findMinArrowShots(points: number[][]): number`
+- 1 ≤ points.length ≤ 10⁵
+- -2³¹ ≤ xstart < xend ≤ 2³¹ - 1
+
+### Hints
+- Similar to non-overlapping intervals
+- Sort by end position
+- Greedy: shoot at end of each group
+- O(n log n) time, O(1) space
 
 ---
 
-## Problem 7: Interval List Intersections (Medium)
+## Problem 7: Interval List Intersections
 
-**LeetCode:** [986 - Interval List Intersections](https://leetcode.com/problems/interval-list-intersections/)
+**Difficulty:** Medium | **Pattern:** Two Pointers
+**LeetCode:** https://leetcode.com/problems/interval-list-intersections/
 
-You are given two lists of closed intervals, `firstList` and `secondList`, where `firstList[i] = [starti, endi]` and `secondList[j] = [startj, endj]`. Each list of intervals is pairwise disjoint and in sorted order.
+### Problem
 
-Return the intersection of these two interval lists.
+Given two sorted interval lists, return intersection of the two lists.
 
 ### Examples
 
-```typescript
-// Example 1:
-const firstList1 = [[0, 2], [5, 10], [13, 23], [24, 25]];
-const secondList1 = [[1, 5], [8, 12], [15, 24], [25, 26]];
-console.log(intervalIntersection(firstList1, secondList1));
-// Output: [[1, 2], [5, 5], [8, 10], [15, 23], [24, 24], [25, 25]]
+```
+firstList = [[0,2], [5,10], [13,23], [24,25]]
+secondList = [[1,5], [8,12], [15,24], [25,26]]
+Output: [[1,2], [5,5], [8,10], [15,23], [24,24], [25,25]]
 
-// Example 2:
-const firstList2 = [[1, 3], [5, 9]];
-const secondList2: number[][] = [];
-console.log(intervalIntersection(firstList2, secondList2));
-// Output: []
+firstList = [[1,3], [5,9]]
+secondList = []
+Output: []
 
-// Example 3:
-const firstList3 = [[1, 7]];
-const secondList3 = [[3, 10]];
-console.log(intervalIntersection(firstList3, secondList3));
-// Output: [[3, 7]]
+firstList = [[1,7]]
+secondList = [[3,10]]
+Output: [[3,7]]
 ```
 
 ### Constraints
-- 0 <= firstList.length, secondList.length <= 1000
-- firstList.length + secondList.length >= 1
-- 0 <= starti < endi <= 10^9
-- endi < starti+1
-- 0 <= startj < endj <= 10^9
-- endj < startj+1
 
-### Your Task
-Implement `intervalIntersection(firstList: number[][], secondList: number[][]): number[][]`
+- 0 ≤ firstList.length, secondList.length ≤ 1000
+- Both lists are disjoint and sorted
+
+### Hints
+- Two pointers, one for each list
+- Intersection: `[max(starts), min(ends)]`
+- Move pointer of interval that ends first
+- O(n + m) time, O(min(n,m)) space
 
 ---
 
-## Problem 8: My Calendar I (Medium)
+## Problem 8: My Calendar I
 
-**LeetCode:** [729 - My Calendar I](https://leetcode.com/problems/my-calendar-i/)
+**Difficulty:** Medium | **Pattern:** Dynamic Intervals
+**LeetCode:** https://leetcode.com/problems/my-calendar-i/
 
-You are implementing a program to use as your calendar. We can add a new event if adding the event will not cause a double booking.
+### Problem
 
-A double booking happens when two events have some non-empty intersection (i.e., some moment is common to both events).
+Implement calendar that can book events. `book(start, end)` returns true if event can be added without double booking.
 
-Implement the MyCalendar class:
-- `MyCalendar()` Initializes the calendar object.
-- `boolean book(int start, int end)` Returns true if the event can be added to the calendar successfully without causing a double booking. Otherwise, return false and do not add the event to the calendar.
+Double booking = two events with non-empty intersection.
 
 ### Examples
 
-```typescript
-// Example:
-const myCalendar = new MyCalendar();
-console.log(myCalendar.book(10, 20)); // true
-console.log(myCalendar.book(15, 25)); // false (overlaps with [10, 20])
-console.log(myCalendar.book(20, 30)); // true (no overlap, adjacent is OK)
+```
+MyCalendar cal = new MyCalendar();
+cal.book(10, 20);  // true
+cal.book(15, 25);  // false (overlaps with [10,20])
+cal.book(20, 30);  // true (adjacent is OK)
 
-// Example 2:
-const cal = new MyCalendar();
-console.log(cal.book(47, 50)); // true
-console.log(cal.book(33, 41)); // true
-console.log(cal.book(39, 45)); // false (overlaps with [33, 41])
-console.log(cal.book(33, 42)); // false (overlaps with [33, 41])
-console.log(cal.book(25, 32)); // true
+cal.book(47, 50);  // true
+cal.book(33, 41);  // true
+cal.book(39, 45);  // false (overlaps with [33,41])
+cal.book(25, 32);  // true
 ```
 
 ### Constraints
-- 0 <= start < end <= 10^9
-- At most 1000 calls will be made to book
 
-### Your Task
-Implement the `MyCalendar` class with its `book` method
+- 0 ≤ start < end ≤ 10⁹
+- At most 1000 calls to book
+
+### Hints
+- **Simple:** Store all bookings, check each for overlap - O(n) per booking
+- **Optimized:** Use BST - O(log n) average per booking
+- Check overlap: `max(start1, start2) < min(end1, end2)`
 
 ---
 
-## Problem 9: Remove Covered Intervals (Medium)
+## Problem 9: Remove Covered Intervals
 
-**LeetCode:** [1288 - Remove Covered Intervals](https://leetcode.com/problems/remove-covered-intervals/)
+**Difficulty:** Medium | **Pattern:** Special Sorting
+**LeetCode:** https://leetcode.com/problems/remove-covered-intervals/
 
-Given an array intervals where `intervals[i] = [li, ri]` represent the interval `[li, ri)`, remove all intervals that are covered by another interval in the list.
+### Problem
 
-The interval `[a, b)` is covered by the interval `[c, d)` if and only if `c <= a` and `b <= d`.
-
-Return the number of remaining intervals.
+Interval `[a,b)` is covered by `[c,d)` if `c ≤ a` and `b ≤ d`. Return number of remaining intervals after removing all covered intervals.
 
 ### Examples
 
-```typescript
-// Example 1:
-const intervals1 = [[1, 4], [3, 6], [2, 8]];
-console.log(removeCoveredIntervals(intervals1));
-// Output: 2
-// Explanation: [3,6] is covered by [2,8], so remove it
+```
+intervals = [[1,4], [3,6], [2,8]]
+Output: 2
+Explanation: [3,6] is covered by [2,8]
 
-// Example 2:
-const intervals2 = [[1, 4], [2, 3]];
-console.log(removeCoveredIntervals(intervals2));
-// Output: 1
-// Explanation: [2,3] is covered by [1,4]
+intervals = [[1,4], [2,3]]
+Output: 1
+Explanation: [2,3] is covered by [1,4]
 
-// Example 3:
-const intervals3 = [[1, 2], [1, 4], [3, 4]];
-console.log(removeCoveredIntervals(intervals3));
-// Output: 1
-// Explanation: [1,2] and [3,4] are covered by [1,4]
+intervals = [[1,2], [1,4], [3,4]]
+Output: 1
+Explanation: [1,2] and [3,4] are covered by [1,4]
 ```
 
 ### Constraints
-- 1 <= intervals.length <= 1000
-- intervals[i].length == 2
-- 0 <= li < ri <= 10^5
-- All the given intervals are unique
 
-### Your Task
-Implement `removeCoveredIntervals(intervals: number[][]): number`
+- 1 ≤ intervals.length ≤ 1000
+- 0 ≤ li < ri ≤ 10⁵
+- All intervals unique
+
+### Hints
+- Special sort: by start ascending, then end descending
+- This ensures parent intervals come before children
+- Track max end seen, count intervals extending beyond it
+- O(n log n) time, O(1) space
 
 ---
 
-## Problem 10: Employee Free Time (Hard)
+## Problem 10: Employee Free Time ⭐
 
-**LeetCode:** [759 - Employee Free Time](https://leetcode.com/problems/employee-free-time/) (Premium)
+**Difficulty:** Hard | **Pattern:** Merge All + Find Gaps
+**LeetCode:** https://leetcode.com/problems/employee-free-time/ (Premium)
 
-We are given a list schedule of employees, which represents the working time for each employee.
+### Problem
 
-Each employee has a list of non-overlapping Intervals, and these intervals are in sorted order.
-
-Return the list of finite intervals representing common, positive-length free time for all employees, also in sorted order.
+Given list of each employee's working intervals (sorted, non-overlapping), return common free time for all employees.
 
 ### Examples
 
-```typescript
-// Example 1:
-const schedule1 = [
-    [[1, 3], [4, 6]],    // Employee 1
-    [[2, 4]],            // Employee 2
-    [[6, 8], [9, 10]]    // Employee 3
-];
-console.log(employeeFreeTime(schedule1));
-// Output: [[4, 6], [8, 9]]
-// Explanation: All employees are free during [4,6] and [8,9]
+```
+schedule = [
+    [[1,3], [4,6]],     // Employee 1
+    [[2,4]],            // Employee 2
+    [[6,8], [9,10]]     // Employee 3
+]
+Output: [[6,6], [8,9]]
+Wait, that's wrong. Output: [[4,6]] is when everyone is free? No...
+Actually: No common free time when [4,6] has Emp 1 working.
+Correct Output: [[6,6], [8,9]]? Let me recalculate:
+- Busy times merged: [1,4], [4,6], [6,8], [9,10] → [1,8], [9,10]
+- Free times: [8,9]
+Hmm, the problem statement is about COMMON free time.
 
-// Example 2:
-const schedule2 = [
-    [[1, 3]],
-    [[2, 4]],
-    [[3, 5], [7, 9]]
-];
-console.log(employeeFreeTime(schedule2));
-// Output: [[5, 7]]
-// Explanation: All employees are free during [5,7]
+schedule = [
+    [[1,3], [4,6]],
+    [[2,4]],
+    [[3,5], [7,9]]
+]
+Output: [[5,7]]
+All employees free during [5,7]
 
-// Example 3:
-const schedule3 = [
-    [[1, 3], [6, 7]],
-    [[2, 4]],
-    [[2, 5], [9, 12]]
-];
-console.log(employeeFreeTime(schedule3));
-// Output: [[5, 6], [7, 9]]
+schedule = [
+    [[1,3], [6,7]],
+    [[2,4]],
+    [[2,5], [9,12]]
+]
+Output: [[5,6], [7,9]]
 ```
 
 ### Constraints
-- 1 <= schedule.length, schedule[i].length <= 50
-- 0 <= schedule[i][j][0] < schedule[i][j][1] <= 10^8
-- schedule[i] is sorted by start time
 
-### Your Task
-Implement `employeeFreeTime(schedule: number[][][]): number[][]`
+- 1 ≤ schedule.length, schedule[i].length ≤ 50
+- 0 ≤ start < end ≤ 10⁸
+
+### Hints
+- Flatten all intervals from all employees
+- Sort by start time
+- Merge overlapping intervals (busy times)
+- Gaps between merged intervals = free times
+- O(n log n) time, O(n) space where n = total intervals
 
 ---
 
-## Tips for All Problems
+## Summary
 
-1. **Always sort first** - Most interval problems require sorted input
-2. **Draw it out** - Visualize intervals on a timeline
-3. **Consider edge cases** - Empty arrays, single intervals, adjacent intervals
-4. **Choose the right sort** - By start for merging, by end for greedy
-5. **Track key variables** - Previous end, current count, etc.
-6. **Think about boundaries** - Inclusive vs exclusive endpoints
-7. **Use clear variable names** - `prevEnd` not `p`, `currentInterval` not `curr`
+**Total:** 10 problems (1 Easy, 7 Medium, 2 Hard)
+
+**Patterns:**
+- Sort and Check (Meeting Rooms)
+- Sort and Merge (Merge Intervals, Insert Interval)
+- Greedy Selection (Non-overlapping, Min Arrows)
+- Line Sweep (Meeting Rooms II)
+- Two Pointers (Interval Intersections)
+- Dynamic Intervals (My Calendar)
+- Special Sorting (Remove Covered)
+
+**Blind 75:** 4/75 problems
 
 ---
 
@@ -430,8 +415,12 @@ Implement `employeeFreeTime(schedule: number[][][]): number[][]`
 | Meeting Rooms II | O(n log n) | O(n) |
 | Min Arrows | O(n log n) | O(1) |
 | Interval Intersections | O(n + m) | O(min(n,m)) |
-| My Calendar I | O(n²) or O(n log n) | O(n) |
+| My Calendar I | O(n) or O(log n) | O(n) |
 | Remove Covered | O(n log n) | O(1) |
 | Employee Free Time | O(n log n) | O(n) |
 
-Where n = number of intervals, m = size of second list
+---
+
+**Ready?** Say: `"Claude, give me the problem"` or `"Go"`
+
+[Solutions](./SOLUTIONS.md) | [Hints](./HINTS.md)

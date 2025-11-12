@@ -6,17 +6,17 @@
 Think about how each node in the Trie should store its children. What data structure allows efficient lookup by character?
 
 ### Hint 2 (Direct)
-Use a HashMap (or Map in TypeScript) to store children, where the key is the character and the value is the child TrieNode. Don't forget to mark the end of words!
+Use a Map to store children where the key is the character and the value is the child TrieNode. Don't forget the isEndOfWord flag to mark complete words.
 
 ### Hint 3 (Detailed)
 ```typescript
 class TrieNode {
     children: Map<string, TrieNode>;
     isEndOfWord: boolean;
-    // For insert: traverse and create nodes as needed
-    // For search: traverse and check isEndOfWord at the end
-    // For startsWith: just traverse, don't check isEndOfWord
 }
+// Insert: traverse and create nodes as needed
+// Search: traverse and check isEndOfWord at the end
+// StartsWith: just traverse, don't check isEndOfWord
 ```
 
 ---
@@ -31,7 +31,7 @@ Use DFS/recursion for search. When you hit a '.', try all possible children at t
 
 ### Hint 3 (Detailed)
 ```typescript
-private searchHelper(word: string, index: number, node: TrieNode): boolean {
+searchHelper(word, index, node): boolean {
     if (index === word.length) return node.isEndOfWord;
 
     if (word[index] === '.') {
@@ -42,6 +42,8 @@ private searchHelper(word: string, index: number, node: TrieNode): boolean {
         return false;
     } else {
         // Normal character search
+        if (!node.children.has(word[index])) return false;
+        return searchHelper(word, index + 1, node.children.get(word[index]));
     }
 }
 ```
@@ -54,14 +56,14 @@ private searchHelper(word: string, index: number, node: TrieNode): boolean {
 Combine Trie with backtracking. Build a Trie from all words first, then use DFS on the board while simultaneously traversing the Trie.
 
 ### Hint 2 (Direct)
-Store complete words at Trie nodes instead of just isEndOfWord. During DFS, when you reach a node with a word, add it to results. Mark cells as visited using a special character.
+Store complete words at Trie nodes (node.word) instead of just isEndOfWord. During DFS, when you reach a node with a word, add it to results. Mark cells as visited using '#'.
 
 ### Hint 3 (Detailed)
 ```typescript
 // Build Trie with node.word = fullWord at endpoints
 // DFS function:
-const dfs = (i: number, j: number, node: TrieNode) => {
-    if (out of bounds || visited) return;
+dfs(i, j, node) {
+    if (out of bounds || board[i][j] === '#') return;
     if (!node.children.has(board[i][j])) return;
 
     node = node.children.get(board[i][j]);
@@ -70,9 +72,10 @@ const dfs = (i: number, j: number, node: TrieNode) => {
         node.word = null; // Avoid duplicates
     }
 
+    const temp = board[i][j];
     board[i][j] = '#'; // Mark visited
     // Recurse in 4 directions
-    board[i][j] = originalChar; // Restore
+    board[i][j] = temp; // Restore
 }
 ```
 
@@ -84,13 +87,17 @@ const dfs = (i: number, j: number, node: TrieNode) => {
 A word can be built "one character at a time" means every prefix of the word must also exist in the dictionary.
 
 ### Hint 2 (Direct)
-Build a Trie and mark all words. Then DFS from root, only continuing to children that are marked as words. Track the longest valid path.
+Build a Trie and mark all words. Then DFS from root, only continuing to children that are marked as complete words. Track the longest valid path.
 
 ### Hint 3 (Detailed)
 ```typescript
-// During DFS:
-const dfs = (node: TrieNode, path: string) => {
+dfs(node, path): void {
     // Update longest if needed (consider lexicographical order)
+    if (path.length > longest.length ||
+        (path.length === longest.length && path < longest)) {
+        longest = path;
+    }
+
     for (const [char, child] of node.children) {
         if (child.isEndOfWord) {  // Can only continue if this forms a word
             dfs(child, path + char);
@@ -111,7 +118,7 @@ When searching for a root, traverse the Trie character by character. As soon as 
 
 ### Hint 3 (Detailed)
 ```typescript
-const findRoot = (word: string): string => {
+findRoot(word): string {
     let node = root;
     let prefix = "";
 
@@ -121,7 +128,7 @@ const findRoot = (word: string): string => {
         node = node.children.get(char);
         if (node.isRoot) return prefix; // Found shortest root
     }
-    return word;
+    return word; // No root found
 }
 ```
 
@@ -130,26 +137,37 @@ const findRoot = (word: string): string => {
 ## Problem 6: Implement Magic Dictionary
 
 ### Hint 1 (Gentle)
-You need to find if changing exactly one character creates a valid word. Think about how to track whether you've made your one change during the search.
+You need to find if changing exactly one character creates a valid word. Track whether you've made your one change during the search.
 
 ### Hint 2 (Direct)
 Use a recursive search with a boolean flag indicating whether you've used your one allowed change. Try both exact match and changing the current character.
 
 ### Hint 3 (Detailed)
 ```typescript
-searchHelper(word, index, node, changed: boolean): boolean {
+searchHelper(word, index, node, changed): boolean {
     if (index === word.length) return node.isEndOfWord && changed;
 
+    const char = word[index];
+
     // Try exact match
-    if (node.children.has(word[index])) {
-        if (searchHelper(..., changed)) return true;
+    if (node.children.has(char)) {
+        if (searchHelper(word, index + 1, node.children.get(char), changed)) {
+            return true;
+        }
     }
 
     // Try changing if haven't changed yet
     if (!changed) {
-        for each child != word[index]:
-            if (searchHelper(..., true)) return true;
+        for (const [childChar, child] of node.children) {
+            if (childChar !== char) {
+                if (searchHelper(word, index + 1, child, true)) {
+                    return true;
+                }
+            }
+        }
     }
+
+    return false;
 }
 ```
 
@@ -161,7 +179,7 @@ searchHelper(word, index, node, changed: boolean): boolean {
 Think about combining suffix and prefix into a single searchable pattern. What separator could you use that won't appear in normal words?
 
 ### Hint 2 (Direct)
-For each word, insert all combinations of "suffix#prefix" into the Trie. For example, for "apple": insert "apple#apple", "pple#apple", "ple#apple", etc.
+For each word, insert all combinations of "suffix#prefix" into the Trie. For "apple": insert "apple#apple", "pple#apple", "ple#apple", etc.
 
 ### Hint 3 (Detailed)
 ```typescript
@@ -169,10 +187,18 @@ For each word, insert all combinations of "suffix#prefix" into the Trie. For exa
 for (let i = 0; i <= word.length; i++) {
     const combined = word.substring(i) + '#' + word;
     // Insert combined into Trie, storing weight at each node
+    let node = root;
+    for (const char of combined) {
+        if (!node.children.has(char)) {
+            node.children.set(char, new TrieNode());
+        }
+        node = node.children.get(char);
+        node.weight = currentIndex; // Update to latest weight
+    }
 }
 
 // For query:
-search for suffix + '#' + prefix in Trie
+// Search for suffix + '#' + prefix in Trie
 ```
 
 ---
@@ -183,17 +209,37 @@ search for suffix + '#' + prefix in Trie
 In a word square, row[i] = column[i]. When building row k, the prefix is determined by the characters at position k in all previous rows.
 
 ### Hint 2 (Direct)
-Build a Trie that stores all words at each prefix node. Use backtracking to build the square row by row, where each new row must start with specific prefix.
+Build a Trie that stores all words at each prefix node. Use backtracking to build the square row by row, where each new row must start with a specific prefix.
 
 ### Hint 3 (Detailed)
 ```typescript
-// Get prefix for next row:
-let prefix = "";
-for (let i = 0; i < currentSquare.length; i++) {
-    prefix += currentSquare[i][currentSquare.length];
+// Store words at each prefix node during Trie construction
+class TrieNode {
+    children: Map<string, TrieNode>;
+    words: string[] = []; // All words with this prefix
 }
 
-// Find all words with this prefix and try each
+// During backtracking:
+backtrack(square) {
+    if (square.length === n) {
+        result.push([...square]);
+        return;
+    }
+
+    // Get prefix for next row
+    let prefix = "";
+    for (let i = 0; i < square.length; i++) {
+        prefix += square[i][square.length];
+    }
+
+    // Find all words with this prefix and try each
+    const candidates = getWordsWithPrefix(prefix);
+    for (const word of candidates) {
+        square.push(word);
+        backtrack(square);
+        square.pop();
+    }
+}
 ```
 
 ---
@@ -208,20 +254,28 @@ Use dynamic programming with a Trie. dp[i] = true if word[0...i-1] can be formed
 
 ### Hint 3 (Detailed)
 ```typescript
-for (let i = 1; i <= word.length; i++) {
-    // Try all possible last words ending at i
-    let node = root;
-    for (let j = i - 1; j >= 0; j--) {
-        node = node.children.get(word[j]);
-        if (!node) break;
+isConcatenated(word): boolean {
+    const dp = new Array(word.length + 1).fill(false);
+    dp[0] = true;
 
-        if (node.isEndOfWord && dp[j]) {
-            // Skip if it's the word itself
-            if (!(j === 0 && i === word.length)) {
-                dp[i] = true;
+    for (let i = 1; i <= word.length; i++) {
+        // Try all possible last words ending at i
+        let node = root;
+        for (let j = i - 1; j >= 0; j--) {
+            if (!node.children.has(word[j])) break;
+            node = node.children.get(word[j]);
+
+            if (node.isEndOfWord && dp[j]) {
+                // Skip if it's the word itself (need at least 2 words)
+                if (!(j === 0 && i === word.length)) {
+                    dp[i] = true;
+                    break;
+                }
             }
         }
     }
+
+    return dp[word.length];
 }
 ```
 
@@ -237,17 +291,39 @@ Build a reverse Trie (insert words backward). Keep a buffer of recent characters
 
 ### Hint 3 (Detailed)
 ```typescript
-// Build Trie with reversed words
-for (const word of words) {
-    // Insert word backward: "abc" -> "cba"
+constructor(words) {
+    // Build Trie with reversed words
+    for (const word of words) {
+        let node = root;
+        // Insert word backward: "abc" -> "cba"
+        for (let i = word.length - 1; i >= 0; i--) {
+            const char = word[i];
+            if (!node.children.has(char)) {
+                node.children.set(char, new TrieNode());
+            }
+            node = node.children.get(char);
+        }
+        node.isEndOfWord = true;
+    }
+    this.maxLength = Math.max(...words.map(w => w.length));
 }
 
-// On query:
-stream.push(letter);
-// Traverse from end of stream backward
-for (let i = stream.length - 1; i >= 0; i--) {
-    node = node.children.get(stream[i]);
-    if (!node) return false;
-    if (node.isEndOfWord) return true;
+query(letter) {
+    this.stream.push(letter);
+
+    // Keep stream size limited
+    if (this.stream.length > this.maxLength) {
+        this.stream.shift();
+    }
+
+    // Traverse from end of stream backward
+    let node = root;
+    for (let i = this.stream.length - 1; i >= 0; i--) {
+        if (!node.children.has(this.stream[i])) return false;
+        node = node.children.get(this.stream[i]);
+        if (node.isEndOfWord) return true;
+    }
+
+    return false;
 }
 ```

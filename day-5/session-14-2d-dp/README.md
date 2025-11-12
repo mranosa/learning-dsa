@@ -1,46 +1,39 @@
 # Day 5, Session 14: 2D Dynamic Programming
 
 ## Overview
-Master multi-dimensional dynamic programming techniques - essential for solving complex optimization problems in technical interviews.
 
-**Duration:** 3-5 hours
-**Problems:** 10 (7 Medium, 3 Hard)
-**Prerequisites:** 1D Dynamic Programming, Matrix manipulation
+Master multi-dimensional DP for grids, strings, and complex state problems.
+
+**Duration:** 3-4 hours | **Problems:** 10 (7 Medium, 3 Hard)
 
 ---
 
 ## Learning Objectives
 
-By the end of this session, you will:
 - ✅ Understand 2D DP state representation
-- ✅ Build DP tables for grid-based problems
-- ✅ Solve string matching and comparison problems
-- ✅ Optimize space complexity in 2D DP
-- ✅ Recognize when to apply 2D vs 1D DP
+- ✅ Build DP tables for grid problems
+- ✅ Solve string comparison problems
+- ✅ Optimize space from O(m×n) to O(n)
+- ✅ Recognize 2D DP patterns instantly
 
 ---
 
 ## Session Flow
 
-### 1. Video (30 min)
-Watch the assigned videos on 2D Dynamic Programming patterns.
+### 1. Videos (90 min)
+- 2D DP Fundamentals (15 min)
+- Grid Traversal (12 min)
+- String DP Patterns (18 min)
+- Edit Distance (20 min)
+- Regular Expression Matching (25 min)
 
-### 2. Concept Check (15 min)
-Claude will quiz you on:
-- 2D state representation
-- Grid traversal patterns
-- String DP problems
-- Space optimization techniques
+### 2. Concept Check (10 min)
+Quiz on state definition, base cases, transitions.
 
-### 3. Tips & Tricks (10 min)
-Learn interview-specific insights about:
-- Building the DP table
-- Choosing state variables
-- Space optimization patterns
-- Common 2D DP templates
+### 3. Tips & Tricks (5 min)
+Space optimization, index handling, common pitfalls.
 
-### 4. Problem Solving (3-4 hours)
-Solve 10 carefully selected problems:
+### 4. Problems (2-3 hours)
 1. Unique Paths (Medium)
 2. Unique Paths II (Medium)
 3. Longest Common Subsequence (Medium)
@@ -57,105 +50,89 @@ Solve 10 carefully selected problems:
 ## Key Concepts
 
 ### 2D DP Patterns
-- **Grid Traversal** - Path counting/optimization
-- **String Matching** - LCS, Edit Distance patterns
-- **Matrix Chain** - Optimal multiplication order
-- **Interval DP** - Range-based subproblems
-- **Game Theory** - Min-max problems
+- **Grid Traversal:** dp[i][j] = result at position (i, j)
+- **String Comparison:** dp[i][j] = result for s1[0..i] and s2[0..j]
+- **Interval DP:** dp[left][right] = result for range [left, right]
+- **State DP:** dp[i][state] = result at position i with state
 
 ### State Definition
-- **dp[i][j]** - Result for first i elements and first j elements
-- **dp[row][col]** - Result at grid position (row, col)
-- **dp[left][right]** - Result for interval [left, right]
-- **dp[i][state]** - Result at position i with specific state
+- **Grid:** dp[row][col] - value at grid position
+- **Strings:** dp[i][j] - comparing first i and j chars
+- **Intervals:** dp[L][R] - subproblem for range [L, R]
+
+### Recurrence Relations
+- **Grid paths:** dp[i][j] = f(dp[i-1][j], dp[i][j-1])
+- **String match:** dp[i][j] = match ? dp[i-1][j-1] + 1 : max(dp[i-1][j], dp[i][j-1])
+- **Edit distance:** dp[i][j] = 1 + min(insert, delete, replace)
 
 ### Space Optimization
-- **Rolling Array:** Use only 2 rows instead of full matrix
-- **1D Optimization:** When only previous row needed
-- **In-place:** Modify input when allowed
-
-### Common Templates
-- Grid path problems
-- String comparison problems
-- Optimal selection problems
-- Pattern matching problems
+- **Rolling array:** Use 2 rows instead of full matrix → O(n)
+- **1D array:** When only previous row needed → O(n)
+- **In-place:** Modify input when allowed → O(1)
 
 ---
 
 ## Prerequisites
 
 **Must know:**
-- 1D Dynamic Programming concepts
-- Matrix/2D array manipulation
-- Recursion with memoization
+- 1D Dynamic Programming (Session 13)
+- Array/Matrix manipulation
 - String operations in TypeScript
-
-**Nice to have:**
-- Understanding of recurrence relations
-- Graph traversal basics
-- Optimization problem experience
 
 ---
 
 ## Success Criteria
 
-You're ready to move on when you can:
-- [ ] Identify 2D DP problems quickly
-- [ ] Define appropriate state variables
-- [ ] Build DP table correctly
-- [ ] Optimize space complexity when possible
-- [ ] Solve Medium 2D DP problems in <25 min
+- [ ] Define dp[i][j] clearly for any problem
+- [ ] Identify correct base cases
+- [ ] Write recurrence relations
+- [ ] Optimize space when possible
+- [ ] Solve Medium 2D DP <25 min
 
 ---
 
 ## Resources
 
-**Videos:** See LESSON.md for links
-
-**Readings:**
-- Dynamic Programming Patterns: https://leetcode.com/discuss/general-discussion/458695/
-- 2D DP Tutorial: https://www.geeksforgeeks.org/dynamic-programming/
-
-**Practice:**
-- All problems in PROBLEMS.md
-- Solutions in SOLUTIONS.md
-- Hints in HINTS.md
+**Video:** LESSON.md
+**Practice:** PROBLEMS.md
+**Solutions:** SOLUTIONS.md
+**Hints:** HINTS.md
 
 ---
 
-## Tips for Success
+## Tips
 
-1. **Draw the DP table** - Visualize state transitions
-2. **Start with recursion** - Then optimize to DP
-3. **Check base cases carefully** - Often tricky in 2D
-4. **Test with small examples** - Trace through table filling
-5. **Consider space optimization** - Impress interviewers
-6. **Practice string problems** - Very common in interviews
-7. **Master grid traversal** - Foundation for many problems
+1. Draw the DP table - visualize state transitions
+2. Start with base cases - edges and corners
+3. Trace through small example - verify logic
+4. Check all transitions - don't miss diagonal
+5. Consider space optimization - impress interviewers
+6. Handle empty inputs - common edge case
+7. Watch for off-by-one - dp[i][j] vs arr[i-1][j-1]
 
 ---
 
 ## Common Mistakes
 
-**Avoid these:**
-- ❌ Incorrect base case initialization
-- ❌ Off-by-one errors in indices
-- ❌ Confusing dp[i][j] meaning
-- ❌ Not handling empty strings/arrays
-- ❌ Forgetting to consider diagonal transitions
+- ❌ Confusing dp[i][j] meaning (indices vs counts)
+- ❌ Wrong base case initialization
+- ❌ Off-by-one errors in loops
+- ❌ Not handling empty strings/grids
+- ❌ Forgetting diagonal transitions
+- ❌ Incorrect filling order
 
 ---
 
 ## What's Next
 
-After completing this session:
-1. Take a 15-minute break
-2. Review your performance scores
-3. Note patterns you struggled with
-4. Move to Session 15: Graph Algorithms
+After completion:
+1. 10-minute break
+2. Review scores
+3. Note difficult patterns
+4. Session 15: Graphs
 
-Session 15 introduces graph traversal and shortest path algorithms.
+Session 15 introduces graph traversal and shortest paths.
 
 ---
 
-**Ready to start?** Say: `"Claude, start session 5 14"`
+**Ready?** Say: `"Claude, start session 5 14"`

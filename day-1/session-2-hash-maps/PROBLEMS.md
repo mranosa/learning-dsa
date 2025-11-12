@@ -1,416 +1,381 @@
-# Problems: Hash Maps
+# Problems - Session 2: Hash Maps
 
-## Problem Order
-1. Contains Duplicate (Easy) - Warm-up with Sets
-2. Valid Anagram (Easy) - Frequency counting
-3. Two Sum (Easy) - Classic hash map pattern
-4. Group Anagrams (Medium) - Grouping with hash maps
-5. Top K Frequent Elements (Medium) - Frequency + sorting
-6. Product of Array Except Self (Medium) - Prefix/suffix products
-7. Valid Sudoku (Medium) - Multiple hash maps
-8. Encode and Decode Strings (Medium) - String manipulation
-9. Longest Consecutive Sequence (Medium) - Set optimization
-10. Subarray Sum Equals K (Medium) - Prefix sum pattern
+10 problems in order. Use UMPIRE method.
+
+**Targets:** Easy <15 min | Medium <30 min
 
 ---
 
 ## Problem 1: Contains Duplicate
 
-**Difficulty:** Easy
-**Time:** 10 minutes
+**Difficulty:** Easy | **Pattern:** Set
 **LeetCode:** https://leetcode.com/problems/contains-duplicate/
 
-### Problem Statement
-Given an integer array `nums`, return `true` if any value appears at least twice in the array, and return `false` if every element is distinct.
+### Problem
+
+Given array `nums`, return `true` if any value appears at least twice, `false` if all distinct.
 
 ### Examples
-```typescript
-// Example 1
-Input: nums = [1,2,3,1]
-Output: true
-Explanation: 1 appears twice
 
-// Example 2
-Input: nums = [1,2,3,4]
-Output: false
-Explanation: All elements are distinct
+```
+nums = [1,2,3,1] → true
 
-// Example 3
-Input: nums = [1,1,1,3,3,4,3,2,4,2]
-Output: true
+nums = [1,2,3,4] → false
+
+nums = [1,1,1,3,3,4,3,2,4,2] → true
 ```
 
 ### Constraints
-- 1 <= nums.length <= 10^5
-- -10^9 <= nums[i] <= 10^9
 
-### Hints Available
-See HINTS.md for progressive hints.
+- 1 ≤ nums.length ≤ 10⁵
+- -10⁹ ≤ nums[i] ≤ 10⁹
+
+### Hints
+- Use Set to track seen numbers
+- If already in set → duplicate
+- O(n) time, O(n) space
 
 ---
 
 ## Problem 2: Valid Anagram
 
-**Difficulty:** Easy
-**Time:** 10 minutes
+**Difficulty:** Easy | **Pattern:** Frequency Counting
 **LeetCode:** https://leetcode.com/problems/valid-anagram/
 
-### Problem Statement
-Given two strings `s` and `t`, return `true` if `t` is an anagram of `s`, and `false` otherwise.
+### Problem
 
-An **Anagram** is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+Given strings `s` and `t`, return `true` if `t` is an anagram of `s`.
+
+Anagram = rearrangement using all letters exactly once.
 
 ### Examples
-```typescript
-// Example 1
-Input: s = "anagram", t = "nagaram"
-Output: true
 
-// Example 2
-Input: s = "rat", t = "car"
-Output: false
+```
+s = "anagram", t = "nagaram" → true
 
-// Example 3
-Input: s = "a", t = "ab"
-Output: false
+s = "rat", t = "car" → false
+
+s = "a", t = "ab" → false
 ```
 
 ### Constraints
-- 1 <= s.length, t.length <= 5 * 10^4
-- s and t consist of lowercase English letters
 
-### Follow-up
-What if the inputs contain Unicode characters? How would you adapt your solution?
+- 1 ≤ s.length, t.length ≤ 5×10⁴
+- Lowercase English letters only
+
+### Hints
+- Check lengths first
+- Count character frequencies
+- Increment for s, decrement for t
+- O(n) time, O(k) space (k = unique chars)
 
 ---
 
-## Problem 3: Two Sum
+## Problem 3: Two Sum ⭐ BLIND 75
 
-**Difficulty:** Easy
-**Time:** 15 minutes
+**Difficulty:** Easy | **Pattern:** Hash Map
 **LeetCode:** https://leetcode.com/problems/two-sum/
 
-### Problem Statement
-Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.
+### Problem
 
-You may assume that each input would have **exactly one solution**, and you may not use the same element twice.
+Given array `nums` and integer `target`, return indices of two numbers that add up to `target`.
 
-You can return the answer in any order.
+Exactly one solution exists. Can't use same element twice.
 
 ### Examples
-```typescript
-// Example 1
-Input: nums = [2,7,11,15], target = 9
-Output: [0,1]
-Explanation: nums[0] + nums[1] == 9, so return [0, 1]
 
-// Example 2
-Input: nums = [3,2,4], target = 6
+```
+nums = [2,7,11,15], target = 9
+Output: [0,1]  (2 + 7 = 9)
+
+nums = [3,2,4], target = 6
 Output: [1,2]
 
-// Example 3
-Input: nums = [3,3], target = 6
+nums = [3,3], target = 6
 Output: [0,1]
 ```
 
 ### Constraints
-- 2 <= nums.length <= 10^4
-- -10^9 <= nums[i] <= 10^9
-- -10^9 <= target <= 10^9
-- Only one valid answer exists
 
-### Follow-up
-Can you come up with an algorithm that is less than O(n²) time complexity?
+- 2 ≤ nums.length ≤ 10⁴
+- -10⁹ ≤ nums[i], target ≤ 10⁹
+- One valid answer exists
+
+### Hints
+- Hash map for O(1) lookups → O(n) total
+- Store value→index as you iterate
+- Check complement before storing current
+- `complement = target - nums[i]`
 
 ---
 
-## Problem 4: Group Anagrams
+## Problem 4: Group Anagrams ⭐ BLIND 75
 
-**Difficulty:** Medium
-**Time:** 20 minutes
+**Difficulty:** Medium | **Pattern:** Grouping
 **LeetCode:** https://leetcode.com/problems/group-anagrams/
 
-### Problem Statement
-Given an array of strings `strs`, group the anagrams together. You can return the answer in any order.
+### Problem
+
+Given array of strings `strs`, group the anagrams together. Return in any order.
 
 ### Examples
-```typescript
-// Example 1
-Input: strs = ["eat","tea","tan","ate","nat","bat"]
+
+```
+strs = ["eat","tea","tan","ate","nat","bat"]
 Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
 
-// Example 2
-Input: strs = [""]
-Output: [[""]]
+strs = [""] → [[""]]
 
-// Example 3
-Input: strs = ["a"]
-Output: [["a"]]
+strs = ["a"] → [["a"]]
 ```
 
 ### Constraints
-- 1 <= strs.length <= 10^4
-- 0 <= strs[i].length <= 100
-- strs[i] consists of lowercase English letters
+
+- 1 ≤ strs.length ≤ 10⁴
+- 0 ≤ strs[i].length ≤ 100
+- Lowercase English letters only
+
+### Hints
+- Anagrams have identical sorted strings
+- Use sorted string as Map key
+- Map<sortedString, string[]>
+- O(n × k log k) time, O(n × k) space
 
 ---
 
-## Problem 5: Top K Frequent Elements
+## Problem 5: Top K Frequent Elements ⭐ BLIND 75
 
-**Difficulty:** Medium
-**Time:** 20 minutes
+**Difficulty:** Medium | **Pattern:** Frequency + Bucket Sort
 **LeetCode:** https://leetcode.com/problems/top-k-frequent-elements/
 
-### Problem Statement
-Given an integer array `nums` and an integer `k`, return the `k` most frequent elements. You may return the answer in any order.
+### Problem
+
+Given array `nums` and integer `k`, return the `k` most frequent elements. Return in any order.
 
 ### Examples
-```typescript
-// Example 1
-Input: nums = [1,1,1,2,2,3], k = 2
-Output: [1,2]
-Explanation: 1 appears 3 times, 2 appears 2 times
 
-// Example 2
-Input: nums = [1], k = 1
+```
+nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]  (1 appears 3×, 2 appears 2×)
+
+nums = [1], k = 1
 Output: [1]
 
-// Example 3
-Input: nums = [1,2], k = 2
+nums = [1,2], k = 2
 Output: [1,2]
 ```
 
 ### Constraints
-- 1 <= nums.length <= 10^5
-- -10^4 <= nums[i] <= 10^4
-- k is in the range [1, the number of unique elements]
-- It is guaranteed that the answer is unique
 
-### Follow-up
-Your algorithm's time complexity must be better than O(n log n), where n is the array's size.
+- 1 ≤ nums.length ≤ 10⁵
+- -10⁴ ≤ nums[i] ≤ 10⁴
+- k in range [1, number of unique elements]
+- Answer is unique
+
+### Hints
+- Count frequencies with Map
+- Bucket sort: frequency → array of numbers
+- Collect from highest frequency down
+- O(n) time, O(n) space (better than O(n log n) sort)
 
 ---
 
-## Problem 6: Product of Array Except Self
+## Problem 6: Product of Array Except Self ⭐ BLIND 75
 
-**Difficulty:** Medium
-**Time:** 20 minutes
+**Difficulty:** Medium | **Pattern:** Prefix/Suffix
 **LeetCode:** https://leetcode.com/problems/product-of-array-except-self/
 
-### Problem Statement
-Given an integer array `nums`, return an array `answer` such that `answer[i]` is equal to the product of all the elements of `nums` except `nums[i]`.
+### Problem
 
-The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
+Return array where `answer[i]` = product of all elements except `nums[i]`.
 
-You must write an algorithm that runs in O(n) time and without using the division operation.
+Must run in O(n) time. No division operation.
 
 ### Examples
-```typescript
-// Example 1
-Input: nums = [1,2,3,4]
-Output: [24,12,8,6]
-Explanation: [2*3*4, 1*3*4, 1*2*4, 1*2*3]
 
-// Example 2
-Input: nums = [-1,1,0,-3,3]
+```
+nums = [1,2,3,4]
+Output: [24,12,8,6]
+
+nums = [-1,1,0,-3,3]
 Output: [0,0,9,0,0]
 ```
 
 ### Constraints
-- 2 <= nums.length <= 10^5
-- -30 <= nums[i] <= 30
-- Product of any prefix or suffix fits in a 32-bit integer
+
+- 2 ≤ nums.length ≤ 10⁵
+- -30 ≤ nums[i] ≤ 30
+- Product fits in 32-bit integer
 
 ### Follow-up
-Can you solve the problem in O(1) extra space? (Output array doesn't count)
+O(1) extra space? (output doesn't count)
+
+### Hints
+- Product except self = left product × right product
+- Calculate prefix products (L→R)
+- Calculate suffix products on fly (R→L)
+- Reuse output array for O(1) space
 
 ---
 
-## Problem 7: Valid Sudoku
+## Problem 7: Valid Sudoku ⭐ BLIND 75
 
-**Difficulty:** Medium
-**Time:** 25 minutes
+**Difficulty:** Medium | **Pattern:** Multiple Hash Maps
 **LeetCode:** https://leetcode.com/problems/valid-sudoku/
 
-### Problem Statement
-Determine if a 9 x 9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
+### Problem
 
-1. Each row must contain the digits 1-9 without repetition.
-2. Each column must contain the digits 1-9 without repetition.
-3. Each of the nine 3 x 3 sub-boxes must contain the digits 1-9 without repetition.
+Determine if 9×9 Sudoku board is valid:
+1. Each row: digits 1-9 without repetition
+2. Each column: digits 1-9 without repetition
+3. Each 3×3 box: digits 1-9 without repetition
 
-Note: A partially filled sudoku which is valid is acceptable.
-
-### Examples
-```typescript
-// Example 1
-Input: board =
-[["5","3",".",".","7",".",".",".","."]
-,["6",".",".","1","9","5",".",".","."]
-,[".","9","8",".",".",".",".","6","."]
-,["8",".",".",".","6",".",".",".","3"]
-,["4",".",".","8",".","3",".",".","1"]
-,["7",".",".",".","2",".",".",".","6"]
-,[".","6",".",".",".",".","2","8","."]
-,[".",".",".","4","1","9",".",".","5"]
-,[".",".",".",".","8",".",".","7","9"]]
-Output: true
-
-// Example 2
-Input: board =
-[["8","3",".",".","7",".",".",".","."]
-,["6",".",".","1","9","5",".",".","."]
-,[".","9","8",".",".",".",".","6","."]
-,["8",".",".",".","6",".",".",".","3"]
-,["4",".",".","8",".","3",".",".","1"]
-,["7",".",".",".","2",".",".",".","6"]
-,[".","6",".",".",".",".","2","8","."]
-,[".",".",".","4","1","9",".",".","5"]
-,[".",".",".",".","8",".",".","7","9"]]
-Output: false
-Explanation: Same as Example 1, except with 8 in top left. Two 8s in top row.
-```
+Partially filled board is acceptable.
 
 ### Constraints
+
 - board.length == 9
 - board[i].length == 9
-- board[i][j] is a digit 1-9 or '.'
+- board[i][j] is digit 1-9 or '.'
+
+### Hints
+- 9 Sets for rows, 9 for columns, 9 for boxes
+- Box index: `Math.floor(r/3) * 3 + Math.floor(c/3)`
+- Single pass with three checks
+- O(1) time (fixed 81 cells), O(1) space
 
 ---
 
-## Problem 8: Encode and Decode Strings
+## Problem 8: Encode and Decode Strings ⭐ BLIND 75
 
-**Difficulty:** Medium
-**Time:** 20 minutes
+**Difficulty:** Medium | **Pattern:** String Encoding
 **LeetCode:** https://leetcode.com/problems/encode-and-decode-strings/ (Premium)
 
-### Problem Statement
-Design an algorithm to encode a list of strings to a string. The encoded string is then sent over the network and is decoded back to the original list of strings.
+### Problem
 
-Implement the `encode` and `decode` methods.
+Design algorithm to encode list of strings to single string, then decode back to original list.
+
+Implement `encode` and `decode` methods.
 
 ### Examples
-```typescript
-// Example 1
+
+```
 Input: ["hello","world"]
-encode() returns: "5#hello5#world"
-decode() returns: ["hello","world"]
+encode(): "5#hello5#world"
+decode(): ["hello","world"]
 
-// Example 2
 Input: [""]
-encode() returns: "0#"
-decode() returns: [""]
-
-// Example 3
-Input: ["C","o","d","e"]
-encode() returns: "1#C1#o1#d1#e"
-decode() returns: ["C","o","d","e"]
+encode(): "0#"
+decode(): [""]
 ```
 
 ### Constraints
-- 1 <= strs.length <= 200
-- 0 <= strs[i].length <= 200
-- strs[i] contains any possible characters out of 256 valid ASCII characters
 
-### Note
-The string may contain any ASCII character, including delimiters you might want to use.
+- 1 ≤ strs.length ≤ 200
+- 0 ≤ strs[i].length ≤ 200
+- Any ASCII character possible
+
+### Hints
+- Length prefix prevents delimiter collision
+- Format: `length#string` for each
+- Decode: find '#', read length, extract that many chars
+- O(n) encode, O(n) decode
 
 ---
 
-## Problem 9: Longest Consecutive Sequence
+## Problem 9: Longest Consecutive Sequence ⭐ BLIND 75
 
-**Difficulty:** Medium
-**Time:** 25 minutes
+**Difficulty:** Medium | **Pattern:** Set Optimization
 **LeetCode:** https://leetcode.com/problems/longest-consecutive-sequence/
 
-### Problem Statement
-Given an unsorted array of integers `nums`, return the length of the longest consecutive elements sequence.
+### Problem
 
-You must write an algorithm that runs in O(n) time.
+Given unsorted array `nums`, return length of longest consecutive elements sequence.
+
+Must run in O(n) time.
 
 ### Examples
-```typescript
-// Example 1
-Input: nums = [100,4,200,1,3,2]
-Output: 4
-Explanation: [1, 2, 3, 4] is the longest consecutive sequence
 
-// Example 2
-Input: nums = [0,3,7,2,5,8,4,6,0,1]
-Output: 9
-Explanation: [0,1,2,3,4,5,6,7,8]
+```
+nums = [100,4,200,1,3,2]
+Output: 4  ([1,2,3,4])
 
-// Example 3
-Input: nums = []
-Output: 0
+nums = [0,3,7,2,5,8,4,6,0,1]
+Output: 9  ([0,1,2,3,4,5,6,7,8])
+
+nums = [] → 0
 ```
 
 ### Constraints
-- 0 <= nums.length <= 10^5
-- -10^9 <= nums[i] <= 10^9
+
+- 0 ≤ nums.length ≤ 10⁵
+- -10⁹ ≤ nums[i] ≤ 10⁹
+
+### Hints
+- Put all numbers in Set for O(1) lookup
+- Only start counting from sequence beginnings (num-1 doesn't exist)
+- Count consecutive: num, num+1, num+2...
+- Each number visited max twice
+- O(n) time, O(n) space
 
 ---
 
 ## Problem 10: Subarray Sum Equals K
 
-**Difficulty:** Medium
-**Time:** 25 minutes
+**Difficulty:** Medium | **Pattern:** Prefix Sum + Hash Map
 **LeetCode:** https://leetcode.com/problems/subarray-sum-equals-k/
 
-### Problem Statement
-Given an array of integers `nums` and an integer `k`, return the total number of subarrays whose sum equals to `k`.
+### Problem
 
-A subarray is a contiguous non-empty sequence of elements within an array.
+Given array `nums` and integer `k`, return total number of subarrays whose sum equals `k`.
+
+Subarray = contiguous non-empty sequence.
 
 ### Examples
-```typescript
-// Example 1
-Input: nums = [1,1,1], k = 2
-Output: 2
-Explanation: [1,1] appears at indices [0,1] and [1,2]
 
-// Example 2
-Input: nums = [1,2,3], k = 3
-Output: 2
-Explanation: [1,2] and [3]
+```
+nums = [1,1,1], k = 2
+Output: 2  ([1,1] at [0,1] and [1,2])
 
-// Example 3
-Input: nums = [1,-1,0], k = 0
-Output: 3
-Explanation: [1,-1], [0], and [1,-1,0]
+nums = [1,2,3], k = 3
+Output: 2  ([1,2] and [3])
+
+nums = [1,-1,0], k = 0
+Output: 3  ([1,-1], [0], [1,-1,0])
 ```
 
 ### Constraints
-- 1 <= nums.length <= 2 * 10^4
-- -1000 <= nums[i] <= 1000
-- -10^7 <= k <= 10^7
 
-### Follow-up
-Can you solve it in O(n) time and O(n) space?
+- 1 ≤ nums.length ≤ 2×10⁴
+- -1000 ≤ nums[i] ≤ 1000
+- -10⁷ ≤ k ≤ 10⁷
+
+### Hints
+- If `prefixSum[j] - prefixSum[i] = k`, then subarray [i+1,j] sums to k
+- Store frequency of prefix sums in Map
+- Check if `(currentSum - k)` exists
+- Initialize with `(0, 1)` for subarrays starting at 0
+- O(n) time, O(n) space
 
 ---
 
 ## Summary
 
-### Difficulty Distribution
-- Easy: 3 problems (1-3)
-- Medium: 7 problems (4-10)
+**Total:** 10 problems (3 Easy, 7 Medium)
 
-### Key Patterns Covered
-- Set for duplicates (Problem 1)
-- Frequency counting (Problems 2, 5)
-- Two Sum pattern (Problem 3)
-- Grouping/categorizing (Problem 4)
-- Multiple hash maps (Problem 7)
-- String encoding (Problem 8)
-- Set optimization (Problem 9)
-- Prefix sum with hash map (Problem 10)
+**Patterns:**
+- Set for duplicates
+- Frequency counting
+- Two Sum pattern
+- Grouping/categorizing
+- Multiple hash maps
+- Set optimization
+- Prefix sum + hash map
 
-### Time Allocation
-- Total: ~3 hours
-- Easy problems: 35 minutes
-- Medium problems: 145 minutes
+**Blind 75:** 9/75 complete (12%)
 
-**Ready for solutions?** Check SOLUTIONS.md
-**Need hints?** See HINTS.md
-**Mock interview practice?** Use INTERVIEWER-SCRIPT.md
+---
+
+**Ready?** Say: `"Claude, give me the problem"` or `"Go"`
+
+[Solutions](./SOLUTIONS.md) | [Hints](./HINTS.md)

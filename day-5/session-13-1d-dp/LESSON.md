@@ -1,315 +1,669 @@
-# Session 13: 1D Dynamic Programming - Learning Material
-
-## Video Resource
-
-**NeetCode - Dynamic Programming Explained**
-https://www.youtube.com/watch?v=73r3KWiEvyk
-
-Watch from 0:00 to 25:00 for core concepts. This video covers:
-- What is Dynamic Programming
-- When to use DP
-- Top-down vs Bottom-up approaches
-- Common 1D DP patterns
-- Space optimization techniques
+# Lesson: 1D Dynamic Programming
 
 ---
 
-## Core Concepts
+## 📹 Video 1: Dynamic Programming Fundamentals (25 min)
 
-### 1. What is Dynamic Programming?
+**"Dynamic Programming - Learn to Solve Algorithmic Problems" by freeCodeCamp**
+https://www.youtube.com/watch?v=oBt53YbR9Kk
 
-Dynamic Programming is an algorithmic technique for solving optimization problems by breaking them down into simpler subproblems and storing the results to avoid redundant calculations.
+**Focus on:**
+- What is Dynamic Programming
+- Overlapping subproblems
+- Optimal substructure
+- When to use DP vs recursion
+- Basic DP examples
+
+---
+
+## 📹 Video 2: Memoization vs Tabulation (15 min)
+
+**"Memoization and Dynamic Programming Explained" by Back To Back SWE**
+https://www.youtube.com/watch?v=P8Xa2BitN3I
+
+**Alternative - NeetCode DP Intro:**
+https://www.youtube.com/watch?v=73r3KWiEvyk
+
+**Focus on:**
+- Top-down memoization approach
+- Bottom-up tabulation approach
+- When to use each technique
+- Space complexity tradeoffs
+
+---
+
+## 📹 Video 3: 1D DP Patterns (15 min)
+
+**"Dynamic Programming Patterns" by NeetCode**
+https://www.youtube.com/watch?v=aPQY__2H3tE
+
+**Focus on:**
+- Linear sequence pattern
+- Decision making pattern
+- Counting ways pattern
+- Optimization pattern
+
+---
+
+## 🎯 Dynamic Programming Fundamentals
+
+### What is Dynamic Programming?
+
+DP is an optimization technique that solves complex problems by:
+1. Breaking them into simpler overlapping subproblems
+2. Storing results to avoid redundant calculations
+3. Building up solutions from smallest subproblems
 
 **Key Requirements:**
-1. **Overlapping Subproblems:** Same subproblems appear multiple times
-2. **Optimal Substructure:** Optimal solution contains optimal sub-solutions
+- **Overlapping Subproblems:** Same subproblems solved multiple times
+- **Optimal Substructure:** Optimal solution contains optimal sub-solutions
 
-### 2. DP vs Other Approaches
+---
+
+## 🔧 DP vs Recursion vs Memoization
+
+### Comparison: Fibonacci Example
 
 ```typescript
-// Recursive (Exponential - O(2^n))
+// Recursive (Exponential - O(2ⁿ))
 function fibRecursive(n: number): number {
-    if (n <= 1) return n;
-    return fibRecursive(n - 1) + fibRecursive(n - 2);
+  if (n <= 1) return n;
+  return fibRecursive(n - 1) + fibRecursive(n - 2);
 }
 
 // Top-Down DP with Memoization (O(n))
 function fibMemo(n: number, memo: Map<number, number> = new Map()): number {
-    if (n <= 1) return n;
-    if (memo.has(n)) return memo.get(n)!;
+  if (n <= 1) return n;
+  if (memo.has(n)) return memo.get(n)!;
 
-    const result = fibMemo(n - 1, memo) + fibMemo(n - 2, memo);
-    memo.set(n, result);
-    return result;
+  const result = fibMemo(n - 1, memo) + fibMemo(n - 2, memo);
+  memo.set(n, result);
+  return result;
 }
 
-// Bottom-Up DP (O(n))
+// Bottom-Up DP/Tabulation (O(n))
 function fibDP(n: number): number {
-    if (n <= 1) return n;
-    const dp = new Array(n + 1);
-    dp[0] = 0;
-    dp[1] = 1;
+  if (n <= 1) return n;
+  const dp = new Array(n + 1);
+  dp[0] = 0;
+  dp[1] = 1;
 
-    for (let i = 2; i <= n; i++) {
-        dp[i] = dp[i - 1] + dp[i - 2];
-    }
-    return dp[n];
+  for (let i = 2; i <= n; i++) {
+    dp[i] = dp[i - 1] + dp[i - 2];
+  }
+  return dp[n];
 }
 
-// Space-Optimized (O(1))
+// Space-Optimized (O(1) space)
 function fibOptimized(n: number): number {
-    if (n <= 1) return n;
-    let prev2 = 0, prev1 = 1;
+  if (n <= 1) return n;
+  let prev2 = 0, prev1 = 1;
 
-    for (let i = 2; i <= n; i++) {
-        const curr = prev1 + prev2;
-        prev2 = prev1;
-        prev1 = curr;
-    }
-    return prev1;
+  for (let i = 2; i <= n; i++) {
+    const curr = prev1 + prev2;
+    prev2 = prev1;
+    prev1 = curr;
+  }
+  return prev1;
 }
+```
+
+**Time Comparison:**
+```
+Recursive:    O(2ⁿ) - fib(40) takes seconds
+Memoization:  O(n)  - fib(40) instant
+Tabulation:   O(n)  - fib(40) instant
+Optimized:    O(n)  - fib(40) instant, O(1) space
 ```
 
 ---
 
-## Common 1D DP Patterns
+## 📊 Memoization vs Tabulation
+
+| Aspect | Memoization (Top-Down) | Tabulation (Bottom-Up) |
+|--------|------------------------|------------------------|
+| **Approach** | Recursive + cache | Iterative + table |
+| **Start** | From target, recurse down | From base cases, build up |
+| **Cache** | Only computed states | All states up to target |
+| **Stack** | Uses call stack | No recursion |
+| **Space** | Cache + stack O(n) | Table O(n) |
+| **Intuitive** | Easier to think through | Requires reverse thinking |
+| **Speed** | Slightly slower (recursion overhead) | Slightly faster |
+
+**When to use:**
+- **Memoization:** Easier to implement, only computes needed states
+- **Tabulation:** Faster, no stack overflow risk, easier to optimize space
+
+---
+
+## 🧩 Common 1D DP Patterns
 
 ### Pattern 1: Linear Sequence
-Problems where dp[i] depends on previous elements in sequence.
 
-**Example: Climbing Stairs**
+**📹 Learn:** [Climbing Stairs Explained](https://www.youtube.com/watch?v=Y0lT9Fck7qI) by NeetCode (~8 min)
+
+Problems where dp[i] depends on previous elements.
+
 ```typescript
+// Example: Climbing Stairs
 // dp[i] = number of ways to reach step i
-// dp[i] = dp[i-1] + dp[i-2]
+// Recurrence: dp[i] = dp[i-1] + dp[i-2]
+
+function climbStairs(n: number): number {
+  if (n <= 2) return n;
+
+  let prev2 = 1, prev1 = 2;
+  for (let i = 3; i <= n; i++) {
+    const curr = prev1 + prev2;
+    prev2 = prev1;
+    prev1 = curr;
+  }
+  return prev1;
+}
 ```
+
+**Time:** O(n) | **Space:** O(1)
+
+---
 
 ### Pattern 2: Decision Making
-At each step, make a choice (include/exclude).
 
-**Example: House Robber**
+**📹 Learn:** [House Robber Explained](https://www.youtube.com/watch?v=73r3KWiEvyk) by NeetCode (~11 min)
+
+At each step, make choice: include or exclude element.
+
 ```typescript
+// Example: House Robber
 // dp[i] = max money robbing up to house i
-// dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+// Recurrence: dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+
+function rob(nums: number[]): number {
+  if (nums.length === 0) return 0;
+  if (nums.length === 1) return nums[0];
+
+  let prev2 = nums[0];
+  let prev1 = Math.max(nums[0], nums[1]);
+
+  for (let i = 2; i < nums.length; i++) {
+    const curr = Math.max(prev1, prev2 + nums[i]);
+    prev2 = prev1;
+    prev1 = curr;
+  }
+
+  return prev1;
+}
 ```
+
+**Key insight:** Rob current house OR skip it - choose max profit.
+
+**Time:** O(n) | **Space:** O(1)
+
+---
 
 ### Pattern 3: Optimization
+
+**📹 Learn:** [Coin Change DP](https://www.youtube.com/watch?v=H9bfqozjoqs) by NeetCode (~13 min)
+
 Find minimum/maximum over all choices.
 
-**Example: Coin Change**
 ```typescript
+// Example: Coin Change
 // dp[i] = minimum coins to make amount i
-// dp[i] = min(dp[i-coin] + 1) for all coins
+// Recurrence: dp[i] = min(dp[i-coin] + 1) for all coins
+
+function coinChange(coins: number[], amount: number): number {
+  const dp = new Array(amount + 1).fill(amount + 1);
+  dp[0] = 0;
+
+  for (let i = 1; i <= amount; i++) {
+    for (const coin of coins) {
+      if (i - coin >= 0) {
+        dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+      }
+    }
+  }
+
+  return dp[amount] > amount ? -1 : dp[amount];
+}
 ```
+
+**Key insight:** Try all coins, take minimum.
+
+**Time:** O(amount × coins) | **Space:** O(amount)
+
+---
 
 ### Pattern 4: Counting
+
+**📹 Learn:** [Decode Ways DP](https://www.youtube.com/watch?v=6aEyTjOwlJU) by NeetCode (~12 min)
+
 Count number of ways to achieve something.
 
-**Example: Decode Ways**
 ```typescript
+// Example: Decode Ways
 // dp[i] = number of ways to decode up to index i
-// dp[i] = dp[i-1] + (valid two-digit ? dp[i-2] : 0)
+// Recurrence: dp[i] = dp[i-1] (if valid single) + dp[i-2] (if valid double)
+
+function numDecodings(s: string): number {
+  if (s[0] === '0') return 0;
+
+  const n = s.length;
+  let prev2 = 1, prev1 = 1;
+
+  for (let i = 1; i < n; i++) {
+    let curr = 0;
+
+    // Single digit
+    if (s[i] !== '0') {
+      curr += prev1;
+    }
+
+    // Two digits
+    const twoDigit = parseInt(s.substring(i - 1, i + 1));
+    if (twoDigit >= 10 && twoDigit <= 26) {
+      curr += prev2;
+    }
+
+    prev2 = prev1;
+    prev1 = curr;
+  }
+
+  return prev1;
+}
 ```
 
-### Pattern 5: Existence
-Check if something is possible.
+**Key insight:** Add ways from all valid previous states.
 
-**Example: Jump Game**
+**Time:** O(n) | **Space:** O(1)
+
+---
+
+### Pattern 5: Existence/Reachability
+
+**📹 Learn:** [Jump Game DP vs Greedy](https://www.youtube.com/watch?v=Yan0cv2cLy8) by NeetCode (~7 min)
+
+Check if target state is reachable.
+
 ```typescript
-// dp[i] = can we reach index i?
-// dp[i] = any(dp[j] && j + nums[j] >= i) for j < i
+// Example: Jump Game
+// Greedy approach - track furthest reachable position
+
+function canJump(nums: number[]): boolean {
+  let maxReach = 0;
+
+  for (let i = 0; i < nums.length; i++) {
+    if (i > maxReach) return false;
+    maxReach = Math.max(maxReach, i + nums[i]);
+  }
+
+  return true;
+}
+```
+
+**Note:** Not all reachability problems need DP - greedy can work if no backtracking needed.
+
+**Time:** O(n) | **Space:** O(1)
+
+---
+
+## 🎯 DP Problem-Solving Framework
+
+### Step 1: Identify if DP Applies
+
+**Questions to ask:**
+- Does problem ask for optimal solution (min/max/count)?
+- Can problem be broken into subproblems?
+- Do subproblems overlap (same calculation repeated)?
+- Does optimal solution depend on optimal sub-solutions?
+
+**Red flags (DP might NOT work):**
+- No overlapping subproblems
+- No optimal substructure
+- Greedy choice property exists
+
+---
+
+### Step 2: Define State
+
+**State = parameters uniquely identifying a subproblem**
+
+Examples:
+- Fibonacci: `dp[n]` = nth Fibonacci number
+- House Robber: `dp[i]` = max money robbing houses 0..i
+- Coin Change: `dp[amount]` = min coins to make amount
+- LIS: `dp[i]` = longest increasing subsequence ending at i
+
+**Common state types:**
+- Index: `dp[i]`
+- Index + value: `dp[i][j]`
+- Amount: `dp[amount]`
+- Position: `dp[pos]`
+
+---
+
+### Step 3: Write Recurrence Relation
+
+**Recurrence = formula connecting current state to previous states**
+
+Examples:
+```typescript
+// Fibonacci
+dp[n] = dp[n-1] + dp[n-2]
+
+// House Robber
+dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+
+// Coin Change
+dp[i] = min(dp[i-coin] + 1) for all coins
+
+// Climbing Stairs
+dp[i] = dp[i-1] + dp[i-2]
+```
+
+**How to derive:**
+1. Think about last decision made
+2. What states does it depend on?
+3. How to combine previous states?
+
+---
+
+### Step 4: Identify Base Cases
+
+**Base cases = smallest subproblems with known answers**
+
+Examples:
+```typescript
+// Fibonacci
+dp[0] = 0, dp[1] = 1
+
+// House Robber
+dp[0] = nums[0], dp[1] = max(nums[0], nums[1])
+
+// Coin Change
+dp[0] = 0  (0 coins to make 0)
+
+// Climbing Stairs
+dp[1] = 1, dp[2] = 2
 ```
 
 ---
 
-## State Definition Strategy
+### Step 5: Determine Computation Order
 
-### 1. Identify What Changes
-What parameters vary as you solve subproblems?
+**For tabulation:** What order to fill DP table?
 
-### 2. Define State Meaning
-What does dp[i] represent?
+Usually:
+- Left to right for linear sequences
+- Smaller amounts to larger
+- Earlier indices to later
 
-### 3. Write Recurrence Relation
-How to compute dp[i] from previous states?
-
-### 4. Identify Base Cases
-What are the smallest subproblems?
-
-### 5. Determine Computation Order
-In what order should we fill the DP table?
+**For memoization:** Start from target, recurse to base cases.
 
 ---
 
-## Implementation Templates
+## 💡 Implementation Templates
 
 ### Top-Down Template (Memoization)
+
 ```typescript
 function solveMemo(n: number): number {
-    const memo = new Map<number, number>();
+  const memo = new Map<number, number>();
 
-    function dp(i: number): number {
-        // Base cases
-        if (i <= 0) return baseValue;
+  function dp(i: number): number {
+    // Base cases
+    if (i <= 0) return baseValue;
 
-        // Check memo
-        if (memo.has(i)) return memo.get(i)!;
+    // Check memo
+    if (memo.has(i)) return memo.get(i)!;
 
-        // Compute result
-        let result = 0;
-        // Recurrence relation
-        result = /* compute from dp(i-1), dp(i-2), etc. */
+    // Compute result using recurrence
+    let result = 0;
+    // Example: result = dp(i-1) + dp(i-2)
 
-        // Store and return
-        memo.set(i, result);
-        return result;
-    }
+    // Store and return
+    memo.set(i, result);
+    return result;
+  }
 
-    return dp(n);
+  return dp(n);
 }
 ```
+
+**Pros:** Easier to code, only computes needed states
+**Cons:** Recursion overhead, stack space
+
+---
 
 ### Bottom-Up Template (Tabulation)
+
 ```typescript
 function solveDP(n: number): number {
-    // Edge cases
-    if (n <= 0) return baseValue;
+  // Edge cases
+  if (n <= 0) return baseValue;
 
-    // Initialize DP array
-    const dp = new Array(n + 1);
+  // Initialize DP array
+  const dp = new Array(n + 1);
 
-    // Base cases
-    dp[0] = baseValue0;
-    dp[1] = baseValue1;
+  // Base cases
+  dp[0] = baseValue0;
+  dp[1] = baseValue1;
 
-    // Fill DP table
-    for (let i = 2; i <= n; i++) {
-        // Recurrence relation
-        dp[i] = /* compute from dp[i-1], dp[i-2], etc. */
-    }
+  // Fill DP table
+  for (let i = 2; i <= n; i++) {
+    // Recurrence relation
+    dp[i] = /* compute from dp[i-1], dp[i-2], etc. */
+  }
 
-    return dp[n];
+  return dp[n];
 }
 ```
+
+**Pros:** Faster, no stack overflow, easier to optimize space
+**Cons:** Need to think in reverse
+
+---
 
 ### Space-Optimized Template
+
 ```typescript
 function solveOptimized(n: number): number {
-    // Edge cases
-    if (n <= 0) return baseValue;
+  // Edge cases
+  if (n <= 0) return baseValue;
 
-    // Only keep necessary previous states
-    let prev2 = baseValue0;
-    let prev1 = baseValue1;
+  // Only keep necessary previous states
+  let prev2 = baseValue0;
+  let prev1 = baseValue1;
 
-    for (let i = 2; i <= n; i++) {
-        const curr = /* compute from prev1, prev2 */
-        prev2 = prev1;
-        prev1 = curr;
-    }
+  for (let i = 2; i <= n; i++) {
+    const curr = /* compute from prev1, prev2 */
+    prev2 = prev1;
+    prev1 = curr;
+  }
 
-    return prev1;
+  return prev1;
 }
+```
+
+**Optimization:** If only need k previous states, use k variables instead of array.
+
+**Time:** Same as tabulation
+**Space:** O(1) instead of O(n)
+
+---
+
+## 🎯 State Transition Examples
+
+### Example 1: Climbing Stairs
+
+**Problem:** Ways to climb n stairs, 1 or 2 steps at a time.
+
+**State:** `dp[i]` = ways to reach stair i
+
+**Transition:** To reach stair i, came from i-1 or i-2
+```typescript
+dp[i] = dp[i-1] + dp[i-2]
+```
+
+**Base:** `dp[0] = 1, dp[1] = 1`
+
+---
+
+### Example 2: House Robber
+
+**Problem:** Max money robbing houses, can't rob adjacent.
+
+**State:** `dp[i]` = max money robbing houses 0..i
+
+**Transition:** Rob house i or skip it
+```typescript
+dp[i] = max(
+  dp[i-1],           // Skip house i
+  dp[i-2] + nums[i]  // Rob house i
+)
+```
+
+**Base:** `dp[0] = nums[0], dp[1] = max(nums[0], nums[1])`
+
+---
+
+### Example 3: Coin Change
+
+**Problem:** Min coins to make amount.
+
+**State:** `dp[amount]` = min coins to make amount
+
+**Transition:** Try each coin, take minimum
+```typescript
+dp[amount] = min(
+  dp[amount - coin1] + 1,
+  dp[amount - coin2] + 1,
+  ...
+)
+```
+
+**Base:** `dp[0] = 0`
+
+---
+
+## 💡 Interview Tips
+
+### Problem Recognition
+
+**DP keywords:**
+- "Maximum", "Minimum", "Longest", "Shortest"
+- "Count ways", "Number of ways"
+- "Can you reach", "Is it possible"
+- "Optimal", "Best"
+
+**Check overlapping subproblems:**
+- Draw recursion tree for small input
+- Same calculations repeated?
+- Use DP!
+
+---
+
+### Communication Strategy
+
+**Say this:**
+1. "This looks like DP - we need optimal solution with overlapping subproblems"
+2. "Let me define state: dp[i] represents..."
+3. "Recurrence relation is..."
+4. "Base cases are..."
+5. "I'll start with tabulation, O(n) space, then optimize to O(1)"
+
+**Walk through example:**
+- Show small input (n=3 or n=4)
+- Fill DP table step by step
+- Explain each transition
+
+---
+
+### Common Follow-ups
+
+**Q: "Can you optimize space?"**
+- If only need k previous states, use k variables
+
+**Q: "Can you solve it recursively?"**
+- Show memoization approach
+
+**Q: "Print the actual solution, not just the value?"**
+- Backtrack through DP table to reconstruct solution
+
+**Q: "What if n is very large?"**
+- Discuss space optimization
+- Consider if closed-form formula exists
+
+---
+
+## 🎯 TypeScript Specifics
+
+### Array Initialization
+
+```typescript
+// Wrong - creates array with undefined
+const dp = new Array(n);
+
+// Correct - fill with default value
+const dp = new Array(n).fill(0);
+
+// For infinity
+const dp = new Array(n).fill(Infinity);
+
+// For large value (coin change)
+const dp = new Array(n).fill(n + 1);
 ```
 
 ---
 
-## Problem-Specific Techniques
+### Map for Memoization
 
-### 1. Subsequence Problems
-Track state based on whether current element is included.
+```typescript
+// Use Map for memo
+const memo = new Map<number, number>();
 
-### 2. Substring Problems
-Often need to check all possible centers or endings.
+// Check if exists
+if (memo.has(key)) return memo.get(key)!;
 
-### 3. Decision Problems
-Model as choosing best option at each step.
-
-### 4. Counting Problems
-Sum up ways from all valid previous states.
-
-### 5. Game Theory Problems
-Consider optimal play from both players.
+// Store result
+memo.set(key, result);
+```
 
 ---
 
-## Debugging DP Solutions
+### Max/Min Tracking
 
-### Common Issues and Fixes
+```typescript
+// Initialize max
+let maxVal = -Infinity;
+let maxVal = nums[0];
 
-1. **Wrong Answer**
-   - Check base cases
-   - Verify recurrence relation
-   - Print DP table for small inputs
+// Initialize min
+let minVal = Infinity;
+let minVal = nums[0];
 
-2. **Runtime Error**
-   - Check array bounds
-   - Initialize all necessary values
-   - Handle edge cases
-
-3. **Time Limit Exceeded**
-   - Ensure memoization is working
-   - Check for infinite recursion
-   - Optimize unnecessary computations
-
-4. **Memory Limit Exceeded**
-   - Use space optimization
-   - Clear unnecessary data
-   - Consider iterative over recursive
+// Update
+maxVal = Math.max(maxVal, current);
+minVal = Math.min(minVal, current);
+```
 
 ---
 
-## Practice Strategy
+## ✅ Ready to Practice
 
-### Phase 1: Understanding
-1. Solve recursively first
-2. Identify overlapping subproblems
-3. Add memoization
+**Say:** `"Claude, I watched the videos"` for concept check!
 
-### Phase 2: Optimization
-1. Convert to bottom-up
-2. Optimize space complexity
-3. Simplify code
+**Quick Reference:**
+- **DP requirements:** Overlapping subproblems + optimal substructure
+- **Memoization:** Top-down, recursive + cache
+- **Tabulation:** Bottom-up, iterative + table
+- **Space optimization:** Keep only k previous states
 
-### Phase 3: Pattern Recognition
-1. Categorize problem type
-2. Apply standard template
-3. Customize for specific requirements
-
----
-
-## Interview Tips
-
-### 1. Problem Recognition
-- Look for keywords: "optimal", "maximum", "minimum", "count ways"
-- Check if greedy doesn't work
-- Identify if subproblems overlap
-
-### 2. Communication
-- Explain why DP is needed
-- Define state clearly
-- Write recurrence before coding
-- Discuss space optimization
-
-### 3. Time Management
-- Start with brute force (5 min)
-- Optimize with DP (15 min)
-- Code solution (15 min)
-- Test and debug (10 min)
-
-### 4. Common Follow-ups
-- "Can you optimize space?"
-- "What if input is very large?"
-- "Can you solve it iteratively?"
-- "Print the actual solution, not just the value"
+**Pattern Checklist:**
+- Linear sequence: dp[i] from dp[i-1], dp[i-2]
+- Decision making: max(include, exclude)
+- Optimization: min/max over choices
+- Counting: sum of ways from previous states
 
 ---
 
-## Next Steps
-
-After watching the video and reading this material:
-1. Work through the problems in order
-2. Try multiple approaches for each
-3. Focus on pattern recognition
-4. Practice explaining your thought process
-
-Remember: DP is about building solutions from smaller solutions. Master the patterns, and complex problems become manageable!
+[Back to Session README](./README.md)

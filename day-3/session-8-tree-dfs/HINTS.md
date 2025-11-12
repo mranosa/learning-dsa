@@ -1,41 +1,42 @@
 # Hints - Session 8: Tree DFS
 
-Progressive hints for all 10 problems. Use sparingly - struggling is part of learning!
+Progressive hints for 10 problems. Struggling is part of learning.
 
 ---
 
 ## Problem 1: Maximum Depth of Binary Tree
 
-### Hint Level 1 (Gentle Nudge)
-Think recursively. The depth of a tree is related to the depth of its subtrees. What's the relationship?
+### Level 1
+What's the relationship between a tree's depth and its subtrees' depths?
 
-### Hint Level 2 (More Direct)
-The depth of a tree is 1 (for the root) plus the maximum depth of its left and right subtrees. Base case: what's the depth of an empty tree?
+### Level 2
+Depth = 1 (current node) + max depth of subtrees. Base case: empty tree has depth 0.
 
-### Hint Level 3 (Step-by-Step)
-Complete algorithm:
-1. If root is null, return 0 (empty tree has no depth)
-2. Recursively find depth of left subtree
-3. Recursively find depth of right subtree
-4. Return `1 + Math.max(leftDepth, rightDepth)`
+### Level 3
+```typescript
+if (!root) return 0;
+const leftDepth = maxDepth(root.left);
+const rightDepth = maxDepth(root.right);
+return 1 + Math.max(leftDepth, rightDepth);
+```
 
 ---
 
 ## Problem 2: Same Tree
 
-### Hint Level 1
-Two trees are the same if their roots have the same value AND their subtrees are the same. Think about the base cases first.
+### Level 1
+Two trees same if roots match AND subtrees match. What are base cases?
 
-### Hint Level 2
-Check three things at each step:
-1. Are both nodes null? (same)
-2. Is exactly one node null? (different)
-3. Do values match? Then check subtrees
+### Level 2
+Check three things:
+1. Both null? (same)
+2. One null? (different)
+3. Values match? Then check subtrees
 
-### Hint Level 3
+### Level 3
 ```typescript
-if (!p && !q) return true;  // Both null
-if (!p || !q) return false;  // One null
+if (!p && !q) return true;
+if (!p || !q) return false;
 return p.val === q.val &&
        isSameTree(p.left, q.left) &&
        isSameTree(p.right, q.right);
@@ -45,33 +46,36 @@ return p.val === q.val &&
 
 ## Problem 3: Invert Binary Tree
 
-### Hint Level 1
-To invert a tree, you need to swap the left and right children of every node. Can you do this recursively?
+### Level 1
+To invert, swap left and right children at every node. How to do recursively?
 
-### Hint Level 2
-At each node: swap left and right children, then recursively invert the left subtree and right subtree.
+### Level 2
+At each node: swap children, then recursively invert both subtrees.
 
-### Hint Level 3
-Algorithm:
-1. If root is null, return null
-2. Swap `root.left` and `root.right` (use a temp variable)
-3. Recursively call `invertTree(root.left)`
-4. Recursively call `invertTree(root.right)`
-5. Return root
+### Level 3
+```typescript
+if (!root) return null;
+const temp = root.left;
+root.left = root.right;
+root.right = temp;
+invertTree(root.left);
+invertTree(root.right);
+return root;
+```
 
 ---
 
 ## Problem 4: Symmetric Tree
 
-### Hint Level 1
-A tree is symmetric if the left subtree is a mirror of the right subtree. You need a helper function that compares two subtrees.
+### Level 1
+Tree symmetric if left subtree mirrors right subtree. Need helper to compare two subtrees.
 
-### Hint Level 2
-Create a helper `isMirror(left, right)` that checks:
-- Left's left child mirrors right's right child
-- Left's right child mirrors right's left child
+### Level 2
+Helper `isMirror(left, right)` checks:
+- Left's left mirrors right's right
+- Left's right mirrors right's left
 
-### Hint Level 3
+### Level 3
 ```typescript
 function isMirror(left, right) {
   if (!left && !right) return true;
@@ -80,128 +84,117 @@ function isMirror(left, right) {
          isMirror(left.left, right.right) &&
          isMirror(left.right, right.left);
 }
-// Call with isMirror(root.left, root.right)
+// Call: isMirror(root.left, root.right)
 ```
 
 ---
 
 ## Problem 5: Diameter of Binary Tree
 
-### Hint Level 1
-The diameter at any node is the sum of the heights of its left and right subtrees. But the maximum diameter might not pass through the root!
+### Level 1
+Diameter at node = left height + right height. But max diameter might not pass through root!
 
-### Hint Level 2
-Calculate height recursively, but at each node also calculate the diameter through that node (left height + right height). Keep track of the global maximum.
+### Level 2
+Calculate height recursively, but at each node also check diameter through that node. Track global max.
 
-### Hint Level 3
-Algorithm:
-1. Create a global variable `maxDiameter = 0`
-2. Create recursive function `height(node)`:
-   - If null, return 0
-   - Get `leftHeight = height(node.left)`
-   - Get `rightHeight = height(node.right)`
-   - Update `maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight)`
-   - Return `1 + Math.max(leftHeight, rightHeight)`
-3. Call height(root) and return maxDiameter
+### Level 3
+```typescript
+let maxDiameter = 0;
+function height(node) {
+  if (!node) return 0;
+  const leftHeight = height(node.left);
+  const rightHeight = height(node.right);
+  maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
+  return 1 + Math.max(leftHeight, rightHeight);
+}
+```
 
 ---
 
 ## Problem 6: Balanced Binary Tree
 
-### Hint Level 1
-A tree is balanced if for every node, the height difference between left and right subtrees is at most 1. Can you check this while calculating height?
+### Level 1
+Balanced if for every node, height difference between subtrees ≤ 1. Check while calculating height?
 
-### Hint Level 2
-Use -1 as a sentinel value to indicate "not balanced". If any subtree returns -1, propagate it up immediately (early termination).
+### Level 2
+Use -1 as sentinel for "not balanced". If any subtree returns -1, propagate up immediately.
 
-### Hint Level 3
+### Level 3
 ```typescript
-function checkHeight(node): number {
+function checkHeight(node) {
   if (!node) return 0;
-
   const left = checkHeight(node.left);
   if (left === -1) return -1;
-
   const right = checkHeight(node.right);
   if (right === -1) return -1;
-
   if (Math.abs(left - right) > 1) return -1;
-
   return Math.max(left, right) + 1;
 }
-// Tree is balanced if checkHeight(root) !== -1
+// Balanced if checkHeight(root) !== -1
 ```
 
 ---
 
 ## Problem 7: Lowest Common Ancestor
 
-### Hint Level 1
-If p and q are in different subtrees of the current node, then the current node is their LCA. How do you check which subtree contains a node?
+### Level 1
+If p and q in different subtrees of current node, then current node is LCA. How to check which subtree contains a node?
 
-### Hint Level 2
-Recursively search for p and q. If you find p or q at current node, return it. If left subtree returns non-null AND right subtree returns non-null, current node is LCA.
+### Level 2
+Recursively search for p and q. If found at current, return it. If left returns non-null AND right returns non-null, current is LCA.
 
-### Hint Level 3
-Algorithm:
-1. If root is null, return null
-2. If root equals p or q, return root
-3. Search left: `left = LCA(root.left, p, q)`
-4. Search right: `right = LCA(root.right, p, q)`
-5. If both left and right are non-null, return root (found LCA)
-6. Otherwise return whichever is non-null (left || right)
+### Level 3
+```typescript
+if (!root) return null;
+if (root === p || root === q) return root;
+const left = LCA(root.left, p, q);
+const right = LCA(root.right, p, q);
+if (left && right) return root;  // Found LCA
+return left || right;
+```
 
 ---
 
 ## Problem 8: Path Sum
 
-### Hint Level 1
-Subtract the current node's value from the target sum as you traverse down. What should you check when you reach a leaf?
+### Level 1
+Subtract current node's value from target as you go down. What check at leaf?
 
-### Hint Level 2
-At a leaf node (no children), check if the remaining sum equals the node's value. For non-leaf nodes, recursively check both subtrees with the updated sum.
+### Level 2
+At leaf (no children), check if remaining sum equals node's value. For non-leaf, check both subtrees.
 
-### Hint Level 3
+### Level 3
 ```typescript
-function hasPathSum(root, targetSum) {
-  if (!root) return false;
-
-  // Check leaf node
-  if (!root.left && !root.right) {
-    return root.val === targetSum;
-  }
-
-  // Check subtrees with remaining sum
-  const remaining = targetSum - root.val;
-  return hasPathSum(root.left, remaining) ||
-         hasPathSum(root.right, remaining);
+if (!root) return false;
+if (!root.left && !root.right) {
+  return root.val === targetSum;
 }
+const remaining = targetSum - root.val;
+return hasPathSum(root.left, remaining) ||
+       hasPathSum(root.right, remaining);
 ```
 
 ---
 
 ## Problem 9: Path Sum II
 
-### Hint Level 1
-Use backtracking to track the current path. When you find a valid path at a leaf, add a copy to your results. Don't forget to remove nodes from the path when backtracking!
+### Level 1
+Use backtracking to track current path. When valid path found at leaf, add copy to results. Don't forget to backtrack!
 
-### Hint Level 2
-Maintain a `currentPath` array. Push nodes as you go down, pop when you backtrack. When you find a valid path, add a copy (not the reference!) to results.
+### Level 2
+Maintain `currentPath` array. Push going down, pop backtracking. When valid path found, add copy (not reference!).
 
-### Hint Level 3
+### Level 3
 ```typescript
 function dfs(node, remainingSum, currentPath, result) {
   if (!node) return;
-
   currentPath.push(node.val);
-
   if (!node.left && !node.right && node.val === remainingSum) {
     result.push([...currentPath]);  // Copy!
   } else {
     dfs(node.left, remainingSum - node.val, currentPath, result);
     dfs(node.right, remainingSum - node.val, currentPath, result);
   }
-
   currentPath.pop();  // Backtrack
 }
 ```
@@ -210,32 +203,53 @@ function dfs(node, remainingSum, currentPath, result) {
 
 ## Problem 10: Binary Tree Maximum Path Sum
 
-### Hint Level 1
-At each node, calculate the maximum path that goes through that node. This path can include the node and both its subtrees. Keep track of the global maximum.
+### Level 1
+At each node, calculate max path through that node. Can include node and both subtrees. Track global max.
 
-### Hint Level 2
-For each node, you need two values:
-1. Max path sum through this node (can use both subtrees)
-2. Max gain if path continues through parent (can use only one subtree)
+### Level 2
+For each node, need two values:
+1. Max path sum through node (can use both subtrees)
+2. Max gain if path continues through parent (only one subtree)
+Negative paths can be ignored (use 0).
 
-Remember: negative paths can be ignored (use 0 instead).
-
-### Hint Level 3
+### Level 3
 ```typescript
 let maxSum = -Infinity;
-
 function maxGain(node) {
   if (!node) return 0;
-
-  // Get max from subtrees (ignore negatives)
   const leftGain = Math.max(0, maxGain(node.left));
   const rightGain = Math.max(0, maxGain(node.right));
-
-  // Max path through this node
   const currentMax = node.val + leftGain + rightGain;
   maxSum = Math.max(maxSum, currentMax);
-
-  // Return max gain for parent
   return node.val + Math.max(leftGain, rightGain);
 }
 ```
+
+---
+
+## Pattern Hints
+
+**"Calculate tree property"** → Recursive DFS, combine subtree results
+
+**"Check tree property"** → Recursive with early termination (-1 sentinel)
+
+**"Find in tree"** → Post-order traversal, bubble up results
+
+**"Root-to-leaf path"** → Top-down or backtracking with path tracking
+
+**"Any path in tree"** → Bottom-up with global max
+
+---
+
+## Using Hints Effectively
+
+1. Try 10+ min before Level 1
+2. Try 5+ min after each hint
+3. If use Level 3, mark for review
+4. Don't feel bad - hints are for learning
+
+Goal: Learn pattern, not just solve one problem.
+
+---
+
+[Back to Problems](./PROBLEMS.md) | [Back to Solutions](./SOLUTIONS.md)

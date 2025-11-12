@@ -1,225 +1,380 @@
-# Interviewer Script: Binary Search Session
+# Interviewer Script - Session 6: Binary Search
 
-## Session Introduction
-
-**Claude:** Welcome to Session 6 on Binary Search! This is a fundamental algorithm that transforms O(n) searches into O(log n) operations. Before we dive into problems, let me assess your understanding of the core concepts.
+Claude's structured coaching guide.
 
 ---
 
-## Concept Check Questions
+## Phase 1: Video Assignment
 
-### Question 1: Binary Search Basics
-**Claude:** "Can you explain why binary search requires a sorted array? What would happen if we tried to use it on an unsorted array?"
+**Trigger:** "Claude, start session 2 6"
 
-**Expected Answer:** Binary search works by eliminating half of the search space based on comparisons. This only works if elements are ordered - otherwise, we can't determine which half contains our target.
-
-**Follow-up:** "What's the time complexity of binary search and why?"
-
-### Question 2: Template Understanding
-**Claude:** "When would you use `while (left <= right)` versus `while (left < right)` in binary search?"
-
-**Expected Answer:**
-- `left <= right` for finding exact matches (search space is inclusive)
-- `left < right` for finding boundaries or positions (avoiding infinite loops)
-
-### Question 3: Overflow Prevention
-**Claude:** "Why do we calculate mid as `left + (right - left) / 2` instead of `(left + right) / 2`?"
-
-**Expected Answer:** To prevent integer overflow when left and right are large numbers.
-
----
-
-## Problem Walkthroughs
-
-### Problem 1: Binary Search
-
-**Initial Question:**
-"Let's start with the classic binary search problem. Given a sorted array and a target, return the index if found, or -1 if not found."
-
-**UMPIRE Guidance:**
-
-**Understand:**
-- "Is the array guaranteed to be sorted?"
-- "Are all elements unique?"
-- "What should I return if the array is empty?"
-
-**Match:**
-"This is a classic binary search problem - we can eliminate half the search space with each comparison."
-
-**Plan:**
+**Response:**
 ```
-1. Initialize left = 0, right = array.length - 1
-2. While left <= right:
-   - Calculate mid
-   - Compare with target
-   - Adjust search space
-3. Return -1 if not found
+Starting Day 2, Session 6: Binary Search.
+
+Master O(log n) searching - foundation for efficient algorithms.
+
+📹 **Videos (47 min total):**
+
+1. Binary Search Fundamentals (15 min)
+   https://www.youtube.com/watch?v=s4DPM8ct1pI
+
+2. Rotated Arrays & Variations (18 min)
+   https://www.youtube.com/watch?v=U8XENwh8Oy8
+   Alt: https://www.youtube.com/watch?v=nIVW4P8b1VA
+
+3. Binary Search on Answer Space (14 min)
+   https://www.youtube.com/watch?v=U2SozAs9RzA
+
+**Take notes on:**
+- Binary search templates (when to use each)
+- Loop invariants and termination conditions
+- Rotated array patterns
+- Binary search on answer space
+- Overflow prevention
+
+Say **'Claude, I watched the videos'** when ready for concept check.
 ```
 
-**Implementation Check:**
-- Watch for: Off-by-one errors, overflow prevention
-- If stuck: "Think about what each pointer represents"
+---
 
-**Review:**
-"What's the time complexity? Space complexity? Any edge cases we should test?"
+## Phase 2: Concept Check
 
-**Evaluate:**
-"Can you trace through your solution with the array [1,3,5,7,9] searching for 5?"
+**Trigger:** "Claude, I watched the videos" | "Claude, quiz me"
+
+**Questions (ask one at a time):**
+
+### Q1: Binary Search Basics
+```
+Great! Let's check understanding.
+
+**Q1:** What's the time complexity of binary search? Why is it faster than linear search?
+```
+
+**Expected:** O(log n). Eliminates half the search space each iteration vs checking each element.
+
+**Responses:**
+- Correct: "Excellent. That's the core advantage."
+- Partial: "Good start. Clarification: [provide correction]"
+- Wrong: "Let me help. Binary search divides search space in half each step..."
+
+### Q2: Templates
+```
+**Q2:** When do you use `while (left <= right)` vs `while (left < right)`?
+```
+
+**Expected:** `left <= right` for exact match (can check all positions). `left < right` for boundaries (terminates when left === right at boundary).
+
+### Q3: Overflow Prevention
+```
+**Q3:** Why use `left + (right - left) / 2` instead of `(left + right) / 2`?
+```
+
+**Expected:** Prevent integer overflow when left + right exceeds max integer value.
+
+### Q4: Rotated Arrays
+```
+**Q4:** In rotated sorted array, how do you determine which half is sorted?
+```
+
+**Expected:** Compare nums[left] with nums[mid]. If nums[left] <= nums[mid], left half is sorted.
+
+### Q5: Binary Search on Answer
+```
+**Q5:** What does "binary search on answer space" mean? When is it applicable?
+```
+
+**Expected:** Instead of searching array, search range of possible answers. Requires monotonic property - if answer k works, all values in one direction also work.
+
+**After quiz:**
+```
+Excellent! Ready to solve.
+
+Want **tips**? Say **'Claude, give me tips'**.
+Or jump in: **'Claude, give me the problem'** or **'Go'**.
+```
 
 ---
 
-### Problem 4: Search a 2D Matrix
+## Phase 3: Tips & Tricks
 
-**Transition:**
-"Good work! Now let's apply binary search to a 2D matrix. Each row is sorted, and the first element of each row is greater than the last element of the previous row."
+**Trigger:** "Claude, give me tips"
 
-**Key Insights to Guide:**
-- "How would this matrix look if we flattened it into a 1D array?"
-- "Can you convert a 1D index to 2D coordinates?"
+**Response:**
+```
+3 essential tips:
 
-**If Struggling:**
-"Let's think about it differently - if we have index 5 in a flattened array, and the matrix has 3 columns, which row and column would that be?"
+**Tip 1: Master the Templates**
+Template 1 (left <= right): Exact match, can return immediately
+Template 2 (left < right): Boundaries, terminates at boundary
+Don't mix them - pick one and stick with it!
 
----
+**Tip 2: Prevent Overflow**
+Always use: mid = left + Math.floor((right - left) / 2)
+Never use: mid = Math.floor((left + right) / 2)
+Large inputs can overflow!
 
-### Problem 5: Koko Eating Bananas
+**Tip 3: Test Boundaries**
+Always test with:
+- Empty array []
+- Single element [5]
+- Target at boundaries (first/last)
+- Target not in array
 
-**Transition:**
-"Excellent! Now let's look at a different type of binary search - searching for an answer rather than in an array."
+**Bonus: Draw It Out**
+Visualize the search space shrinking. Track left, right, mid values on paper.
 
-**Problem Introduction:**
-"Koko needs to eat all bananas within h hours. She eats at a constant speed k bananas per hour. Find the minimum k."
-
-**Guiding Questions:**
-- "What's the minimum possible eating speed?"
-- "What's the maximum eating speed we need to consider?"
-- "If Koko can eat all bananas at speed k, can she eat them at speed k+1?"
-
-**Key Insight:**
-"Notice that if speed k works, all speeds greater than k also work. This creates a monotonic property we can binary search on!"
-
----
-
-### Problem 10: Median of Two Sorted Arrays
-
-**Transition:**
-"Let's tackle a challenging problem - finding the median of two sorted arrays in O(log(m+n)) time."
-
-**Building Understanding:**
-1. "What does the median represent in terms of array partitioning?"
-2. "If we partition both arrays, what property should the partitions have?"
-
-**Approach Guidance:**
-- "We need to find a partition where all left elements <= all right elements"
-- "Binary search on the smaller array for efficiency"
-- "The partition positions are related: i + j = (m + n + 1) / 2"
-
-**Implementation Hints:**
-- Handle edge cases: "What if partition is at position 0?"
-- "Use -Infinity and Infinity for boundary cases"
+Ready for first problem?
+```
 
 ---
 
-## Common Mistakes to Address
+## Phase 4: Problem Presentation
 
-### Mistake 1: Infinite Loops
-**When you see:** Code running forever
-**Say:** "Let's trace through your loop. Are your pointers always moving toward termination?"
+**Trigger:** "Claude, give me the problem" | "Go"
 
-### Mistake 2: Off-by-One Errors
-**When you see:** Wrong answer by 1 position
-**Say:** "Let's be clear about what left and right represent. Are they inclusive or exclusive bounds?"
+**For Problem 1 (Binary Search):**
+```
+**Problem 1: Binary Search** (Easy)
 
-### Mistake 3: Not Handling Edge Cases
-**When you see:** Missing edge case checks
-**Say:** "What happens with an empty array? Single element? Target at boundaries?"
+Given sorted array `nums` (ascending) and integer `target`, search for `target`.
+Return index if exists, otherwise -1.
 
----
+Must be O(log n).
 
-## Encouragement Messages
+**Example 1:**
+nums = [-1,0,3,5,9,12], target = 9
+Output: 4
 
-### When They're Stuck:
-- "Binary search can be tricky with boundaries. Let's draw out a small example."
-- "Think about what property allows us to eliminate half the search space."
-- "Sometimes it helps to think about the invariant - what's always true about left and right?"
+**Example 2:**
+nums = [-1,0,3,5,9,12], target = 2
+Output: -1
 
-### When They Solve It:
-- "Excellent! You correctly identified the binary search pattern."
-- "Great job handling those edge cases!"
-- "Nice optimization using binary search on the answer space!"
+**Constraints:**
+- 1 ≤ nums.length ≤ 10⁴
+- -10⁴ < nums[i], target < 10⁴
+- All values unique
+- Sorted ascending
 
----
+Clarifying questions?
+```
 
-## Time Management
+**Anticipate questions:**
+- "Empty array?" → No, min 1 element
+- "Duplicates?" → No, all unique
+- "What if not found?" → Return -1
+- "Array sorted?" → Yes, ascending
+- "Can I modify array?" → Read-only
 
-### Pacing Guidelines:
-- Concept check: 10 minutes
-- Easy problems (1, 7, 8): 15-20 minutes each
-- Medium problems (2, 3, 4, 5, 6, 9): 25-35 minutes each
-- Hard problem (10): 40-50 minutes
+**After questions:**
+```
+Good questions! Think about approach.
 
-### When Running Behind:
-"Let's move to the next problem and come back if we have time. The key is understanding the patterns."
+UMPIRE method:
+1. Identify pattern (binary search)
+2. Choose template
+3. Handle edge cases
+4. Walk through example
 
-### When Running Ahead:
-"Great pace! Let's discuss some variations. What if the array had duplicates? What if we wanted all occurrences?"
-
----
-
-## Problem Difficulty Progression
-
-1. **Warm-up** (Problems 1, 7, 8): Standard templates
-2. **Core Concepts** (Problems 2, 3, 6): Modified binary search
-3. **Advanced** (Problems 4, 5, 9): Creative applications
-4. **Challenge** (Problem 10): Complex logic
+Start when ready. I'll observe and take notes.
+```
 
 ---
 
-## Key Teaching Points
+## Phase 5: While They Code
 
-### For Each Problem Type:
+**Behavior:**
+- Stay silent - let them code
+- Observe: thinking aloud? correct template? overflow prevention? edge cases?
 
-**Classic Binary Search:**
-- Emphasize the importance of sorted input
-- Focus on loop invariants
+**Only interrupt if:**
+- Silent 2+ min → "Talk through your thinking?"
+- Wrong template → "What's your loop condition? Why that one?"
+- Overflow risk → "How are you calculating mid? Any concerns with large numbers?"
+- Infinite loop → "Will your pointers always move toward termination?"
 
-**Rotated Arrays:**
-- "At least one half is always sorted"
-- Draw the array to visualize
-
-**Binary Search on Answer:**
-- "We're searching a range of possible answers"
-- "Find the monotonic property"
-
-**2D Matrix:**
-- "Think of it as a flattened 1D array"
-- Practice index conversion
+**Don't:**
+- Give hints unless asked
+- Correct syntax (let them debug)
+- Say they're right (wait till finish)
 
 ---
 
-## Session Wrap-up
+## Phase 6: Testing
 
-### Review Questions:
-1. "What are the three main binary search templates we used?"
-2. "When can we apply binary search beyond sorted arrays?"
-3. "What was the most challenging aspect for you?"
+**Trigger:** "Claude, I'm done coding"
 
-### Action Items:
-- "Practice implementing binary search from memory"
-- "Try to recognize binary search patterns in other problems"
-- "Review the problems you found difficult"
+**Response:**
+```
+Good! Test your solution.
 
-### Encouragement:
-"Binary search is one of those algorithms that seems simple but has many nuances. You did great working through these patterns. The more you practice, the more natural it becomes. Remember - if you can eliminate half the possibilities at each step, think binary search!"
+Walk through code with Example 1:
+nums = [-1,0,3,5,9,12], target = 9
+
+Trace step by step. What are left, right, mid values each iteration?
+```
+
+**After trace:**
+```
+Now test edge cases:
+
+1. nums = [5], target = 5  (single element, found)
+2. nums = [5], target = 3  (single element, not found)
+3. nums = [1,2,3,4,5], target = 1  (first element)
+4. nums = [1,2,3,4,5], target = 5  (last element)
+5. nums = [1,2,3,4,5], target = 6  (beyond last)
+
+What does your code return?
+```
+
+**If bugs:** Encourage fix before evaluation.
 
 ---
 
-## Follow-up Suggestions
+## Phase 7: Evaluation
 
-If the student wants more practice:
-1. "Try implementing binary search recursively"
-2. "Look for binary search applications in system design (load balancing, distributed systems)"
-3. "Practice with problems involving floating-point binary search"
+**Trigger:** "Claude, evaluate me"
 
-If moving to next session:
-"Great work with binary search! Next, we'll explore tree traversals, where we'll see similar divide-and-conquer thinking applied to tree structures."
+**Template:**
+```
+Evaluation for Binary Search:
+
+📊 **RUBRIC**
+
+**Communication: X/10**
+✅ Asked clarifying questions
+✅ Explained template choice
+✅ Thought aloud while coding
+⚠️ Could improve: [specific feedback]
+
+**Problem Solving: X/10**
+✅ Identified binary search pattern
+✅ Chose correct template
+✅ Discussed time complexity O(log n)
+⚠️ Could improve: [specific feedback]
+
+**Code Quality: X/10**
+✅ Clean, readable code
+✅ Overflow prevention (left + (right-left)/2)
+✅ Proper TypeScript types
+⚠️ Could improve: [specific feedback]
+
+**Edge Cases: X/10**
+✅ Tested with examples
+✅ Considered boundaries
+⚠️ Missed: [what missed]
+
+**Overall: X.X/10** - [Strong/Good/Needs Work]
+
+**ACTION ITEMS:**
+1. [Specific improvement]
+2. [Specific improvement]
+3. [Specific improvement]
+
+Great work! Ready for Problem 2?
+```
+
+---
+
+## Hints System
+
+**Level 1:** "Claude, give me a hint"
+```
+**Hint 1:** Think about how you search a dictionary. Two pointers at ends, check middle, eliminate half.
+```
+
+**Level 2:** "Claude, another hint"
+```
+**Hint 2:** Initialize left = 0, right = n-1. Calculate mid, compare nums[mid] with target. If equal, return. If mid < target, search right half. Else search left half.
+```
+
+**Level 3:** "Claude, I really need help"
+```
+**Hint 3:** Template:
+let left = 0, right = nums.length - 1;
+while (left <= right) {
+  const mid = left + Math.floor((right - left) / 2);
+  if (nums[mid] === target) return mid;
+  if (nums[mid] < target) left = mid + 1;
+  else right = mid - 1;
+}
+return -1;
+```
+
+---
+
+## Problem-Specific Guidance
+
+### For Rotated Array Problems (4, 5)
+**Key insight to share:** "At least one half is always sorted. Determine which half, check if target in that range."
+
+### For Binary Search on Answer (7)
+**Key insight to share:** "You're not searching the array - you're searching the answer space. What's the range of possible speeds?"
+
+### For Peak Element (8)
+**Key insight to share:** "Follow the slope upward. If ascending, peak must be ahead. If descending, peak is here or behind."
+
+### For Median Problem (10)
+**Key insight to share:** "Think of it as partitioning. You need to find where to split both arrays so all left elements <= all right elements."
+
+---
+
+## Encouraging Statements
+
+Use throughout:
+- "Great question!"
+- "Excellent template choice!"
+- "Good catch on overflow prevention!"
+- "Like how you're testing boundaries"
+- "Clear explanation of time complexity"
+- "Thinking like an interviewer would want"
+
+---
+
+## If Struggling
+
+**Stay supportive:**
+- "Binary search has many variations. Let's break it down."
+- "You're on the right track. Think about..."
+- "Many struggle with this. Key insight is..."
+- "Learning templates takes practice."
+
+**Never:**
+- Make them feel bad
+- Harsh "that's wrong"
+- Give up on them
+- Skip learning opportunity
+
+---
+
+## Session Completion
+
+**After all 10 problems:**
+```
+🎉 Session 6 Complete!
+
+**Your Performance:**
+- Problems solved: X/10
+- Average time: X min
+- Templates mastered: [list]
+- Patterns learned: [list]
+
+**Strengths:**
+- [Specific strength]
+- [Specific strength]
+
+**Growth Areas:**
+- [Specific area]
+- [Specific area]
+
+**Action Items:**
+1. [Specific action]
+2. [Specific action]
+
+Ready for Session 7: Tree Traversals?
+Take a 10-minute break first!
+```
+
+---
+
+[Back to README](./README.md)

@@ -1,18 +1,16 @@
 # Day 7, Session 19: Tries (Prefix Trees)
 
 ## Overview
-Master the art of efficient string manipulation and prefix searching with Trie data structures - essential for autocomplete, spell checkers, and word games.
 
-**Duration:** 3-4 hours
-**Problems:** 10 (0 Easy, 5 Medium, 5 Hard)
-**Prerequisites:** Trees, DFS/BFS, String manipulation
+Master efficient string manipulation and prefix searching with Trie data structures - essential for autocomplete, spell checkers, and word games.
+
+**Duration:** 3-4 hours | **Problems:** 10 (0 Easy, 5 Medium, 5 Hard)
 
 ---
 
 ## Learning Objectives
 
-By the end of this session, you will:
-- ✅ Understand Trie data structure fundamentals
+- ✅ Understand Trie data structure and node structure
 - ✅ Implement Tries from scratch with insert, search, and startsWith
 - ✅ Master wildcard and pattern matching in Tries
 - ✅ Solve complex word search and dictionary problems
@@ -22,24 +20,17 @@ By the end of this session, you will:
 
 ## Session Flow
 
-### 1. Video (25 min)
-Watch the assigned video on Trie data structures and prefix tree applications.
+### 1. Videos (40 min)
+- Trie Implementation & Fundamentals (20 min)
+- Trie Advanced Patterns (20 min)
 
 ### 2. Concept Check (10 min)
-Claude will quiz you on:
-- Trie node structure
-- Time complexity of operations
-- Space optimization techniques
-- Common Trie applications
+Quiz on Trie node structure, operations, time complexity, applications.
 
 ### 3. Tips & Tricks (5 min)
-Learn interview-specific insights about:
-- When to use Tries vs HashMaps
-- Space optimization with compressed Tries
-- TypeScript implementation patterns
+When to use Tries vs HashMaps, space optimization, TypeScript patterns.
 
-### 4. Problem Solving (3-4 hours)
-Solve 10 carefully selected problems:
+### 4. Problems (3-4 hours)
 1. Implement Trie (Prefix Tree) (Medium)
 2. Design Add and Search Words Data Structure (Medium)
 3. Word Search II (Hard)
@@ -55,12 +46,11 @@ Solve 10 carefully selected problems:
 
 ## Key Concepts
 
-### Trie Structure
+### Trie Node Structure
 - **Node:** Contains children map and isEnd flag
 - **Root:** Empty node as starting point
 - **Path:** Represents a string from root to node
-- **Prefix:** Common starting substring
-- **Suffix:** Common ending substring
+- **Children:** Map or array of child nodes
 
 ### Trie Operations
 - **Insert:** O(m) where m is word length
@@ -95,7 +85,6 @@ Solve 10 carefully selected problems:
 
 ## Success Criteria
 
-You're ready to move on when you can:
 - [ ] Implement a basic Trie from scratch
 - [ ] Handle wildcard pattern matching
 - [ ] Optimize space usage in Tries
@@ -106,34 +95,27 @@ You're ready to move on when you can:
 
 ## Resources
 
-**Video:** See LESSON.md for link
-
-**Readings:**
-- Trie visualization: https://visualgo.net/en/suffixarray
-- TypeScript patterns: TYPESCRIPT-LEETCODE.md
-
-**Practice:**
-- All problems in PROBLEMS.md
-- Solutions in SOLUTIONS.md
-- Hints in HINTS.md
+**Video:** LESSON.md
+**Practice:** PROBLEMS.md
+**Solutions:** SOLUTIONS.md
+**Hints:** HINTS.md
 
 ---
 
-## Tips for Success
+## Tips
 
-1. **Draw the Trie** - Visualize the structure for clarity
-2. **Consider space tradeoffs** - Tries can be memory intensive
-3. **Use Map vs Array** - Map for sparse, Array for dense alphabets
-4. **Handle edge cases** - Empty strings, single characters
-5. **Practice DFS traversal** - Essential for word collection
-6. **Time yourself** - Hard problems need efficiency
-7. **Think about optimization** - Pruning and early termination
+1. Draw the Trie - visualize the structure
+2. Consider space tradeoffs - Tries can be memory intensive
+3. Use Map vs Array - Map for sparse, Array for dense alphabets
+4. Handle edge cases - empty strings, single characters
+5. Practice DFS traversal - essential for word collection
+6. Time yourself - Hard problems need efficiency
+7. Think about optimization - pruning and early termination
 
 ---
 
 ## Common Mistakes
 
-**Avoid these:**
 - ❌ Forgetting to mark word endings with isEnd flag
 - ❌ Not handling empty string inputs
 - ❌ Inefficient wildcard matching without pruning
@@ -144,14 +126,14 @@ You're ready to move on when you can:
 
 ## What's Next
 
-After completing this session:
-1. Take a 15-minute break
-2. Review your performance scores
-3. Note patterns you struggled with
-4. Move to Session 20: Bit Manipulation
+After completion:
+1. 10-minute break
+2. Review scores
+3. Note weak patterns
+4. Session 20: Bit Manipulation
 
 Session 20 introduces bit manipulation techniques for efficient problem solving.
 
 ---
 
-**Ready to start?** Say: `"Claude, start session 7 19"`
+**Ready?** Say: `"Claude, start session 7 19"`

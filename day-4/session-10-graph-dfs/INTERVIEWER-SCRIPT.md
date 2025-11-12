@@ -1,339 +1,443 @@
-# Interviewer Script: Graph DFS
+# Interviewer Script - Session 10: Graph DFS
 
-This script helps Claude guide candidates through graph DFS problems using the UMPIRE method.
-
-## UMPIRE Method Reminder
-
-1. **U**nderstand - Clarify the problem
-2. **M**atch - Identify patterns
-3. **P**lan - Design solution
-4. **I**mplement - Write code
-5. **R**eview - Check solution
-6. **E**valuate - Analyze complexity
+Claude's structured coaching guide.
 
 ---
 
-## General Graph DFS Questions
+## Phase 1: Video Assignment
 
-### Initial Problem Understanding
-- "Can you explain the problem in your own words?"
-- "Is the graph directed or undirected?"
-- "Can the graph have cycles?"
-- "Are there disconnected components?"
-- "Can I modify the input graph/grid?"
-- "What should I return if the graph is empty?"
+**Trigger:** "Claude, start session 4 10"
 
-### Pattern Recognition
-- "What graph traversal pattern do you see here?"
-- "Would DFS or BFS be better for this problem? Why?"
-- "How will you handle visited nodes?"
-- "Do you need to track the path or just visit nodes?"
+**Response:**
+```
+Starting Day 4, Session 10: Graph DFS.
 
-### Implementation Questions
-- "How will you represent the graph?"
-- "Will you use recursive or iterative DFS?"
-- "How will you handle the base cases?"
-- "What data structures will you need?"
+Master depth-first search - fundamental for graph problems.
+
+📹 **Videos (47 min total):**
+
+1. Graph Fundamentals (15 min)
+   https://www.youtube.com/watch?v=tWVWeAqZ0WU
+   Alt: https://www.youtube.com/watch?v=gXgEDyodOJU
+
+2. DFS Algorithm & Patterns (20 min)
+   https://www.youtube.com/watch?v=tWVWeAqZ0WU
+   Alt: https://www.youtube.com/watch?v=7fujbpJ0LB4
+
+3. Grid Traversal Techniques (12 min)
+   https://www.youtube.com/watch?v=pV2kpPD66nE
+   Alt: https://www.youtube.com/watch?v=W9F8fDQj7Ok
+
+**Take notes on:**
+- Graph representations (adjacency list vs matrix)
+- DFS vs BFS differences
+- Visited set pattern
+- Grid as graph (4-directional traversal)
+- Recursive vs iterative DFS
+
+Say **'Claude, I watched the videos'** when ready for concept check.
+```
 
 ---
 
-## Problem-Specific Scripts
+## Phase 2: Concept Check
+
+**Trigger:** "Claude, I watched the videos" | "Claude, quiz me"
+
+**Questions (ask one at a time):**
+
+### Q1: Graph Representations
+```
+Great! Let's check understanding.
+
+**Q1:** What are the two main ways to represent a graph? When would you use each?
+```
+
+**Expected:** Adjacency list (array/map of neighbors) - most common, space efficient for sparse graphs. Adjacency matrix (2D array) - quick edge lookup, better for dense graphs.
+
+**Responses:**
+- Correct: "Excellent. That's the key tradeoff."
+- Partial: "Good start. Clarification: [provide correction]"
+- Wrong: "Let me help. Adjacency list stores neighbors for each node..."
+
+### Q2: DFS Basics
+```
+**Q2:** Explain DFS in your own words. What makes it "depth-first"?
+```
+
+**Expected:** DFS explores as far as possible along each branch before backtracking. Uses stack (recursive call stack or explicit). Goes deep before going wide.
+
+### Q3: Visited Set
+```
+**Q3:** Why do we need a visited set in graph DFS? What happens without it?
+```
+
+**Expected:** Prevent infinite loops in graphs with cycles. Without it, revisit nodes forever.
+
+### Q4: DFS vs BFS
+```
+**Q4:** When would you use DFS instead of BFS?
+```
+
+**Expected:** DFS: finding any path, exploring all paths, cycle detection, topological sort, less memory. BFS: shortest path, level-order, minimum distance.
+
+### Q5: Grid Traversal
+```
+**Q5:** For a grid, what are the 4-directional neighbors of cell (r, c)?
+```
+
+**Expected:** (r+1, c), (r-1, c), (r, c+1), (r, c-1) - down, up, right, left.
+
+**After quiz:**
+```
+Excellent! Ready to solve.
+
+Want **tips**? Say **'Claude, give me tips'**.
+Or jump in: **'Claude, give me the problem'** or **'Go'**.
+```
+
+---
+
+## Phase 3: Tips & Tricks
+
+**Trigger:** "Claude, give me tips"
+
+**Response:**
+```
+3 essential tips:
+
+**Tip 1: Always Use Visited Set**
+Graphs can have cycles. Always track visited nodes:
+❌ Forgetting visited → infinite loop
+✅ visited.add(node) before exploring
+
+**Tip 2: Grid Boundary Checks First**
+For grid DFS, check boundaries before accessing:
+❌ grid[row][col] (then check bounds) → crash
+✅ if (row < 0 || row >= rows || ...) return
+
+**Tip 3: Modify vs Preserve**
+Ask: "Can I modify the input?"
+- If yes: mark visited in-place (change grid cell to 0)
+- If no: use separate Set<string> for visited
+Modifying saves O(n) space.
+
+**Bonus: Grid DFS Template**
+```typescript
+function dfs(grid, row, col) {
+    if (row < 0 || row >= grid.length ||
+        col < 0 || col >= grid[0].length ||
+        grid[row][col] === 0) return;
+
+    grid[row][col] = 0;  // Mark visited
+    dfs(grid, row+1, col);
+    dfs(grid, row-1, col);
+    dfs(grid, row, col+1);
+    dfs(grid, row, col-1);
+}
+```
+
+Ready for first problem?
+```
+
+---
+
+## Phase 4: Problem Presentation
+
+**Trigger:** "Claude, give me the problem" | "Go"
+
+**For Problem 1 (Number of Islands):**
+```
+**Problem 1: Number of Islands** (Medium)
+
+Given m × n 2D binary grid of '1's (land) and '0's (water), return number of islands.
+
+Island = surrounded by water, formed by connecting adjacent lands horizontally or vertically.
+
+**Example 1:**
+grid = [
+  ["1","1","1","1","0"],
+  ["1","1","0","1","0"],
+  ["1","1","0","0","0"],
+  ["0","0","0","0","0"]
+]
+Output: 1
+
+**Example 2:**
+grid = [
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
+Output: 3
+
+**Constraints:**
+- m, n ≤ 300
+- grid[i][j] is '0' or '1'
+
+Clarifying questions?
+```
+
+**Anticipate questions:**
+- "Empty grid?" → No, m, n ≥ 1
+- "Can I modify grid?" → Yes, unless otherwise stated
+- "Diagonal connections?" → No, only horizontal/vertical (4-directional)
+- "All water?" → Return 0
+- "All land?" → Return 1
+
+**After questions:**
+```
+Good questions! Think about approach.
+
+UMPIRE method:
+1. Match to pattern → connected components
+2. Brute force first → iterate each cell
+3. Then optimize → DFS when find land
+4. Walk through example
+
+Start when ready. I'll observe and take notes.
+```
+
+---
+
+## Phase 5: While They Code
+
+**Behavior:**
+- Stay silent - let them code
+- Observe: thinking aloud? boundary checks? visited tracking? clean code?
+
+**Only interrupt if:**
+- Silent 2+ min → "Walk me through your thinking?"
+- Major error → "Interesting approach. Can you trace through this example?"
+- Wrong path 5+ min → "What happens if there's a cycle in the graph?"
+
+**Don't:**
+- Give hints unless asked
+- Correct syntax (let them debug)
+- Say they're right (wait till finish)
+
+---
+
+## Phase 6: Testing
+
+**Trigger:** "Claude, I'm done coding"
+
+**Response:**
+```
+Good! Test your solution.
+
+Walk through code with Example 1:
+grid = [
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
+
+Trace step by step. What happens when you hit the first '1' at (0,0)?
+```
+
+**After trace:**
+```
+Now test edge cases:
+
+1. grid = [["1"]]  (single land cell)
+2. grid = [["0"]]  (single water cell)
+3. grid = [["1","0","1","0","1"]]  (multiple separate islands in row)
+
+What does your code return?
+```
+
+**If bugs:** Encourage fix before evaluation.
+
+---
+
+## Phase 7: Evaluation
+
+**Trigger:** "Claude, evaluate me"
+
+**Template:**
+```
+Evaluation for Number of Islands:
+
+📊 **RUBRIC**
+
+**Communication: X/10**
+✅ Asked about modifying input
+✅ Explained DFS approach
+✅ Thought aloud while coding
+⚠️ Could improve: [specific feedback]
+
+**Problem Solving: X/10**
+✅ Identified connected components pattern
+✅ Chose DFS for exploration
+✅ Handled visited tracking
+⚠️ Could improve: [specific feedback]
+
+**Code Quality: X/10**
+✅ Clean, readable code
+✅ Proper boundary checks
+✅ Good function structure
+⚠️ Could improve: [specific feedback]
+
+**Edge Cases: X/10**
+✅ Tested with examples
+✅ Considered empty grid
+⚠️ Missed: [what missed]
+
+**Complexity: X/10**
+✅ Analyzed time: O(m × n)
+✅ Analyzed space: O(m × n) for recursion
+✅ Explained why
+⚠️ Could improve: [specific feedback]
+
+**Overall: X.X/10** - [Strong/Good/Needs Work]
+
+**Key insights:**
+- DFS explores entire island at once
+- In-place modification saves space
+- Each cell visited exactly once
+
+**ACTION ITEMS:**
+1. [Specific improvement]
+2. [Specific improvement]
+3. [Specific improvement]
+
+Great work! Ready for Problem 2?
+```
+
+---
+
+## Hints System
+
+**Level 1:** "Claude, give me a hint"
+```
+**Hint 1:** Think of each island as a connected component. How many separate DFS calls do you need to visit all land cells?
+```
+
+**Level 2:** "Claude, another hint"
+```
+**Hint 2:** Iterate through each cell. When you find a '1', increment your island count and use DFS to mark the entire island as visited (change to '0').
+```
+
+**Level 3:** "Claude, I really need help"
+```
+**Hint 3:** Complete approach:
+1. Loop through each cell (i, j)
+2. If grid[i][j] === '1':
+   - islands++
+   - dfs(i, j) to mark entire island
+3. DFS function:
+   - Check boundaries and if water
+   - Mark current cell as '0'
+   - Recursively call DFS on 4 neighbors
+
+Try implementing.
+```
+
+---
+
+## Problem-Specific Guidance
 
 ### Problem 1: Number of Islands
-
-**Understand Phase:**
-- "So we're counting connected components of 1's in a grid?"
-- "Are diagonal connections considered adjacent?"
-- "Can I modify the input grid to mark visited cells?"
-
-**Match Phase:**
-- "This is a connected components problem"
-- "Each island is a connected component in the grid graph"
-
-**Plan Phase:**
-- "I'll iterate through each cell"
-- "When I find a '1', I'll increment my count and use DFS to mark the entire island"
-- "I can either modify the grid or use a visited set"
-
-**Common Mistakes to Watch For:**
-- Not checking grid boundaries
-- Forgetting to mark cells as visited
-- Including diagonal neighbors (unless specified)
-
-**Hints if Stuck:**
-- "How can you mark cells as visited?"
-- "What happens when you find an unvisited '1'?"
-- "Think of the grid as a graph where each cell is a node"
-
----
+**Pattern:** Connected components via grid DFS
+**Key insight:** Count how many DFS calls needed
+**Common mistakes:** Not checking boundaries, forgetting to mark visited, including diagonals
 
 ### Problem 2: Clone Graph
-
-**Understand Phase:**
-- "We need a deep copy, so changing the clone shouldn't affect the original?"
-- "The graph might have cycles?"
-- "Each node value is unique?"
-
-**Match Phase:**
-- "This requires graph traversal with node creation"
-- "Need to handle cycles to avoid infinite loops"
-
-**Plan Phase:**
-- "I'll use a HashMap to track original → clone mappings"
-- "This prevents duplicate clones and handles cycles"
-
-**Common Mistakes to Watch For:**
-- Creating duplicate clones of the same node
-- Not handling cycles (infinite recursion)
-- Shallow copy instead of deep copy
-
-**Hints if Stuck:**
-- "How can you track which nodes you've already cloned?"
-- "What data structure maps original nodes to clones?"
-- "Think about what happens when you encounter a node you've seen before"
-
----
+**Pattern:** Graph DFS with HashMap
+**Key insight:** Map original → clone prevents duplicates and handles cycles
+**Common mistakes:** Creating duplicate clones, not handling cycles, shallow copy
 
 ### Problem 3: Max Area of Island
-
-**Understand Phase:**
-- "We're finding the largest connected component?"
-- "Area is the count of connected 1's?"
-- "Only horizontal and vertical connections count?"
-
-**Match Phase:**
-- "Similar to Number of Islands but tracking size"
-- "DFS can return the area it explores"
-
-**Plan Phase:**
-- "DFS will return the area of the island it explores"
-- "Keep track of maximum area found"
-
-**Common Mistakes to Watch For:**
-- Not accumulating area from all directions
-- Forgetting to mark cells as visited
-- Not handling the case of no islands (return 0)
-
----
+**Pattern:** Grid DFS with return value
+**Key insight:** DFS returns area (1 + sum of 4 directions)
+**Common mistakes:** Not accumulating from all directions, not returning 0 for water
 
 ### Problem 4: Pacific Atlantic Water Flow
-
-**Understand Phase:**
-- "Water flows from higher or equal heights to lower?"
-- "We need cells that can reach both oceans?"
-- "Pacific is top/left, Atlantic is bottom/right?"
-
-**Match Phase:**
-- "This is a multi-source DFS problem"
-- "We can work backwards from the oceans"
-
-**Plan Phase:**
-- "DFS from Pacific borders to find Pacific-reachable cells"
-- "DFS from Atlantic borders to find Atlantic-reachable cells"
-- "Return intersection of both sets"
-
-**Common Mistakes to Watch For:**
-- Wrong flow direction (should go from low to high when working backwards)
-- Not starting from all border cells
-- Using wrong comparison (< vs <=)
-
-**Hints if Stuck:**
-- "What if you start from the oceans instead of each cell?"
-- "Water flows uphill when traversing backwards from ocean"
-- "You need two separate DFS explorations"
-
----
+**Pattern:** Multi-source DFS
+**Key insight:** DFS from borders, find intersection
+**Common mistakes:** Wrong flow direction, not starting from all borders, wrong comparison
 
 ### Problem 5: Surrounded Regions
-
-**Understand Phase:**
-- "Only regions completely surrounded get flipped?"
-- "Border O's can never be surrounded?"
-- "We modify the board in-place?"
-
-**Match Phase:**
-- "Border-connected components stay as O"
-- "Everything else becomes X"
-
-**Plan Phase:**
-- "DFS from border O's to mark safe regions"
-- "Convert remaining O's to X's, safe marks back to O's"
-
-**Common Mistakes to Watch For:**
-- Trying to identify surrounded regions directly
-- Not checking all four borders
-- Modifying while traversing
-
----
+**Pattern:** Border-connected DFS
+**Key insight:** Mark border-connected as safe, flip rest
+**Common mistakes:** Trying to identify surrounded directly, not checking all borders
 
 ### Problem 6: Flood Fill
-
-**Understand Phase:**
-- "Change all connected pixels of the same color?"
-- "Only 4-directional connections?"
-- "What if new color equals original color?"
-
-**Match Phase:**
-- "Basic DFS color fill"
-- "Similar to paint bucket tool"
-
-**Plan Phase:**
-- "Check if colors are same (edge case)"
-- "DFS to change all connected pixels"
-
-**Common Mistakes to Watch For:**
-- Infinite recursion when newColor equals original
-- Not storing original color before starting
-- Wrong boundary checks
-
----
+**Pattern:** Basic grid DFS
+**Key insight:** Edge case when newColor == originalColor
+**Common mistakes:** Infinite recursion with same color, not storing original
 
 ### Problem 7: Connected Components
-
-**Understand Phase:**
-- "Count separate graph components?"
-- "Nodes are labeled 0 to n-1?"
-- "Undirected edges?"
-
-**Match Phase:**
-- "Standard connected components problem"
-- "Need to track visited nodes"
-
-**Plan Phase:**
-- "Build adjacency list from edges"
-- "DFS from each unvisited node"
-- "Count number of DFS starts needed"
-
-**Common Mistakes to Watch For:**
-- Not building bidirectional edges for undirected graph
-- Missing isolated nodes (no edges)
-- Not initializing adjacency list for all nodes
-
----
+**Pattern:** Graph DFS with counting
+**Key insight:** Count number of DFS starts needed
+**Common mistakes:** Not building bidirectional edges, missing isolated nodes
 
 ### Problem 8: Word Search
-
-**Understand Phase:**
-- "Can we reuse the same cell?"
-- "Only horizontal and vertical moves?"
-- "Do we just return true/false or the path?"
-
-**Match Phase:**
-- "DFS with backtracking"
-- "Need to track current position in word"
-
-**Plan Phase:**
-- "Try starting from each cell"
-- "Mark cells as visited, then unmark (backtrack)"
-- "Use index to track position in word"
-
-**Common Mistakes to Watch For:**
-- Not backtracking (unmarking cells)
-- Not trying all starting positions
-- Reusing cells in the same path
-
----
+**Pattern:** DFS with backtracking
+**Key insight:** Mark visited, explore, then unmark (backtrack)
+**Common mistakes:** Not backtracking, reusing cells, not trying all starts
 
 ### Problem 9: All Paths Source to Target
-
-**Understand Phase:**
-- "It's a DAG so no cycles?"
-- "Find ALL paths, not just one?"
-- "Path from 0 to n-1?"
-
-**Match Phase:**
-- "Path enumeration with DFS"
-- "No visited set needed (DAG)"
-
-**Plan Phase:**
-- "Build path during DFS"
-- "Add to result when reaching target"
-- "Backtrack to explore other paths"
-
-**Common Mistakes to Watch For:**
-- Not copying path when adding to result
-- Forgetting to backtrack
-- Including incomplete paths
-
----
+**Pattern:** Path enumeration
+**Key insight:** Build path, copy when adding to result, backtrack
+**Common mistakes:** Not copying path, forgetting to backtrack, incomplete paths
 
 ### Problem 10: Detect Cycle
-
-**Understand Phase:**
-- "Undirected graph?"
-- "Just detect if any cycle exists?"
-- "Can have disconnected components?"
-
-**Match Phase:**
-- "DFS with parent tracking"
-- "Cycle exists if we visit a non-parent visited node"
-
-**Plan Phase:**
-- "Track parent in DFS"
-- "If neighbor is visited and not parent → cycle"
-- "Check all components"
-
-**Common Mistakes to Watch For:**
-- Not tracking parent (treats all edges as cycles)
-- Not checking disconnected components
-- Wrong parent initialization
+**Pattern:** DFS with parent tracking
+**Key insight:** Visited neighbor that's not parent = cycle
+**Common mistakes:** Treating all edges as cycles, not tracking parent
 
 ---
 
-## Evaluation Criteria
+## Encouraging Statements
 
-### Code Quality
-- Clean, readable code
-- Good variable names
-- Proper indentation
-- Comments for complex logic
-
-### Problem Solving
-- Asks clarifying questions
-- Identifies edge cases
-- Systematic approach
-- Tests with examples
-
-### Communication
-- Explains thought process
-- Walks through approach
-- Discusses trade-offs
-- Analyzes complexity
-
-### Technical Skills
-- Correct DFS implementation
-- Proper base cases
-- Handles cycles/visited nodes
-- Efficient solution
+Use throughout:
+- "Great question!"
+- "Good thinking!"
+- "Excellent catch on that edge case!"
+- "I like how you're checking boundaries first"
+- "Nice optimization!"
+- "Clear explanation!"
+- "Exactly what interviewers want to see"
+- "Good recovery from that bug"
 
 ---
 
-## Difficulty Progression
+## If Struggling
 
-1. **Start Easy:** Flood Fill
-2. **Basic Grid:** Number of Islands
-3. **Grid Variant:** Max Area of Island
-4. **Graph Structure:** Clone Graph, Connected Components
-5. **Advanced:** Pacific Atlantic, Word Search
-6. **Complex Logic:** Surrounded Regions, Cycle Detection, All Paths
+**Stay supportive:**
+- "This is a tough problem. Let's break it down."
+- "You're on the right track. Think about..."
+- "Many candidates struggle here. Key insight is..."
+- "Struggling is part of learning. Let's work through it."
+
+**Never:**
+- Make them feel bad
+- Harsh "that's wrong"
+- Give up on them
+- Skip learning opportunity
+
+**Guide gently:**
+- "What if you drew the graph first?"
+- "Trace through a small example step by step"
+- "Think about what happens when there's a cycle"
+- "How can you track which cells you've visited?"
 
 ---
 
-## Time Guidelines
+## Success Metrics
 
-- Easy: 15 minutes
-- Medium: 25-30 minutes
-- Hard: 40-45 minutes
-
-If candidate is stuck for >5 minutes, provide a hint.
-If stuck for >10 minutes, guide toward solution.
+**After 10 problems, candidate should:**
+- Recognize graph DFS patterns quickly
+- Handle visited tracking automatically
+- Write grid DFS template from memory
+- Explain DFS vs BFS tradeoffs
+- Debug boundary and cycle issues
+- Analyze time/space complexity correctly
 
 ---
 
-## Notes for Claude
-
-- Be encouraging but honest
-- Point out good approaches
-- Suggest optimizations gently
-- Focus on learning, not just solving
-- Celebrate progress and insights
+[Continue pattern for all 10 problems]

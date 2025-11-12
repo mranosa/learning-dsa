@@ -1,320 +1,372 @@
-# BST Problems
+# Problems - Session 9: Binary Search Trees
 
-## Problem Order
-1. Search in a BST (Easy) - Warm-up
-2. Validate Binary Search Tree (Medium) - Core concept
-3. Kth Smallest Element in a BST (Medium) - Use BST property
-4. Lowest Common Ancestor of a BST (Medium) - BST navigation
-5. Insert into a BST (Medium) - Basic operation
-6. Delete Node in a BST (Medium) - Complex operation
-7. Convert Sorted Array to BST (Easy) - Construction
-8. Two Sum IV - Input is a BST (Easy) - Creative use
-9. Serialize and Deserialize BST (Medium) - Advanced
-10. Recover Binary Search Tree (Hard) - Challenge
+10 problems in order. Use UMPIRE method.
+
+**Targets:** Easy <15 min | Medium <25 min
 
 ---
 
-## 1. Search in a BST
-**Difficulty:** Easy
-**Time:** 10 minutes
-**LeetCode:** [700](https://leetcode.com/problems/search-in-a-binary-search-tree/)
+## Problem 1: Search in a BST
 
-### Problem Statement
-You are given the root of a binary search tree (BST) and an integer val.
+**Difficulty:** Easy | **Pattern:** BST Navigation
+**LeetCode:** https://leetcode.com/problems/search-in-a-binary-search-tree/
 
-Find the node in the BST that the node's value equals val and return the subtree rooted with that node. If such a node does not exist, return null.
+### Problem
+
+Given root of BST and integer `val`, find node where `node.val === val`. Return subtree rooted at that node. Return null if not found.
 
 ### Examples
+
 ```
-Input: root = [4,2,7,1,3], val = 2
+root = [4,2,7,1,3], val = 2
 Output: [2,1,3]
 
-Input: root = [4,2,7,1,3], val = 5
-Output: []
+root = [4,2,7,1,3], val = 5
+Output: null
 ```
 
 ### Constraints
-- The number of nodes in the tree is in the range [1, 5000]
+
+- 1 <= Node count <= 5000
 - 1 <= Node.val <= 10^7
-- root is a binary search tree
+- root is a BST
 - 1 <= val <= 10^7
 
+### Hints
+- Use BST property to eliminate half
+- If val < root.val, search left only
+- Iterative solution uses O(1) space
+
 ---
 
-## 2. Validate Binary Search Tree
-**Difficulty:** Medium
-**Time:** 20 minutes
-**LeetCode:** [98](https://leetcode.com/problems/validate-binary-search-tree/)
+## Problem 2: Validate Binary Search Tree
 
-### Problem Statement
-Given the root of a binary tree, determine if it is a valid binary search tree (BST).
+**Difficulty:** Medium | **Pattern:** Range Validation
+**LeetCode:** https://leetcode.com/problems/validate-binary-search-tree/
 
-A valid BST is defined as follows:
-- The left subtree of a node contains only nodes with keys less than the node's key.
-- The right subtree of a node contains only nodes with keys greater than the node's key.
-- Both the left and right subtrees must also be binary search trees.
+### Problem
+
+Given root of binary tree, determine if it's a valid BST.
+
+Valid BST:
+- Left subtree nodes < node value
+- Right subtree nodes > node value
+- Both subtrees are also valid BSTs
 
 ### Examples
+
 ```
-Input: root = [2,1,3]
+root = [2,1,3]
 Output: true
 
-Input: root = [5,1,4,null,null,3,6]
-Output: false
-Explanation: The root node's value is 5 but its right child's value is 4.
+root = [5,1,4,null,null,3,6]
+Output: false  (4 < 5, but 3 < 5 breaks property)
 ```
 
 ### Constraints
-- The number of nodes in the tree is in the range [1, 10^4]
+
+- 1 <= Node count <= 10^4
 - -2^31 <= Node.val <= 2^31 - 1
+
+### Hints
+- Can't just compare with immediate children
+- Use range (min, max) for each node
+- Alternative: inorder gives sorted sequence
 
 ---
 
-## 3. Kth Smallest Element in a BST
-**Difficulty:** Medium
-**Time:** 20 minutes
-**LeetCode:** [230](https://leetcode.com/problems/kth-smallest-element-in-a-bst/)
+## Problem 3: Kth Smallest Element in BST
 
-### Problem Statement
-Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.
+**Difficulty:** Medium | **Pattern:** Inorder Traversal
+**LeetCode:** https://leetcode.com/problems/kth-smallest-element-in-a-bst/
+
+### Problem
+
+Given root of BST and integer `k`, return kth smallest value (1-indexed).
 
 ### Examples
+
 ```
-Input: root = [3,1,4,null,2], k = 1
+root = [3,1,4,null,2], k = 1
 Output: 1
 
-Input: root = [5,3,6,2,4,null,null,1], k = 3
+root = [5,3,6,2,4,null,null,1], k = 3
 Output: 3
 ```
 
 ### Constraints
-- The number of nodes in the tree is n
+
+- n nodes in tree
 - 1 <= k <= n <= 10^4
 - 0 <= Node.val <= 10^4
 
-### Follow up
-If the BST is modified often (i.e., we can do insert and delete operations) and you need to find the kth smallest frequently, how would you optimize?
+### Follow-up
+If BST modified often and need kth frequently, how optimize?
+
+### Hints
+- Inorder traversal gives sorted sequence
+- Use counter, stop at kth node
+- Can optimize to O(k) time
 
 ---
 
-## 4. Lowest Common Ancestor of a BST
-**Difficulty:** Medium
-**Time:** 15 minutes
-**LeetCode:** [235](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/)
+## Problem 4: Lowest Common Ancestor of BST
 
-### Problem Statement
-Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST.
+**Difficulty:** Medium | **Pattern:** BST Navigation
+**LeetCode:** https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
 
-According to the definition of LCA on Wikipedia: "The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself)."
+### Problem
+
+Given BST, find lowest common ancestor (LCA) of two nodes p and q.
+
+LCA: lowest node that has both p and q as descendants (node can be descendant of itself).
 
 ### Examples
-```
-Input: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8
-Output: 6
-Explanation: The LCA of nodes 2 and 8 is 6.
 
-Input: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 4
+```
+root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8
+Output: 6
+
+root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 4
 Output: 2
-Explanation: The LCA of nodes 2 and 4 is 2, since a node can be a descendant of itself.
 ```
 
 ### Constraints
-- The number of nodes in the tree is in the range [2, 10^5]
+
+- 2 <= Node count <= 10^5
 - -10^9 <= Node.val <= 10^9
-- All Node.val are unique
+- All values unique
 - p != q
-- p and q will exist in the BST
+- p and q exist in BST
+
+### Hints
+- Use BST property to navigate
+- If both < root, go left
+- If both > root, go right
+- Otherwise, root is LCA
 
 ---
 
-## 5. Insert into a BST
-**Difficulty:** Medium
-**Time:** 15 minutes
-**LeetCode:** [701](https://leetcode.com/problems/insert-into-a-binary-search-tree/)
+## Problem 5: Insert into a BST
 
-### Problem Statement
-You are given the root node of a binary search tree (BST) and a value to insert into the tree. Return the root node of the BST after the insertion. It is guaranteed that the new value does not exist in the original BST.
+**Difficulty:** Medium | **Pattern:** BST Construction
+**LeetCode:** https://leetcode.com/problems/insert-into-a-binary-search-tree/
 
-Notice that there may exist multiple valid ways for the insertion, as long as the tree remains a BST after insertion. You can return any of them.
+### Problem
+
+Given BST root and value to insert, return BST root after insertion. New value doesn't exist in BST. Multiple valid answers possible.
 
 ### Examples
-```
-Input: root = [4,2,7,1,3], val = 5
-Output: [4,2,7,1,3,5]
-Explanation: Another accepted tree is [5,2,7,1,3,null,4]
 
-Input: root = [40,20,60,10,30,50,70], val = 25
+```
+root = [4,2,7,1,3], val = 5
+Output: [4,2,7,1,3,5]
+
+root = [40,20,60,10,30,50,70], val = 25
 Output: [40,20,60,10,30,50,70,null,null,25]
 ```
 
 ### Constraints
-- The number of nodes in the tree will be in the range [0, 10^4]
+
+- 0 <= Node count <= 10^4
 - -10^8 <= Node.val <= 10^8
-- All the values Node.val are unique
+- All values unique
 - -10^8 <= val <= 10^8
-- It's guaranteed that val does not exist in the original BST
+- val doesn't exist in BST
+
+### Hints
+- New nodes inserted as leaves
+- Navigate like search
+- Insert at first null position
 
 ---
 
-## 6. Delete Node in a BST
-**Difficulty:** Medium
-**Time:** 25 minutes
-**LeetCode:** [450](https://leetcode.com/problems/delete-node-in-a-bst/)
+## Problem 6: Delete Node in a BST
 
-### Problem Statement
-Given a root node reference of a BST and a key, delete the node with the given key in the BST. Return the root node reference (possibly updated) of the BST.
+**Difficulty:** Medium | **Pattern:** BST Modification
+**LeetCode:** https://leetcode.com/problems/delete-node-in-a-bst/
 
-Basically, the deletion can be divided into two stages:
-1. Search for a node to remove
-2. If the node is found, delete the node
+### Problem
+
+Given BST root and key, delete node with given key. Return root (possibly updated).
 
 ### Examples
-```
-Input: root = [5,3,6,2,4,null,7], key = 3
-Output: [5,4,6,2,null,null,7]
-Explanation: Given key to delete is 3. So we find the node with value 3 and delete it.
-One valid answer is [5,4,6,2,null,null,7].
-Another valid answer is [5,2,6,null,4,null,7].
 
-Input: root = [5,3,6,2,4,null,7], key = 0
+```
+root = [5,3,6,2,4,null,7], key = 3
+Output: [5,4,6,2,null,null,7]
+
+root = [5,3,6,2,4,null,7], key = 0
 Output: [5,3,6,2,4,null,7]
-Explanation: The tree does not contain a node with value = 0.
 ```
 
 ### Constraints
-- The number of nodes in the tree is in the range [0, 10^4]
+
+- 0 <= Node count <= 10^4
 - -10^5 <= Node.val <= 10^5
-- Each node has a unique value
-- root is a valid binary search tree
+- Each value unique
+- root is valid BST
 - -10^5 <= key <= 10^5
 
+### Hints
+- Three cases: leaf, one child, two children
+- Two children: replace with successor/predecessor
+- Successor: min of right subtree
+- Then recursively delete successor
+
 ---
 
-## 7. Convert Sorted Array to BST
-**Difficulty:** Easy
-**Time:** 15 minutes
-**LeetCode:** [108](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/)
+## Problem 7: Convert Sorted Array to BST
 
-### Problem Statement
-Given an integer array nums where the elements are sorted in ascending order, convert it to a height-balanced binary search tree.
+**Difficulty:** Easy | **Pattern:** BST Construction
+**LeetCode:** https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/
 
-A height-balanced binary tree is a binary tree in which the depth of the two subtrees of every node never differs by more than one.
+### Problem
+
+Given sorted integer array, convert to height-balanced BST.
+
+Height-balanced: depth of two subtrees never differs by more than 1.
 
 ### Examples
-```
-Input: nums = [-10,-3,0,5,9]
-Output: [0,-3,9,-10,null,5]
-Explanation: [0,-10,5,null,-3,null,9] is also accepted.
 
-Input: nums = [1,3]
-Output: [3,1]
-Explanation: [1,null,3] and [3,1] are both valid.
+```
+nums = [-10,-3,0,5,9]
+Output: [0,-3,9,-10,null,5]
+
+nums = [1,3]
+Output: [3,1] or [1,null,3]
 ```
 
 ### Constraints
+
 - 1 <= nums.length <= 10^4
 - -10^4 <= nums[i] <= 10^4
-- nums is sorted in a strictly increasing order
+- nums sorted in strictly increasing order
+
+### Hints
+- Middle element as root ensures balance
+- Recursively build left and right
+- O(n) time, O(log n) space
 
 ---
 
-## 8. Two Sum IV - Input is a BST
-**Difficulty:** Easy
-**Time:** 15 minutes
-**LeetCode:** [653](https://leetcode.com/problems/two-sum-iv-input-is-a-bst/)
+## Problem 8: Two Sum IV - Input is BST
 
-### Problem Statement
-Given the root of a binary search tree and an integer k, return true if there exist two elements in the BST such that their sum is equal to k, or false otherwise.
+**Difficulty:** Easy | **Pattern:** BST + Hash
+**LeetCode:** https://leetcode.com/problems/two-sum-iv-input-is-a-bst/
+
+### Problem
+
+Given BST root and integer `k`, return true if two elements exist in BST that sum to `k`.
 
 ### Examples
-```
-Input: root = [5,3,6,2,4,null,7], k = 9
-Output: true
 
-Input: root = [5,3,6,2,4,null,7], k = 28
+```
+root = [5,3,6,2,4,null,7], k = 9
+Output: true  (3 + 6 = 9)
+
+root = [5,3,6,2,4,null,7], k = 28
 Output: false
 ```
 
 ### Constraints
-- The number of nodes in the tree is in the range [1, 10^4]
+
+- 1 <= Node count <= 10^4
 - -10^4 <= Node.val <= 10^4
-- root is guaranteed to be a valid binary search tree
+- root is valid BST
 - -10^5 <= k <= 10^5
+
+### Hints
+- HashSet approach: O(n) time, O(n) space
+- Or inorder to sorted array + two pointers
+- BST iterator for O(h) space (advanced)
 
 ---
 
-## 9. Serialize and Deserialize BST
-**Difficulty:** Medium
-**Time:** 30 minutes
-**LeetCode:** [449](https://leetcode.com/problems/serialize-and-deserialize-bst/)
+## Problem 9: Serialize and Deserialize BST
 
-### Problem Statement
-Serialization is converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment.
+**Difficulty:** Medium | **Pattern:** BST Serialization
+**LeetCode:** https://leetcode.com/problems/serialize-and-deserialize-bst/
 
-Design an algorithm to serialize and deserialize a binary search tree. There is no restriction on how your serialization/deserialization algorithm should work. You need to ensure that a binary search tree can be serialized to a string, and this string can be deserialized to the original tree structure.
+### Problem
 
-The encoded string should be as compact as possible.
+Design algorithm to serialize and deserialize BST. Encoded string should be compact as possible.
 
 ### Examples
+
 ```
-Input: root = [2,1,3]
+root = [2,1,3]
 Output: [2,1,3]
 
-Input: root = []
+root = []
 Output: []
 ```
 
 ### Constraints
-- The number of nodes in the tree is in the range [0, 10^4]
+
+- 0 <= Node count <= 10^4
 - 0 <= Node.val <= 10^4
-- The input tree is guaranteed to be a binary search tree
+- Input is guaranteed BST
+
+### Hints
+- Preorder traversal for serialization
+- Use BST property for deserialization
+- No need for null markers
+- Track min/max bounds during rebuild
 
 ---
 
-## 10. Recover Binary Search Tree
-**Difficulty:** Hard
-**Time:** 35 minutes
-**LeetCode:** [99](https://leetcode.com/problems/recover-binary-search-tree/)
+## Problem 10: Inorder Successor in BST
 
-### Problem Statement
-You are given the root of a binary search tree (BST), where the values of exactly two nodes of the tree were swapped by mistake. Recover the tree without changing its structure.
+**Difficulty:** Medium | **Pattern:** BST Navigation
+**LeetCode:** https://leetcode.com/problems/inorder-successor-in-bst/
+
+### Problem
+
+Given BST and node, find inorder successor. Successor is node with smallest value greater than current node.
 
 ### Examples
-```
-Input: root = [1,3,null,null,2]
-Output: [3,1,null,null,2]
-Explanation: 3 cannot be a left child of 1 because 3 > 1. Swapping 1 and 3 makes the BST valid.
 
-Input: root = [3,1,4,null,null,2]
-Output: [2,1,4,null,null,3]
-Explanation: 2 cannot be in the right subtree of 3 because 2 < 3. Swapping 2 and 3 makes the BST valid.
+```
+root = [2,1,3], p = 1
+Output: 2
+
+root = [5,3,6,2,4,null,null,1], p = 6
+Output: null
 ```
 
 ### Constraints
-- The number of nodes in the tree is in the range [2, 1000]
-- -2^31 <= Node.val <= 2^31 - 1
 
-### Follow up
-A solution using O(n) space is pretty straight-forward. Could you devise a constant O(1) space solution?
+- Number of nodes in range [1, 10^4]
+- -10^5 <= Node.val <= 10^5
+- All values unique
+
+### Hints
+- If node has right child: successor is min of right
+- If no right child: successor is ancestor where we last turned left
+- Can solve in O(h) time without parent pointers
 
 ---
 
-## Problem-Solving Strategy
+## Summary
 
-### For BST Problems:
-1. **Always consider the BST property** - Can eliminate half the tree
-2. **Inorder traversal gives sorted order** - Useful for many problems
-3. **Use range bounds for validation** - Track min/max values
-4. **Think recursively first** - Then optimize to iterative if needed
-5. **Draw examples** - Visualize tree operations
+**Total:** 10 problems (3 Easy, 7 Medium)
 
-### Time Management:
-- Easy: 10-15 minutes each
-- Medium: 15-25 minutes each
-- Hard: 30-35 minutes
+**Patterns:**
+- BST Navigation
+- Range Validation
+- Inorder Traversal
+- BST Construction/Modification
+- BST Serialization
 
-### If stuck:
-1. Review BST properties in LESSON.md
-2. Check HINTS.md for progressive hints
-3. Draw the tree and trace through manually
-4. Consider both recursive and iterative approaches
+**Key Techniques:**
+- Use BST property to eliminate half
+- Inorder gives sorted sequence
+- Range bounds for validation
+- Successor/predecessor patterns
+
+---
+
+**Ready?** Say: `"Claude, give me the problem"` or `"Go"`
+
+[Solutions](./SOLUTIONS.md) | [Hints](./HINTS.md)

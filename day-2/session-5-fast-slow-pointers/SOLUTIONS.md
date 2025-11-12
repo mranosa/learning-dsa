@@ -1,8 +1,8 @@
-# Fast/Slow Pointers - Complete Solutions
+# Fast/Slow Pointers - Solutions
 
 ## Problem 1: Linked List Cycle
 
-### Approach 1: Floyd's Cycle Detection (Optimal)
+### Optimal: Floyd's Cycle Detection
 ```typescript
 function hasCycle(head: ListNode | null): boolean {
     if (!head || !head.next) return false;
@@ -14,27 +14,22 @@ function hasCycle(head: ListNode | null): boolean {
         slow = slow!.next;
         fast = fast.next.next;
 
-        if (slow === fast) {
-            return true;
-        }
+        if (slow === fast) return true;
     }
 
     return false;
 }
 ```
-**Time:** O(n) - visit each node at most twice
-**Space:** O(1) - only two pointers
+**Time:** O(n) | **Space:** O(1)
 
-### Approach 2: Hash Set
+### Alternative: Hash Set
 ```typescript
 function hasCycle(head: ListNode | null): boolean {
     const visited = new Set<ListNode>();
 
     let current = head;
     while (current) {
-        if (visited.has(current)) {
-            return true;
-        }
+        if (visited.has(current)) return true;
         visited.add(current);
         current = current.next;
     }
@@ -42,14 +37,13 @@ function hasCycle(head: ListNode | null): boolean {
     return false;
 }
 ```
-**Time:** O(n) - visit each node once
-**Space:** O(n) - store all nodes in set
+**Time:** O(n) | **Space:** O(n)
 
 ---
 
 ## Problem 2: Linked List Cycle II
 
-### Approach 1: Two-Phase Floyd's Algorithm (Optimal)
+### Optimal: Two-Phase Floyd's
 ```typescript
 function detectCycle(head: ListNode | null): ListNode | null {
     if (!head || !head.next) return null;
@@ -57,13 +51,13 @@ function detectCycle(head: ListNode | null): ListNode | null {
     let slow: ListNode | null = head;
     let fast: ListNode | null = head;
 
-    // Phase 1: Detect if cycle exists
+    // Phase 1: Detect cycle
     while (fast && fast.next) {
         slow = slow!.next;
         fast = fast.next.next;
 
         if (slow === fast) {
-            // Phase 2: Find cycle entry point
+            // Phase 2: Find entry
             slow = head;
             while (slow !== fast) {
                 slow = slow!.next;
@@ -76,34 +70,13 @@ function detectCycle(head: ListNode | null): ListNode | null {
     return null;
 }
 ```
-**Time:** O(n) - at most 2n iterations
-**Space:** O(1) - only pointers
-
-### Approach 2: Hash Set
-```typescript
-function detectCycle(head: ListNode | null): ListNode | null {
-    const visited = new Set<ListNode>();
-
-    let current = head;
-    while (current) {
-        if (visited.has(current)) {
-            return current;
-        }
-        visited.add(current);
-        current = current.next;
-    }
-
-    return null;
-}
-```
-**Time:** O(n) - visit each node once
-**Space:** O(n) - store visited nodes
+**Time:** O(n) | **Space:** O(1)
 
 ---
 
 ## Problem 3: Happy Number
 
-### Approach 1: Floyd's Cycle Detection (Optimal)
+### Optimal: Floyd's on Sequence
 ```typescript
 function isHappy(n: number): boolean {
     const getNext = (num: number): number => {
@@ -127,36 +100,13 @@ function isHappy(n: number): boolean {
     return slow === 1;
 }
 ```
-**Time:** O(log n) - number of digits proportional to log n
-**Space:** O(1) - only two variables
-
-### Approach 2: Hash Set
-```typescript
-function isHappy(n: number): boolean {
-    const seen = new Set<number>();
-
-    while (n !== 1 && !seen.has(n)) {
-        seen.add(n);
-        let sum = 0;
-        while (n > 0) {
-            const digit = n % 10;
-            sum += digit * digit;
-            n = Math.floor(n / 10);
-        }
-        n = sum;
-    }
-
-    return n === 1;
-}
-```
-**Time:** O(log n)
-**Space:** O(log n) - store seen numbers
+**Time:** O(log n) | **Space:** O(1)
 
 ---
 
 ## Problem 4: Middle of the Linked List
 
-### Approach 1: Fast/Slow Pointers (Optimal)
+### Optimal: Fast/Slow Pointers
 ```typescript
 function middleNode(head: ListNode | null): ListNode | null {
     if (!head) return null;
@@ -172,43 +122,16 @@ function middleNode(head: ListNode | null): ListNode | null {
     return slow;
 }
 ```
-**Time:** O(n) - single pass
-**Space:** O(1) - only pointers
-
-### Approach 2: Two Pass
-```typescript
-function middleNode(head: ListNode | null): ListNode | null {
-    if (!head) return null;
-
-    // Count nodes
-    let length = 0;
-    let current = head;
-    while (current) {
-        length++;
-        current = current.next;
-    }
-
-    // Find middle
-    const middle = Math.floor(length / 2);
-    current = head;
-    for (let i = 0; i < middle; i++) {
-        current = current.next!;
-    }
-
-    return current;
-}
-```
-**Time:** O(n) - two passes
-**Space:** O(1)
+**Time:** O(n) | **Space:** O(1)
 
 ---
 
 ## Problem 5: Find the Duplicate Number
 
-### Approach 1: Floyd's Cycle Detection (Optimal)
+### Optimal: Floyd's on Array
 ```typescript
 function findDuplicate(nums: number[]): number {
-    // Phase 1: Find intersection point in cycle
+    // Phase 1: Find meeting point
     let slow = nums[0];
     let fast = nums[0];
 
@@ -217,7 +140,7 @@ function findDuplicate(nums: number[]): number {
         fast = nums[nums[fast]];
     } while (slow !== fast);
 
-    // Phase 2: Find entrance to cycle (duplicate)
+    // Phase 2: Find duplicate
     slow = nums[0];
     while (slow !== fast) {
         slow = nums[slow];
@@ -227,10 +150,9 @@ function findDuplicate(nums: number[]): number {
     return slow;
 }
 ```
-**Time:** O(n) - at most 2n iterations
-**Space:** O(1) - only pointers
+**Time:** O(n) | **Space:** O(1)
 
-### Approach 2: Binary Search
+### Alternative: Binary Search
 ```typescript
 function findDuplicate(nums: number[]): number {
     let left = 1;
@@ -254,14 +176,13 @@ function findDuplicate(nums: number[]): number {
     return left;
 }
 ```
-**Time:** O(n log n) - binary search with linear counting
-**Space:** O(1)
+**Time:** O(n log n) | **Space:** O(1)
 
 ---
 
 ## Problem 6: Remove Nth Node From End of List
 
-### Approach 1: Two Pointers with Gap (Optimal)
+### Optimal: Two Pointers with Gap
 ```typescript
 function removeNthFromEnd(head: ListNode | null, n: number): ListNode | null {
     const dummy = new ListNode(0, head);
@@ -285,47 +206,18 @@ function removeNthFromEnd(head: ListNode | null, n: number): ListNode | null {
     return dummy.next;
 }
 ```
-**Time:** O(n) - single pass
-**Space:** O(1) - only pointers
-
-### Approach 2: Two Pass
-```typescript
-function removeNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    const dummy = new ListNode(0, head);
-    let length = 0;
-    let current = head;
-
-    // Count nodes
-    while (current) {
-        length++;
-        current = current.next;
-    }
-
-    // Find node before target
-    current = dummy;
-    for (let i = 0; i < length - n; i++) {
-        current = current.next!;
-    }
-
-    // Remove node
-    current.next = current.next!.next;
-
-    return dummy.next;
-}
-```
-**Time:** O(n) - two passes
-**Space:** O(1)
+**Time:** O(n) | **Space:** O(1)
 
 ---
 
 ## Problem 7: Reorder List
 
-### Approach: Find Middle + Reverse + Merge
+### Optimal: Find Middle + Reverse + Merge
 ```typescript
 function reorderList(head: ListNode | null): void {
     if (!head || !head.next) return;
 
-    // Step 1: Find middle using fast/slow pointers
+    // Step 1: Find middle
     let slow = head;
     let fast = head;
     while (fast.next && fast.next.next) {
@@ -336,7 +228,7 @@ function reorderList(head: ListNode | null): void {
     // Step 2: Reverse second half
     let prev: ListNode | null = null;
     let curr = slow.next;
-    slow.next = null; // Split the list
+    slow.next = null;
 
     while (curr) {
         const next = curr.next;
@@ -345,7 +237,7 @@ function reorderList(head: ListNode | null): void {
         curr = next;
     }
 
-    // Step 3: Merge two halves
+    // Step 3: Merge
     let first = head;
     let second = prev;
 
@@ -361,14 +253,13 @@ function reorderList(head: ListNode | null): void {
     }
 }
 ```
-**Time:** O(n) - three linear passes
-**Space:** O(1) - in-place reordering
+**Time:** O(n) | **Space:** O(1)
 
 ---
 
 ## Problem 8: Palindrome Linked List
 
-### Approach 1: Reverse Second Half (Optimal)
+### Optimal: Reverse Second Half
 ```typescript
 function isPalindrome(head: ListNode | null): boolean {
     if (!head || !head.next) return true;
@@ -391,7 +282,7 @@ function isPalindrome(head: ListNode | null): boolean {
         curr = next;
     }
 
-    // Compare two halves
+    // Compare
     let p1 = head;
     let p2 = prev;
     while (p2) {
@@ -403,41 +294,13 @@ function isPalindrome(head: ListNode | null): boolean {
     return true;
 }
 ```
-**Time:** O(n) - three passes
-**Space:** O(1) - in-place operations
-
-### Approach 2: Stack
-```typescript
-function isPalindrome(head: ListNode | null): boolean {
-    const stack: number[] = [];
-    let current = head;
-
-    // Push all values to stack
-    while (current) {
-        stack.push(current.val);
-        current = current.next;
-    }
-
-    // Compare with popped values
-    current = head;
-    while (current) {
-        if (current.val !== stack.pop()) {
-            return false;
-        }
-        current = current.next;
-    }
-
-    return true;
-}
-```
-**Time:** O(n)
-**Space:** O(n) - stack storage
+**Time:** O(n) | **Space:** O(1)
 
 ---
 
 ## Problem 9: Circular Array Loop
 
-### Approach: Fast/Slow Pointers with Validation
+### Optimal: Fast/Slow with Validation
 ```typescript
 function circularArrayLoop(nums: number[]): boolean {
     const n = nums.length;
@@ -452,7 +315,7 @@ function circularArrayLoop(nums: number[]): boolean {
         let slow = i;
         let fast = i;
 
-        // Check if all movements are in same direction
+        // Check same direction
         while (nums[slow] * nums[fast] > 0 &&
                nums[slow] * nums[getNext(fast)] > 0) {
             slow = getNext(slow);
@@ -465,7 +328,7 @@ function circularArrayLoop(nums: number[]): boolean {
             }
         }
 
-        // Mark visited path as 0
+        // Mark visited
         slow = i;
         const sign = nums[i];
         while (sign * nums[slow] > 0) {
@@ -478,14 +341,13 @@ function circularArrayLoop(nums: number[]): boolean {
     return false;
 }
 ```
-**Time:** O(n) - each element visited at most twice
-**Space:** O(1) - modify input array
+**Time:** O(n) | **Space:** O(1)
 
 ---
 
 ## Problem 10: Intersection of Two Linked Lists
 
-### Approach 1: Two Pointers (Optimal)
+### Optimal: Two Pointers
 ```typescript
 function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
     if (!headA || !headB) return null;
@@ -493,7 +355,7 @@ function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): Li
     let pA: ListNode | null = headA;
     let pB: ListNode | null = headB;
 
-    // When reaching end, switch to other list's head
+    // Switch to other list when reaching end
     while (pA !== pB) {
         pA = pA ? pA.next : headB;
         pB = pB ? pB.next : headA;
@@ -502,10 +364,16 @@ function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): Li
     return pA;
 }
 ```
-**Time:** O(m + n) - traverse both lists
-**Space:** O(1) - only pointers
+**Time:** O(m + n) | **Space:** O(1)
 
-### Approach 2: Length Difference
+**Why it works:**
+- List A: a + c (a = unique, c = common)
+- List B: b + c
+- Pointer A: a + c + b
+- Pointer B: b + c + a
+- Both travel same distance, meet at intersection!
+
+### Alternative: Length Difference
 ```typescript
 function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
     if (!headA || !headB) return null;
@@ -523,7 +391,7 @@ function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): Li
         currB = currB.next;
     }
 
-    // Align starting points
+    // Align
     currA = headA;
     currB = headB;
 
@@ -546,5 +414,4 @@ function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): Li
     return currA;
 }
 ```
-**Time:** O(m + n)
-**Space:** O(1)
+**Time:** O(m + n) | **Space:** O(1)

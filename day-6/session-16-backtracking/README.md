@@ -1,46 +1,38 @@
 # Day 6, Session 16: Backtracking
 
 ## Overview
-Master the art of systematic exploration and backtracking - the key pattern for solving combinatorial problems in interviews.
 
-**Duration:** 3-5 hours
-**Problems:** 10 (8 Medium, 2 Hard)
-**Prerequisites:** Recursion, arrays, basic tree concepts
+Master the art of systematic exploration and backtracking - the fundamental pattern for solving combinatorial and constraint satisfaction problems in technical interviews.
+
+**Duration:** 3-5 hours | **Problems:** 10 (8 Medium, 2 Hard)
 
 ---
 
 ## Learning Objectives
 
-By the end of this session, you will:
-- ✅ Understand the backtracking decision tree model
-- ✅ Master the backtracking template for all problems
+- ✅ Understand backtracking and the decision tree model
+- ✅ Master the universal backtracking template
 - ✅ Solve subset, permutation, and combination problems
 - ✅ Implement efficient pruning strategies
-- ✅ Handle duplicate elements in backtracking
+- ✅ Handle duplicate elements correctly
+- ✅ Recognize when to use backtracking vs other approaches
 
 ---
 
 ## Session Flow
 
-### 1. Video (25 min)
-Watch the assigned video on Backtracking fundamentals and patterns.
+### 1. Videos (50 min)
+- Backtracking Fundamentals (25 min)
+- Decision Trees & State Space (15 min)
+- Advanced Patterns (10 min)
 
 ### 2. Concept Check (10 min)
-Claude will quiz you on:
-- Backtracking vs brute force
-- Decision tree visualization
-- State space pruning
-- Time complexity analysis
+Quiz on backtracking vs recursion, decision trees, time complexity, pruning.
 
 ### 3. Tips & Tricks (10 min)
-Learn interview-specific insights about:
-- The universal backtracking template
-- When to use index vs element tracking
-- Handling duplicates efficiently
-- Common pruning techniques
+Universal template, duplicate handling, optimization techniques, TypeScript patterns.
 
-### 4. Problem Solving (3-4 hours)
-Solve 10 carefully selected problems:
+### 4. Problems (3-4 hours)
 1. Subsets (Medium)
 2. Subsets II (Medium - with duplicates)
 3. Permutations (Medium)
@@ -56,33 +48,46 @@ Solve 10 carefully selected problems:
 
 ## Key Concepts
 
-### Backtracking Template
+### Backtracking Decision Tree
+```
+At each node: Make choice → Explore → Undo choice
+
+                    []
+           /         |         \
+         [1]        [2]        [3]
+        /  \       /  \       /  \
+    [1,2] [1,3] [2,1] [2,3] [3,1] [3,2]
+```
+
+### Universal Template
 ```typescript
-function backtrack(state, choices, result) {
+function backtrack(state, choices) {
     if (isValid(state)) {
-        result.push(copy(state));
+        result.push([...state]); // Copy!
         return;
     }
 
     for (choice of choices) {
+        if (!isValidChoice(choice)) continue; // Prune
+
         makeChoice(state, choice);
-        backtrack(state, remainingChoices, result);
-        undoChoice(state, choice);
+        backtrack(state, remainingChoices);
+        undoChoice(state, choice); // Backtrack!
     }
 }
 ```
 
 ### Problem Categories
-- **Subsets:** All possible combinations
-- **Permutations:** All arrangements
+- **Subsets:** All possible combinations (2^n)
+- **Permutations:** All arrangements (n!)
 - **Combinations:** Selections with constraints
-- **Partitioning:** Dividing into valid groups
-- **Generation:** Creating valid structures
+- **Partitioning:** Divide into valid groups
+- **Generation:** Create valid structures (parentheses, sudoku)
 
 ### Time Complexity Patterns
-- **Subsets:** O(2ⁿ × n)
+- **Subsets:** O(2^n × n)
 - **Permutations:** O(n! × n)
-- **Combinations:** O(2ⁿ) to O(n!)
+- **Combinations:** O(C(n,k) × k)
 - **N-Queens:** O(n!)
 
 ---
@@ -93,74 +98,69 @@ function backtrack(state, choices, result) {
 - Recursion fundamentals
 - Array manipulation
 - Basic tree traversal concepts
-- Set/Map operations
+- TypeScript array methods
 
 **Nice to have:**
 - DFS tree traversal
 - Combinatorial math basics
-- Pruning strategies
+- Set/Map operations
 
 ---
 
 ## Success Criteria
 
-You're ready to move on when you can:
-- [ ] Write the backtracking template from memory
-- [ ] Visualize the decision tree for any problem
+- [ ] Explain backtracking and decision trees confidently
+- [ ] Write the universal template from memory
 - [ ] Identify when to use backtracking
-- [ ] Implement pruning to optimize solutions
+- [ ] Solve subset/permutation problems <20 min
+- [ ] Implement pruning optimizations
 - [ ] Handle duplicates correctly
 
 ---
 
 ## Resources
 
-**Video:** See LESSON.md for link
-
-**Readings:**
-- Backtracking Patterns: LESSON.md
-- Template variations: SOLUTIONS.md
-
-**Practice:**
-- All problems in PROBLEMS.md
-- Solutions in SOLUTIONS.md
-- Hints in HINTS.md
+**Video:** LESSON.md
+**Practice:** PROBLEMS.md
+**Solutions:** SOLUTIONS.md
+**Hints:** HINTS.md
 
 ---
 
-## Tips for Success
+## Tips
 
-1. **Draw the decision tree** - Visualize before coding
-2. **Start with the template** - Adapt it to each problem
-3. **Think about choices** - What decisions at each step?
-4. **Track state carefully** - Know what to pass down
-5. **Practice pruning** - Identify invalid branches early
-6. **Handle base cases** - When to collect results
-7. **Debug systematically** - Print decision tree if stuck
+1. Watch all videos - foundation is critical
+2. Draw decision trees before coding
+3. Start with the universal template
+4. Think about choices at each step
+5. Always copy state when collecting results
+6. Test pruning with small inputs
+7. Review solutions even if correct
 
 ---
 
 ## Common Mistakes
 
-**Avoid these:**
-- ❌ Not copying state when adding to results
+- ❌ Not copying arrays when adding to results
 - ❌ Forgetting to backtrack (undo changes)
-- ❌ Incorrect duplicate handling with sorting
+- ❌ Incorrect duplicate handling without sorting
 - ❌ Missing base cases or termination conditions
-- ❌ Using global variables incorrectly
+- ❌ Not pruning invalid branches early
+- ❌ Using global state incorrectly
+- ❌ Mutating input without permission
 
 ---
 
 ## What's Next
 
-After completing this session:
-1. Take a 15-minute break
-2. Review your performance scores
-3. Practice drawing decision trees
-4. Move to Session 17: Dynamic Programming II
+After completion:
+1. 15-minute break
+2. Review scores and decision trees
+3. Practice drawing state spaces
+4. Session 17: Heaps (Priority Queues)
 
-Session 17 builds on backtracking by adding memoization for overlapping subproblems.
+Session 17 introduces heap data structures for efficient priority-based operations.
 
 ---
 
-**Ready to start?** Say: `"Claude, start session 6 16"`
+**Ready?** Say: `"Claude, start session 6 16"`

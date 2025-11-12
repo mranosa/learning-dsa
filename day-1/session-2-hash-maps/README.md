@@ -1,45 +1,36 @@
 # Day 1, Session 2: Hash Maps
 
 ## Overview
-Master the fundamentals of hash maps - the most powerful data structure for O(1) lookups and frequency counting.
 
-**Duration:** 2-4 hours
-**Problems:** 10 (2 Easy, 8 Medium)
-**Prerequisites:** Arrays, Big O notation
+Master O(1) lookups and frequency counting with hash maps.
+
+**Duration:** 2-4 hours | **Problems:** 10 (3 Easy, 7 Medium)
 
 ---
 
 ## Learning Objectives
 
-By the end of this session, you will:
-- ✅ Understand how hash maps work internally
-- ✅ Master O(1) lookup, insert, and delete operations
-- ✅ Recognize when to use hash maps vs arrays
-- ✅ Solve frequency counting problems efficiently
-- ✅ Handle collision resolution and hash functions
+- ✅ Understand hash map O(1) operations
+- ✅ Master frequency counting patterns
+- ✅ Use Map vs Set appropriately
+- ✅ Solve grouping/categorizing problems
+- ✅ Apply Two Sum pattern variations
 
 ---
 
 ## Session Flow
 
-### 1. Video (20 min)
-Watch the assigned video on Hash Map fundamentals and implementation.
+### 1. Videos (35 min)
+- Hash Map Fundamentals (20 min)
+- Hash Map Patterns (15 min)
 
 ### 2. Concept Check (10 min)
-Claude will quiz you on:
-- Hash function basics
-- Collision resolution strategies
-- Time/space complexity
-- Map vs Set differences
+Quiz on hash functions, collisions, Map/Set usage.
 
 ### 3. Tips & Tricks (5 min)
-Learn interview-specific insights about:
-- When to use Map vs Object in TypeScript
-- Common hash map patterns
-- Frequency counting optimization
+Map vs Object, frequency counting, TypeScript gotchas.
 
-### 4. Problem Solving (2-3 hours)
-Solve 10 carefully selected problems:
+### 4. Problems (2-3 hours)
 1. Contains Duplicate (Easy)
 2. Valid Anagram (Easy)
 3. Two Sum (Easy)
@@ -56,99 +47,84 @@ Solve 10 carefully selected problems:
 ## Key Concepts
 
 ### Hash Map Operations
-- **Insert:** O(1) average, O(n) worst case
-- **Lookup:** O(1) average, O(n) worst case
-- **Delete:** O(1) average, O(n) worst case
-- **Space:** O(n) for n elements
+- **Insert/Lookup/Delete:** O(1) average
+- **Worst case:** O(n) with collisions
+- **Space:** O(n)
 
-### TypeScript Hash Structures
-- **Map<K, V>** - Preserves insertion order, any key type
+### TypeScript Structures
+- **Map<K, V>** - Key-value pairs, any type
 - **Set<T>** - Unique values only
-- **Object** - String/Symbol keys only
-- **WeakMap/WeakSet** - Garbage-collectible references
+- **Object** - String keys only
 
-### Common Patterns
+### Patterns
 - Frequency Counting
 - Two Sum Pattern
 - Anagram Detection
 - Grouping/Categorizing
-- Caching/Memoization
+- Prefix Sum + Hash Map
 
 ---
 
 ## Prerequisites
 
 **Must know:**
-- Basic array operations
-- O(1) vs O(n) complexity
+- Arrays and Big O notation
 - Key-value pair concept
-
-**Nice to have:**
-- Understanding of hash functions
-- Collision resolution basics
-- Memory addressing
+- For loops and iteration
 
 ---
 
 ## Success Criteria
 
-You're ready to move on when you can:
-- [ ] Explain hash map internals confidently
-- [ ] Choose Map vs Set vs Object appropriately
-- [ ] Solve frequency counting problems quickly
-- [ ] Identify hash map patterns in problems
-- [ ] Handle edge cases with empty maps
+- [ ] Explain O(1) hash map lookups
+- [ ] Choose Map vs Set correctly
+- [ ] Solve frequency counting quickly
+- [ ] Identify Two Sum pattern
+- [ ] Handle edge cases (empty, null keys)
 
 ---
 
 ## Resources
 
-**Video:** See LESSON.md for link
-
-**Readings:**
-- Hash Map visualization: https://visualgo.net/en/hashtable
-- TypeScript Map docs: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
-
-**Practice:**
-- All problems in PROBLEMS.md
-- Solutions in SOLUTIONS.md
-- Hints in HINTS.md
+**Video:** LESSON.md
+**Practice:** PROBLEMS.md
+**Solutions:** SOLUTIONS.md
+**Hints:** HINTS.md
 
 ---
 
-## Tips for Success
+## Tips
 
-1. **Master the basics first** - Frequency counting is fundamental
-2. **Understand Map vs Object** - Know when to use each
-3. **Draw hash tables** - Visualize collision handling
-4. **Practice two-pointer with maps** - Common combo pattern
-5. **Check for edge cases** - Empty map, single element
-6. **Time yourself** - Hash map problems should be fast
-7. **Learn the patterns** - Two Sum appears everywhere
+1. Watch videos - hash map internals matter
+2. Frequency counting is fundamental
+3. Two Sum pattern appears everywhere
+4. Use Map for O(1) lookups, not arrays
+5. Draw hash tables for collision handling
+6. Think aloud - explain tradeoffs
+7. Review solutions even if correct
 
 ---
 
 ## Common Mistakes
 
-**Avoid these:**
-- ❌ Using nested loops when a hash map would work
-- ❌ Forgetting to handle undefined/null keys
-- ❌ Not considering hash collision impact
-- ❌ Using Object when Map is more appropriate
-- ❌ Mutating keys after insertion (reference types)
+- ❌ Nested loops instead of hash maps
+- ❌ Using Object when Map is better
+- ❌ Forgetting to check has() before get()
+- ❌ Not considering hash collisions
+- ❌ Using array.includes() (O(n)) vs map.has() (O(1))
 
 ---
 
 ## What's Next
 
-After completing this session:
-1. Take a 10-minute break
-2. Review your performance scores
-3. Note patterns you struggled with
-4. Move to Session 3: Sliding Window
+After completion:
+1. 10-minute break
+2. Review scores
+3. Note weak patterns
+4. Session 3: Sliding Window
 
-Session 3 combines arrays and hash maps for efficient window operations.
+Session 3 combines arrays + hash maps for window operations.
 
 ---
 
-**Ready to start?** Say: `"Claude, start session 1 2"`
+**Ready?** Say: `"Claude, start session 1 2"`

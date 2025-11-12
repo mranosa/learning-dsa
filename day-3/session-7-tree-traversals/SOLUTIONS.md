@@ -15,9 +15,9 @@ function inorderTraversal(root: TreeNode | null): number[] {
   function traverse(node: TreeNode | null): void {
     if (!node) return;
 
-    traverse(node.left);    // Visit left subtree
-    result.push(node.val);  // Process current node
-    traverse(node.right);   // Visit right subtree
+    traverse(node.left);    // Visit left
+    result.push(node.val);  // Process root
+    traverse(node.right);   // Visit right
   }
 
   traverse(root);
@@ -31,7 +31,7 @@ function inorderTraversal(root: TreeNode | null): number[] {
 
 ---
 
-### Approach 2: Iterative with Stack ✅
+### Approach 2: Iterative with Stack
 
 ```typescript
 function inorderTraversal(root: TreeNode | null): number[] {
@@ -40,17 +40,17 @@ function inorderTraversal(root: TreeNode | null): number[] {
   let current = root;
 
   while (current || stack.length > 0) {
-    // Go to the leftmost node
+    // Go to leftmost node
     while (current) {
       stack.push(current);
       current = current.left;
     }
 
-    // Current is null here, pop from stack
+    // Process node
     current = stack.pop()!;
     result.push(current.val);
 
-    // Visit right subtree
+    // Visit right
     current = current.right;
   }
 
@@ -59,57 +59,10 @@ function inorderTraversal(root: TreeNode | null): number[] {
 ```
 
 **Complexity:**
-- Time: O(n) - visit each node once
-- Space: O(h) - stack size
+- Time: O(n)
+- Space: O(h) - explicit stack
 
-**Key Insight:** Simulate recursion with explicit stack. Go left as far as possible, process node, then go right.
-
----
-
-### Approach 3: Morris Traversal (Advanced)
-
-```typescript
-function inorderTraversal(root: TreeNode | null): number[] {
-  const result: number[] = [];
-  let current = root;
-
-  while (current) {
-    if (!current.left) {
-      // No left child, process current and go right
-      result.push(current.val);
-      current = current.right;
-    } else {
-      // Find inorder predecessor
-      let predecessor = current.left;
-      while (predecessor.right && predecessor.right !== current) {
-        predecessor = predecessor.right;
-      }
-
-      if (!predecessor.right) {
-        // Make current the right child of predecessor
-        predecessor.right = current;
-        current = current.left;
-      } else {
-        // Revert changes and process current
-        predecessor.right = null;
-        result.push(current.val);
-        current = current.right;
-      }
-    }
-  }
-
-  return result;
-}
-```
-
-**Complexity:**
-- Time: O(n) - each edge traversed at most twice
-- Space: O(1) - no stack or recursion!
-
-**Interview Points:**
-- "Morris traversal achieves O(1) space by temporarily modifying the tree"
-- "We create temporary links from predecessors to successors"
-- "Perfect when space is extremely limited"
+**Key Insight:** Simulate recursion. Go left fully, process node, then go right.
 
 ---
 
@@ -124,9 +77,9 @@ function preorderTraversal(root: TreeNode | null): number[] {
   function traverse(node: TreeNode | null): void {
     if (!node) return;
 
-    result.push(node.val);  // Process root first
-    traverse(node.left);    // Then left subtree
-    traverse(node.right);   // Then right subtree
+    result.push(node.val);  // Root first
+    traverse(node.left);    // Then left
+    traverse(node.right);   // Then right
   }
 
   traverse(root);
@@ -134,13 +87,9 @@ function preorderTraversal(root: TreeNode | null): number[] {
 }
 ```
 
-**Complexity:**
-- Time: O(n)
-- Space: O(h)
-
 ---
 
-### Approach 2: Iterative with Stack ✅
+### Approach 2: Iterative with Stack
 
 ```typescript
 function preorderTraversal(root: TreeNode | null): number[] {
@@ -153,7 +102,7 @@ function preorderTraversal(root: TreeNode | null): number[] {
     const node = stack.pop()!;
     result.push(node.val);
 
-    // Push right first so left is processed first (LIFO)
+    // Push right first (LIFO - left processed first)
     if (node.right) stack.push(node.right);
     if (node.left) stack.push(node.left);
   }
@@ -166,7 +115,7 @@ function preorderTraversal(root: TreeNode | null): number[] {
 - Time: O(n)
 - Space: O(h)
 
-**Key Pattern:** Process node immediately, push children (right first for LIFO).
+**Key Pattern:** Process immediately, push children (right first).
 
 ---
 
@@ -181,9 +130,9 @@ function postorderTraversal(root: TreeNode | null): number[] {
   function traverse(node: TreeNode | null): void {
     if (!node) return;
 
-    traverse(node.left);    // Left subtree first
-    traverse(node.right);   // Then right subtree
-    result.push(node.val);  // Process root last
+    traverse(node.left);    // Left first
+    traverse(node.right);   // Then right
+    result.push(node.val);  // Root last
   }
 
   traverse(root);
@@ -193,7 +142,7 @@ function postorderTraversal(root: TreeNode | null): number[] {
 
 ---
 
-### Approach 2: Iterative - Reverse Preorder ✅
+### Approach 2: Iterative - Reverse Preorder
 
 ```typescript
 function postorderTraversal(root: TreeNode | null): number[] {
@@ -206,7 +155,7 @@ function postorderTraversal(root: TreeNode | null): number[] {
     const node = stack.pop()!;
     result.unshift(node.val); // Add to front
 
-    // Push left first so right is processed first
+    // Push left first (right processed first)
     if (node.left) stack.push(node.left);
     if (node.right) stack.push(node.right);
   }
@@ -217,41 +166,15 @@ function postorderTraversal(root: TreeNode | null): number[] {
 
 **Key Insight:** Postorder is reverse of modified preorder (Root→Right→Left).
 
----
-
-### Approach 3: Iterative - Two Stacks
-
-```typescript
-function postorderTraversal(root: TreeNode | null): number[] {
-  if (!root) return [];
-
-  const result: number[] = [];
-  const stack1: TreeNode[] = [root];
-  const stack2: TreeNode[] = [];
-
-  // First stack: preorder traversal
-  while (stack1.length > 0) {
-    const node = stack1.pop()!;
-    stack2.push(node);
-
-    if (node.left) stack1.push(node.left);
-    if (node.right) stack1.push(node.right);
-  }
-
-  // Second stack: reverse order
-  while (stack2.length > 0) {
-    result.push(stack2.pop()!.val);
-  }
-
-  return result;
-}
-```
+**Complexity:**
+- Time: O(n)
+- Space: O(h)
 
 ---
 
 ## Problem 4: Binary Tree Level Order Traversal
 
-### Approach: BFS with Queue ✅
+### Approach: BFS with Queue
 
 ```typescript
 function levelOrder(root: TreeNode | null): number[][] {
@@ -283,15 +206,15 @@ function levelOrder(root: TreeNode | null): number[][] {
 
 **Complexity:**
 - Time: O(n) - visit each node once
-- Space: O(w) - w = maximum width of tree
+- Space: O(w) - w = maximum width
 
-**Key Pattern:** Process nodes level by level using queue size marker.
+**Key Pattern:** Capture queue size to know level boundary.
 
 ---
 
 ## Problem 5: Binary Tree Zigzag Level Order Traversal
 
-### Approach 1: BFS with Direction Flag ✅
+### Approach 1: BFS with Direction Flag
 
 ```typescript
 function zigzagLevelOrder(root: TreeNode | null): number[][] {
@@ -312,7 +235,7 @@ function zigzagLevelOrder(root: TreeNode | null): number[][] {
       if (leftToRight) {
         currentLevel.push(node.val);
       } else {
-        currentLevel.unshift(node.val); // Add to front
+        currentLevel.unshift(node.val);
       }
 
       if (node.left) queue.push(node.left);
@@ -320,7 +243,7 @@ function zigzagLevelOrder(root: TreeNode | null): number[][] {
     }
 
     result.push(currentLevel);
-    leftToRight = !leftToRight; // Toggle direction
+    leftToRight = !leftToRight;
   }
 
   return result;
@@ -329,7 +252,7 @@ function zigzagLevelOrder(root: TreeNode | null): number[][] {
 
 ---
 
-### Approach 2: BFS with Deque
+### Approach 2: BFS with Reverse
 
 ```typescript
 function zigzagLevelOrder(root: TreeNode | null): number[][] {
@@ -349,7 +272,7 @@ function zigzagLevelOrder(root: TreeNode | null): number[][] {
       if (node.right) nextQueue.push(node.right);
     }
 
-    // Reverse even levels (0-indexed)
+    // Reverse odd levels (0-indexed)
     if (level % 2 === 1) {
       currentLevel.reverse();
     }
@@ -363,13 +286,15 @@ function zigzagLevelOrder(root: TreeNode | null): number[][] {
 }
 ```
 
-**Interview Tip:** "I can either add elements differently based on direction or reverse alternate levels."
+**Complexity:**
+- Time: O(n)
+- Space: O(w)
 
 ---
 
 ## Problem 6: Binary Tree Right Side View
 
-### Approach 1: BFS - Last Node Per Level ✅
+### Approach 1: BFS - Last Node Per Level
 
 ```typescript
 function rightSideView(root: TreeNode | null): number[] {
@@ -384,7 +309,7 @@ function rightSideView(root: TreeNode | null): number[] {
     for (let i = 0; i < levelSize; i++) {
       const node = queue.shift()!;
 
-      // Add only the last node of each level
+      // Add only last node of level
       if (i === levelSize - 1) {
         result.push(node.val);
       }
@@ -409,12 +334,12 @@ function rightSideView(root: TreeNode | null): number[] {
   function dfs(node: TreeNode | null, depth: number): void {
     if (!node) return;
 
-    // First node we see at this depth is rightmost
+    // First node at this depth is rightmost
     if (depth === result.length) {
       result.push(node.val);
     }
 
-    // Visit right subtree first
+    // Visit right first
     dfs(node.right, depth + 1);
     dfs(node.left, depth + 1);
   }
@@ -424,13 +349,17 @@ function rightSideView(root: TreeNode | null): number[] {
 }
 ```
 
-**Key Insight:** By traversing right first in DFS, the first node at each depth is the rightmost.
+**Key Insight:** By visiting right first in DFS, first node at each depth is rightmost.
+
+**Complexity:**
+- Time: O(n)
+- Space: O(h) DFS or O(w) BFS
 
 ---
 
 ## Problem 7: Average of Levels in Binary Tree
 
-### Approach: BFS with Sum Calculation ✅
+### Approach: BFS with Sum Calculation
 
 ```typescript
 function averageOfLevels(root: TreeNode | null): number[] {
@@ -468,7 +397,7 @@ function averageOfLevels(root: TreeNode | null): number[] {
 
 ## Problem 8: N-ary Tree Level Order Traversal
 
-### Approach: BFS for N-ary Tree ✅
+### Approach: BFS for N-ary Tree
 
 ```typescript
 class Node {
@@ -507,13 +436,17 @@ function levelOrder(root: Node | null): number[][] {
 }
 ```
 
-**Key Difference:** Instead of left/right, iterate through children array.
+**Key Difference:** Iterate through children array instead of left/right.
+
+**Complexity:**
+- Time: O(n)
+- Space: O(w)
 
 ---
 
 ## Problem 9: Vertical Order Traversal of a Binary Tree
 
-### Approach: BFS with Coordinates ✅
+### Approach: BFS with Coordinates
 
 ```typescript
 function verticalTraversal(root: TreeNode | null): number[][] {
@@ -566,7 +499,7 @@ function verticalTraversal(root: TreeNode | null): number[][] {
 
 ## Problem 10: Binary Tree Level Order Traversal II
 
-### Approach 1: BFS with Result Reversal ✅
+### Approach 1: BFS with Result Reversal
 
 ```typescript
 function levelOrderBottom(root: TreeNode | null): number[][] {
@@ -590,7 +523,7 @@ function levelOrderBottom(root: TreeNode | null): number[][] {
     result.push(currentLevel);
   }
 
-  return result.reverse(); // Simply reverse at end
+  return result.reverse(); // Simply reverse
 }
 ```
 
@@ -625,3 +558,36 @@ function levelOrderBottom(root: TreeNode | null): number[][] {
 ```
 
 **Trade-off:** `unshift` is O(n) per operation vs O(n) single reverse at end.
+
+**Complexity:**
+- Time: O(n)
+- Space: O(w)
+
+---
+
+## Summary
+
+### Time Complexity
+All traversals: **O(n)** - visit each node once
+
+### Space Complexity
+- **Recursive DFS:** O(h) - call stack
+- **Iterative DFS:** O(h) - explicit stack
+- **BFS:** O(w) - queue width
+- **Tree shape matters:** balanced h = log(n), skewed h = n
+
+### Key Patterns
+1. **DFS Recursive:** Natural and clean
+2. **DFS Iterative:** Use stack, simulate recursion
+3. **BFS:** Use queue, capture levelSize
+4. **Advanced:** Track coordinates, use direction flags
+
+### Interview Tips
+- Always offer both recursive and iterative
+- Discuss space complexity and tree shape
+- Mention Morris traversal for O(1) space
+- Handle edge cases: null, single node, skewed
+
+---
+
+[Back to Problems](./PROBLEMS.md) | [Back to Hints](./HINTS.md)

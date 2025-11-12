@@ -1,27 +1,57 @@
 # Lesson: Tries (Prefix Trees)
 
-## Video Assignment
+---
 
-**Watch this video:** [Implement Trie - Leetcode 208](https://www.youtube.com/watch?v=oobqoCJlHA0)
-**Duration:** 20 minutes
-**Channel:** NeetCode
+## 📹 Video 1: Trie Implementation & Fundamentals (20 min)
 
-After watching, you should understand:
+**"Implement Trie (Prefix Tree) - Leetcode 208" by NeetCode**
+https://www.youtube.com/watch?v=oobqoCJlHA0
+
+**Alternative:**
+"Trie Data Structure" by William Fiset (14 min): https://www.youtube.com/watch?v=AXjmTQ8LEoI
+
+**Focus on:**
 - What a Trie is and why we use it
-- Basic Trie node structure
+- Basic Trie node structure (children + isEnd flag)
 - Insert, search, and startsWith operations
 - Time and space complexity analysis
 
 ---
 
-## Core Concepts
+## 📹 Video 2: Trie Advanced Patterns (20 min)
 
-### 1. What is a Trie?
+**"Design Add and Search Words - Leetcode 211" by NeetCode**
+https://www.youtube.com/watch?v=BTf05gs_8iU
+
+**Also watch:**
+"Word Search II - Leetcode 212" by NeetCode (15 min): https://www.youtube.com/watch?v=asbcE9mZz_U
+
+**Focus on:**
+- Wildcard matching with dots
+- Combining Trie with DFS/backtracking
+- Pruning techniques for optimization
+- When to use Tries vs HashMaps
+
+---
+
+## 🎯 Tries: Structure & Creation
+
+### What is a Trie?
 
 A **Trie** (pronounced "try") is a tree-like data structure used for efficient string storage and retrieval. Also known as a **prefix tree** or **digital tree**.
 
+**Key Properties:**
+- Each node represents a single character
+- Root node is typically empty
+- Path from root to node spells out a string
+- Nodes can be marked as end of word
+
+---
+
+### Trie Node Structure
+
 ```typescript
-// Basic Trie Node structure
+// Basic Trie Node with Map
 class TrieNode {
     children: Map<string, TrieNode>;
     isEndOfWord: boolean;
@@ -31,91 +61,137 @@ class TrieNode {
         this.isEndOfWord = false;
     }
 }
-```
 
-**Key Properties:**
-- Each node represents a single character
-- Root node is typically empty
-- Path from root to node spells out a string
-- Nodes can be marked as end of word
+// Trie Node with Array (for fixed alphabet)
+class TrieNodeArray {
+    children: (TrieNodeArray | null)[];
+    isEndOfWord: boolean;
 
-### 2. Why Use Tries?
-
-**Advantages over HashMaps:**
-- **Prefix searching:** O(p) where p is prefix length
-- **Alphabetical ordering:** Natural sorting of strings
-- **Memory sharing:** Common prefixes share nodes
-- **Wildcard matching:** Efficient pattern matching
-
-**Use Cases:**
-- Autocomplete systems
-- Spell checkers
-- IP routing tables
-- Word games (Scrabble, Boggle)
-- Phone directories
-
-### 3. Basic Operations
-
-#### Insert
-```typescript
-insert(word: string): void {
-    let node = this.root;
-    for (const char of word) {
-        if (!node.children.has(char)) {
-            node.children.set(char, new TrieNode());
-        }
-        node = node.children.get(char)!;
+    constructor() {
+        this.children = new Array(26).fill(null); // a-z only
+        this.isEndOfWord = false;
     }
-    node.isEndOfWord = true;
 }
 ```
-**Time:** O(m) where m is word length
-**Space:** O(m) worst case
 
-#### Search
+**Node Components:**
+- **children:** Map/Array of child nodes (one per character)
+- **isEndOfWord:** Boolean flag marking complete words
+- **Optional:** count (for frequency), value (for data storage)
+
+---
+
+### Complete Trie Implementation
+
 ```typescript
-search(word: string): boolean {
-    let node = this.root;
-    for (const char of word) {
-        if (!node.children.has(char)) {
-            return false;
-        }
-        node = node.children.get(char)!;
+class Trie {
+    private root: TrieNode;
+
+    constructor() {
+        this.root = new TrieNode();
     }
-    return node.isEndOfWord;
+
+    // Insert a word - O(m) time, O(m) space
+    insert(word: string): void {
+        let node = this.root;
+        for (const char of word) {
+            if (!node.children.has(char)) {
+                node.children.set(char, new TrieNode());
+            }
+            node = node.children.get(char)!;
+        }
+        node.isEndOfWord = true;
+    }
+
+    // Search exact match - O(m) time, O(1) space
+    search(word: string): boolean {
+        let node = this.root;
+        for (const char of word) {
+            if (!node.children.has(char)) {
+                return false;
+            }
+            node = node.children.get(char)!;
+        }
+        return node.isEndOfWord;
+    }
+
+    // Check prefix exists - O(p) time, O(1) space
+    startsWith(prefix: string): boolean {
+        let node = this.root;
+        for (const char of prefix) {
+            if (!node.children.has(char)) {
+                return false;
+            }
+            node = node.children.get(char)!;
+        }
+        return true;
+    }
 }
 ```
-**Time:** O(m)
-**Space:** O(1)
 
-#### StartsWith
+---
+
+## 📊 Big O Notation for Tries
+
+### Complexity Table
+
+| Operation | Time Complexity | Space Complexity | Notes |
+|-----------|----------------|------------------|-------|
+| **Insert** | O(m) | O(m) | m = word length |
+| **Search** | O(m) | O(1) | Exact match |
+| **StartsWith** | O(p) | O(1) | p = prefix length |
+| **Delete** | O(m) | O(1) | With cleanup |
+| **Space (total)** | - | O(ALPHABET_SIZE × N × M) | N words, M avg length |
+
+**Why these complexities?**
+
 ```typescript
-startsWith(prefix: string): boolean {
-    let node = this.root;
-    for (const char of prefix) {
-        if (!node.children.has(char)) {
-            return false;
-        }
-        node = node.children.get(char)!;
-    }
-    return true;
+// O(m) - Insert/Search
+// Must traverse every character in word
+for (const char of word) {  // m iterations
+    // O(1) map operations
 }
+
+// O(ALPHABET_SIZE × N × M) - Space
+// Each node can have up to ALPHABET_SIZE children
+// N words with M average length = N × M nodes
+// Each node stores children map
 ```
-**Time:** O(p) where p is prefix length
-**Space:** O(1)
 
-### 4. Advanced Patterns
+---
 
-#### Wildcard Matching
-Support '.' to match any character:
+### Trie vs HashMap
+
+| Feature | Trie | HashMap |
+|---------|------|---------|
+| **Prefix search** | O(p) | O(n × m) |
+| **Autocomplete** | O(p + k) | O(n × m) |
+| **Memory** | Higher | Lower |
+| **Insert/Search** | O(m) | O(1) average |
+| **Best for** | Strings, prefixes | Any data type |
+
+**Say this:** "Tries trade space for prefix search speed. Use Tries when prefix operations are frequent, HashMaps for simple lookups."
+
+---
+
+## 🧩 Common Trie Patterns
+
+### Pattern 1: Wildcard Matching
+
+**📹 Learn:** [Design Add and Search Words](https://www.youtube.com/watch?v=BTf05gs_8iU) by NeetCode (~10 min)
+
+Used when: Support '.' wildcard matching any character.
+
 ```typescript
 searchWithWildcard(word: string): boolean {
     const dfs = (index: number, node: TrieNode): boolean => {
+        // Base case: reached end of word
         if (index === word.length) {
             return node.isEndOfWord;
         }
 
         const char = word[index];
+
         if (char === '.') {
             // Try all possible children
             for (const child of node.children.values()) {
@@ -125,6 +201,7 @@ searchWithWildcard(word: string): boolean {
             }
             return false;
         } else {
+            // Regular character
             if (!node.children.has(char)) {
                 return false;
             }
@@ -136,8 +213,14 @@ searchWithWildcard(word: string): boolean {
 }
 ```
 
-#### Collecting All Words
-Get all words with a given prefix:
+**Time:** O(m × 26^k) where k = number of wildcards | **Space:** O(m) recursion depth
+
+---
+
+### Pattern 2: Collecting Words with Prefix
+
+Used when: Get all words starting with a prefix (autocomplete).
+
 ```typescript
 wordsWithPrefix(prefix: string): string[] {
     const result: string[] = [];
@@ -166,136 +249,267 @@ wordsWithPrefix(prefix: string): string[] {
 }
 ```
 
-### 5. Space Optimization
-
-#### Array vs Map for Children
-```typescript
-// Array-based (for fixed alphabet size)
-class TrieNodeArray {
-    children: (TrieNodeArray | null)[];
-    isEndOfWord: boolean;
-
-    constructor() {
-        this.children = new Array(26).fill(null); // a-z only
-        this.isEndOfWord = false;
-    }
-}
-
-// Map-based (for variable alphabet)
-class TrieNodeMap {
-    children: Map<string, TrieNodeMap>;
-    isEndOfWord: boolean;
-
-    constructor() {
-        this.children = new Map();
-        this.isEndOfWord = false;
-    }
-}
-```
-
-**When to use which:**
-- **Array:** Fixed, small alphabet (e.g., lowercase letters only)
-- **Map:** Large or variable alphabet (e.g., Unicode characters)
-
-### 6. Complexity Analysis
-
-| Operation | Time Complexity | Space Complexity |
-|-----------|----------------|------------------|
-| Insert | O(m) | O(m) |
-| Search | O(m) | O(1) |
-| StartsWith | O(p) | O(1) |
-| Delete | O(m) | O(1) |
-| Space (total) | - | O(ALPHABET_SIZE × N × M) |
-
-Where:
-- m = length of word
-- p = length of prefix
-- N = number of words
-- M = average length of words
+**Time:** O(p + n × m) where p = prefix length, n = matching words | **Space:** O(n × m)
 
 ---
 
-## TypeScript Implementation Tips
+### Pattern 3: Trie + Backtracking
 
-### 1. Use Proper Types
+**📹 Learn:** [Word Search II](https://www.youtube.com/watch?v=asbcE9mZz_U) by NeetCode (~15 min)
+
+Used when: Search grid for multiple words simultaneously.
+
 ```typescript
-interface ITrieNode {
-    children: Map<string, ITrieNode>;
-    isEndOfWord: boolean;
-    count?: number; // For frequency tracking
-    value?: any; // For storing additional data
-}
-```
-
-### 2. Generic Trie Class
-```typescript
-class Trie<T = void> {
-    private root: TrieNode<T>;
-
-    constructor() {
-        this.root = new TrieNode<T>();
+function findWords(board: string[][], words: string[]): string[] {
+    // Build Trie from words
+    const root = new TrieNode();
+    for (const word of words) {
+        let node = root;
+        for (const char of word) {
+            if (!node.children.has(char)) {
+                node.children.set(char, new TrieNode());
+            }
+            node = node.children.get(char)!;
+        }
+        node.word = word; // Store complete word
     }
 
-    // Methods...
+    const result: string[] = [];
+    const m = board.length;
+    const n = board[0].length;
+
+    const dfs = (i: number, j: number, node: TrieNode): void => {
+        // Bounds check
+        if (i < 0 || i >= m || j < 0 || j >= n) return;
+
+        const char = board[i][j];
+        if (char === '#' || !node.children.has(char)) return;
+
+        node = node.children.get(char)!;
+
+        // Found a word
+        if (node.word !== null) {
+            result.push(node.word);
+            node.word = null; // Avoid duplicates
+        }
+
+        // Mark visited
+        board[i][j] = '#';
+
+        // Explore 4 directions
+        dfs(i + 1, j, node);
+        dfs(i - 1, j, node);
+        dfs(i, j + 1, node);
+        dfs(i, j - 1, node);
+
+        // Restore cell
+        board[i][j] = char;
+    };
+
+    // Start DFS from each cell
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            dfs(i, j, root);
+        }
+    }
+
+    return result;
 }
 ```
 
-### 3. Efficient Character Indexing
+**Key insight:** Trie allows checking multiple words simultaneously during one grid traversal.
+
+**Time:** O(m × n × 4^L) where L = max word length | **Space:** O(TOTAL_CHARS)
+
+---
+
+### Pattern 4: Reverse Trie for Suffix Matching
+
+Used when: Check if suffix matches any word.
+
 ```typescript
-// For lowercase letters only
+class StreamChecker {
+    private root: TrieNode;
+    private stream: string[];
+    private maxLength: number;
+
+    constructor(words: string[]) {
+        this.root = new TrieNode();
+        this.stream = [];
+        this.maxLength = 0;
+
+        // Build reverse Trie
+        for (const word of words) {
+            this.maxLength = Math.max(this.maxLength, word.length);
+            let node = this.root;
+
+            // Insert word in reverse
+            for (let i = word.length - 1; i >= 0; i--) {
+                const char = word[i];
+                if (!node.children.has(char)) {
+                    node.children.set(char, new TrieNode());
+                }
+                node = node.children.get(char)!;
+            }
+            node.isEndOfWord = true;
+        }
+    }
+
+    query(letter: string): boolean {
+        this.stream.push(letter);
+
+        // Keep stream size limited
+        if (this.stream.length > this.maxLength) {
+            this.stream.shift();
+        }
+
+        // Check if any suffix matches
+        let node = this.root;
+        for (let i = this.stream.length - 1; i >= 0; i--) {
+            const char = this.stream[i];
+            if (!node.children.has(char)) {
+                return false;
+            }
+            node = node.children.get(char)!;
+            if (node.isEndOfWord) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+```
+
+**Key insight:** Reverse Trie allows suffix checking by traversing stream backward.
+
+**Time:** O(m) per query | **Space:** O(TOTAL_CHARS)
+
+---
+
+## 💡 Interview Tips
+
+### Array vs Map for Children
+
+**Use Array when:**
+- Fixed alphabet size (e.g., lowercase a-z only)
+- Dense character distribution
+- Memory predictable (26 × node count)
+
+**Use Map when:**
+- Large or variable alphabet (Unicode, mixed case)
+- Sparse character distribution
+- Memory scales with actual characters
+
+```typescript
+// Array-based (lowercase only)
 private charToIndex(char: string): number {
     return char.charCodeAt(0) - 'a'.charCodeAt(0);
 }
+
+// Usage
+if (!node.children[index]) {
+    node.children[index] = new TrieNode();
+}
+
+// Map-based (any characters)
+if (!node.children.has(char)) {
+    node.children.set(char, new TrieNode());
+}
 ```
 
 ---
 
-## Common Interview Patterns
+### TypeScript Trie Patterns
 
-### 1. Word Search in Grid
-Combine Trie with backtracking for efficient word search.
+```typescript
+// Generic Trie with value storage
+interface TrieNode<T> {
+    children: Map<string, TrieNode<T>>;
+    isEndOfWord: boolean;
+    value?: T;
+}
 
-### 2. Autocomplete System
-Use Trie with frequency counts for ranking suggestions.
+// Trie with frequency tracking
+class FrequencyTrie {
+    private root: TrieNode;
 
-### 3. Replace Words
-Use shortest prefix matching to replace words with roots.
+    insert(word: string): void {
+        let node = this.root;
+        for (const char of word) {
+            if (!node.children.has(char)) {
+                node.children.set(char, new TrieNode());
+            }
+            node = node.children.get(char)!;
+            node.count = (node.count || 0) + 1; // Track frequency
+        }
+        node.isEndOfWord = true;
+    }
+}
 
-### 4. Stream Processing
-Maintain state while processing character stream.
+// Delete with cleanup
+delete(word: string): boolean {
+    const deleteHelper = (node: TrieNode, word: string, index: number): boolean => {
+        if (index === word.length) {
+            if (!node.isEndOfWord) return false;
+            node.isEndOfWord = false;
+            return node.children.size === 0; // Can delete if no children
+        }
 
-### 5. Suffix Trees
-Build reverse Trie for suffix-based operations.
+        const char = word[index];
+        if (!node.children.has(char)) return false;
+
+        const child = node.children.get(char)!;
+        const shouldDelete = deleteHelper(child, word, index + 1);
+
+        if (shouldDelete) {
+            node.children.delete(char);
+            return node.children.size === 0 && !node.isEndOfWord;
+        }
+
+        return false;
+    };
+
+    return deleteHelper(this.root, word, 0);
+}
+```
 
 ---
 
-## Practice Problems
+### Common Edge Cases
 
-Start with these in order:
-1. **Implement Trie** - Basic operations
-2. **Add and Search Words** - Wildcard matching
-3. **Word Search II** - Trie + Backtracking
-4. **Longest Word in Dictionary** - Building words incrementally
-5. **Replace Words** - Prefix replacement
+```typescript
+// Handle empty strings
+if (word.length === 0) {
+    this.root.isEndOfWord = true;
+    return;
+}
+
+// Check for null/undefined
+if (!word || word.length === 0) return false;
+
+// Case sensitivity
+word = word.toLowerCase(); // Normalize if needed
+
+// Duplicate insertions
+// isEndOfWord handles this - safe to insert multiple times
+```
 
 ---
 
-## Key Takeaways
+## ✅ Ready to Practice
 
-1. **Tries excel at prefix operations** - Use when dealing with prefixes/autocomplete
-2. **Space vs Time tradeoff** - Tries use more space but offer faster prefix operations
-3. **Combine with other techniques** - Tries + DFS/BFS/Backtracking is powerful
-4. **Consider alphabet size** - Affects implementation choice (Array vs Map)
-5. **Practice implementation** - Trie problems often require custom implementation
+**Say:** `"Claude, I watched the videos"` for concept check!
+
+**Quick Reference:**
+- **Trie node:** children (Map/Array) + isEndOfWord flag
+- **Insert/Search:** O(m) where m = word length
+- **Prefix search:** O(p) where p = prefix length
+- **Space:** O(ALPHABET_SIZE × N × M)
+- **Wildcard:** Use DFS, try all children for '.'
+- **Backtracking:** Combine Trie with grid DFS
+- **Reverse Trie:** Insert words backward for suffix matching
 
 ---
 
-## Next Steps
-
-After understanding these concepts:
-1. Implement a basic Trie from scratch
-2. Solve the first 3 problems
-3. Move to advanced problems with wildcards
-4. Practice space optimization techniques
-
-Remember: Tries are about **efficient string operations**, not just storage!
+[Back to Session README](./README.md)

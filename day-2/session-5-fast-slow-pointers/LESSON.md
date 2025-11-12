@@ -1,26 +1,54 @@
-# Fast/Slow Pointers - Complete Learning Guide
-
-## Video Lesson
-
-**Watch this first:** [Fast & Slow Pointers - Linked List Cycle - Leetcode 141](https://www.youtube.com/watch?v=gBTe7lFR3vc)
-
-**Duration:** 9 minutes
-
-**Backup videos:**
-- [Floyd's Tortoise & Hare Algorithm](https://www.youtube.com/watch?v=gBTe7lFR3vc)
-- [Linked List Problems - Fast & Slow Pointers](https://www.youtube.com/watch?v=gBTe7lFR3vc)
+# Lesson: Fast/Slow Pointers
 
 ---
 
-## Core Concept: Floyd's Cycle Detection Algorithm
+## 📹 Video 1: Fast/Slow Pointers Fundamentals (9 min)
 
-### The Tortoise and Hare
+**"Fast & Slow Pointers - Linked List Cycle - Leetcode 141" by NeetCode**
+https://www.youtube.com/watch?v=gBTe7lFR3vc
 
-Imagine two runners on a track:
-- **Tortoise (slow):** Moves 1 step at a time
-- **Hare (fast):** Moves 2 steps at a time
+**Focus on:**
+- Floyd's tortoise and hare concept
+- Why pointers meet in a cycle
+- Basic implementation pattern
+- Time/space complexity benefits
 
-**Key insight:** If there's a cycle, they will eventually meet. If no cycle, fast reaches the end.
+---
+
+## 📹 Video 2: Floyd's Algorithm Deep Dive (8 min)
+
+**"Linked List Cycle II - Leetcode 142" by NeetCode**
+https://www.youtube.com/watch?v=gBTe7lFR3vc
+
+**Focus on:**
+- Two-phase cycle detection
+- Finding cycle entry point
+- Mathematical proof
+- Distance relationships
+
+---
+
+## 📹 Video 3: Advanced Applications (5 min)
+
+**"Find the Duplicate Number - Leetcode 287" by NeetCode**
+https://www.youtube.com/watch?v=wjYnzkAhcNk
+
+**Focus on:**
+- Array as implicit linked list
+- Applying Floyd's to sequences
+- Pattern variations
+
+---
+
+## 🎯 Floyd's Cycle Detection
+
+### Core Concept
+
+Two pointers moving at different speeds:
+- **Tortoise (slow):** Moves 1 step
+- **Hare (fast):** Moves 2 steps
+- **If cycle exists:** They meet
+- **If no cycle:** Fast reaches null
 
 ```typescript
 class ListNode {
@@ -36,59 +64,28 @@ function hasCycle(head: ListNode | null): boolean {
     if (!head || !head.next) return false;
 
     let slow = head;
-    let fast = head.next;
+    let fast = head;
 
     while (fast && fast.next) {
-        if (slow === fast) return true;
         slow = slow.next!;
         fast = fast.next.next;
+
+        if (slow === fast) return true;
     }
 
     return false;
 }
 ```
 
----
-
-## Why Fast/Slow Pointers Work
-
-### Mathematical Foundation
-
-If there's a cycle of length `L`:
-- Slow pointer moves at speed 1
-- Fast pointer moves at speed 2
-- Relative speed = 2 - 1 = 1
-
-**Distance closing rate:** Fast catches up by 1 node per iteration
-
-**Time to meet:** At most `n` iterations where `n` is total nodes
-
-### Visual Example
-
-```
-Without cycle:
-slow: 1 -> 2 -> 3 -> 4 -> null
-fast: 1 -> 3 -> null (reaches end)
-
-With cycle:
-     1 -> 2 -> 3
-           ^    |
-           |    v
-           5 <- 4
-
-Iteration 1: slow=1, fast=2
-Iteration 2: slow=2, fast=4
-Iteration 3: slow=3, fast=2
-Iteration 4: slow=4, fast=4 (MEET!)
-```
+**Time:** O(n) | **Space:** O(1)
 
 ---
 
-## Pattern Variations
+## 🔧 Pattern Variations
 
 ### 1. Finding Middle Element
 
-Fast moves 2x speed, when fast reaches end, slow is at middle:
+When fast reaches end, slow is at middle.
 
 ```typescript
 function findMiddle(head: ListNode | null): ListNode | null {
@@ -102,13 +99,17 @@ function findMiddle(head: ListNode | null): ListNode | null {
         fast = fast.next.next;
     }
 
-    return slow;
+    return slow; // For even length, returns second middle
 }
 ```
 
-### 2. Finding Cycle Entry Point
+**Time:** O(n) | **Space:** O(1)
 
-After detecting cycle, reset one pointer and move both at same speed:
+---
+
+### 2. Finding Cycle Entry
+
+Two-phase: detect cycle, then find entry.
 
 ```typescript
 function detectCycle(head: ListNode | null): ListNode | null {
@@ -124,9 +125,9 @@ function detectCycle(head: ListNode | null): ListNode | null {
         if (slow === fast) break;
     }
 
-    if (!fast || !fast.next) return null;
+    if (!fast || !fast.next) return null; // No cycle
 
-    // Phase 2: Find entry point
+    // Phase 2: Find entry
     slow = head;
     while (slow !== fast) {
         slow = slow.next!;
@@ -137,9 +138,15 @@ function detectCycle(head: ListNode | null): ListNode | null {
 }
 ```
 
+**Time:** O(n) | **Space:** O(1)
+
+**Why it works:** Distance from head to cycle start = distance from meeting point to cycle start.
+
+---
+
 ### 3. Nth Node from End
 
-Fast pointer leads by N nodes:
+Fast pointer leads by n nodes.
 
 ```typescript
 function removeNthFromEnd(head: ListNode | null, n: number): ListNode | null {
@@ -158,20 +165,22 @@ function removeNthFromEnd(head: ListNode | null, n: number): ListNode | null {
         fast = fast.next;
     }
 
-    // Skip the nth node
+    // Remove nth node
     slow.next = slow.next!.next;
 
     return dummy.next;
 }
 ```
 
+**Time:** O(n) - single pass | **Space:** O(1)
+
 ---
 
-## Advanced Applications
+## 🧩 Advanced Applications
 
-### 1. Happy Number Detection
+### Happy Number Detection
 
-Apply cycle detection to number sequences:
+Apply cycle detection to number sequences.
 
 ```typescript
 function isHappy(n: number): boolean {
@@ -197,22 +206,26 @@ function isHappy(n: number): boolean {
 }
 ```
 
-### 2. Find Duplicate in Array
+**Time:** O(log n) | **Space:** O(1)
 
-Treat array as implicit linked list:
+---
+
+### Find Duplicate in Array
+
+Treat array as implicit linked list: nums[i] → index nums[i].
 
 ```typescript
 function findDuplicate(nums: number[]): number {
+    // Phase 1: Find meeting point
     let slow = nums[0];
     let fast = nums[0];
 
-    // Phase 1: Find intersection point
     do {
         slow = nums[slow];
         fast = nums[nums[fast]];
     } while (slow !== fast);
 
-    // Phase 2: Find entrance to cycle
+    // Phase 2: Find duplicate (cycle entry)
     slow = nums[0];
     while (slow !== fast) {
         slow = nums[slow];
@@ -223,9 +236,15 @@ function findDuplicate(nums: number[]): number {
 }
 ```
 
-### 3. Palindrome Linked List
+**Time:** O(n) | **Space:** O(1)
 
-Combine with list reversal:
+**Why it works:** Duplicate value = multiple indices point to same next index = cycle!
+
+---
+
+### Palindrome Linked List
+
+Combine with list reversal.
 
 ```typescript
 function isPalindrome(head: ListNode | null): boolean {
@@ -262,89 +281,79 @@ function isPalindrome(head: ListNode | null): boolean {
 }
 ```
 
+**Time:** O(n) | **Space:** O(1)
+
 ---
 
-## Edge Cases to Remember
+## 💡 Interview Tips
 
-### 1. Empty or Single Node
-```typescript
-if (!head || !head.next) return false; // No cycle possible
-```
+### When to Use Fast/Slow Pointers
 
-### 2. Two-Node Cycle
-```typescript
-// 1 -> 2 -> 1
-// Must handle fast starting at different position
-```
+| Problem Type | Pattern | Key Insight |
+|--------------|---------|-------------|
+| Cycle detection | Fast=2, Slow=1 | Meet in cycle |
+| Middle element | Fast=2, Slow=1 | Fast reaches end |
+| Nth from end | Fast leads by n | Distance relationship |
+| Cycle entry | Two phases | Reset after detection |
 
-### 3. Self-Loop
-```typescript
-// Node points to itself
-// 1 -> 1
-```
+---
 
-### 4. TypeScript Null Safety
+### TypeScript Edge Cases
+
 ```typescript
-// Always check before accessing .next
-while (fast && fast.next) {
-    // Safe to use fast.next.next here
+// ❌ Wrong - missing null checks
+while (fast.next) {
+    fast = fast.next.next; // Can fail!
 }
+
+// ✅ Correct - safe null handling
+while (fast && fast.next) {
+    fast = fast.next.next; // Safe
+}
+
+// ❌ Wrong - single node not handled
+let fast = head.next; // Can be null!
+
+// ✅ Correct - guard clauses
+if (!head || !head.next) return false;
 ```
 
 ---
 
-## Common Interview Questions
+### Common Interview Questions
 
-### Q: Why does fast move 2 steps?
-**A:** It's optimal. Moving faster (3+ steps) still works but doesn't improve time complexity and adds complexity to code.
+**Q: Why move fast 2 steps?**
+**A:** Optimal. Faster speeds work but don't improve complexity and add code complexity.
 
-### Q: What if pointers move at speeds 1 and 3?
-**A:** Still works! As long as speeds differ, they'll meet in a cycle. The relative speed determines convergence rate.
+**Q: Why reset to head for cycle entry?**
+**A:** Mathematical proof: distance(head → entry) = distance(meeting point → entry, going around cycle).
 
-### Q: Why reset to head for finding cycle entry?
-**A:** Mathematical proof: Distance from head to cycle entry equals distance from meeting point to cycle entry (traveling around the cycle).
-
-### Q: Can this work with arrays?
-**A:** Yes! If array values can be interpreted as "next" indices (like in Find Duplicate problem).
+**Q: Can this work with arrays?**
+**A:** Yes! If array values can be indices (like Find Duplicate problem).
 
 ---
 
-## Practice Problems
+## 📊 Complexity Analysis
 
-Start with these in order:
-1. **Linked List Cycle** - Basic implementation
-2. **Middle of Linked List** - Simple variation
-3. **Happy Number** - Apply to sequences
-4. **Linked List Cycle II** - Find entry point
-5. **Find Duplicate Number** - Array as linked list
-
----
-
-## Key Takeaways
-
-1. **Pattern recognition:** Fast/slow pointers excel at cycle detection
-2. **Space efficiency:** O(1) space vs O(n) for hash set approach
-3. **Versatility:** Works on lists, arrays, and number sequences
-4. **Speed matters:** Different speeds for different problems
-5. **Two phases:** Often detection phase + action phase
+| Operation | Hash Set | Fast/Slow | Winner |
+|-----------|----------|-----------|--------|
+| **Cycle detection** | O(n) time, O(n) space | O(n) time, O(1) space | Fast/Slow |
+| **Middle element** | O(n) two-pass | O(n) one-pass | Fast/Slow |
+| **Nth from end** | O(n) two-pass | O(n) one-pass | Fast/Slow |
 
 ---
 
-## Quick Reference
+## ✅ Quick Reference
 
 ```typescript
-// Basic pattern
-let slow = head;
-let fast = head;
-
+// Basic cycle detection
+let slow = head, fast = head;
 while (fast && fast.next) {
     slow = slow.next!;
     fast = fast.next.next;
-
-    if (slow === fast) {
-        // Cycle detected
-    }
+    if (slow === fast) return true; // Cycle found
 }
+return false; // No cycle
 
 // Finding middle
 while (fast && fast.next) {
@@ -353,23 +362,29 @@ while (fast && fast.next) {
 }
 // slow is now at middle
 
-// Nth from end
-// Advance fast by n first
+// Nth from end (advance fast first)
 for (let i = 0; i < n; i++) {
     fast = fast.next!;
 }
-// Then move both together
+while (fast) {
+    slow = slow.next!;
+    fast = fast.next;
+}
+// slow is now n steps from end
 ```
 
 ---
 
-## Next Steps
+## ✅ Ready to Practice
 
-After understanding the concept:
-1. Implement basic cycle detection
-2. Practice finding middle element
-3. Try cycle entry point problem
-4. Apply to array problems
-5. Combine with other patterns (reversal, etc.)
+**Say:** `"Claude, I watched the videos"` for concept check!
 
-Remember: Drawing pointer movements helps visualize the solution!
+**Key Takeaways:**
+- Fast/slow pointers: O(1) space cycle detection
+- Different speeds for different problems
+- Two-phase pattern for cycle entry
+- Works on lists, arrays, sequences
+
+---
+
+[Back to Session README](./README.md)

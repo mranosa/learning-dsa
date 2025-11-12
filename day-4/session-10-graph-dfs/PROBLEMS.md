@@ -1,344 +1,465 @@
-# Problems: Graph DFS
+# Problems - Session 10: Graph DFS
 
-## Problem 1: Number of Islands
-**Difficulty:** Medium
-**LeetCode:** https://leetcode.com/problems/number-of-islands/
+10 problems in order. Use UMPIRE method.
 
-Given an `m x n` 2D binary grid `grid` which represents a map of '1's (land) and '0's (water), return the number of islands.
-
-An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are surrounded by water.
-
-```typescript
-function numIslands(grid: string[][]): number {
-    // Your code here
-}
-
-// Example 1:
-// Input: grid = [
-//   ["1","1","1","1","0"],
-//   ["1","1","0","1","0"],
-//   ["1","1","0","0","0"],
-//   ["0","0","0","0","0"]
-// ]
-// Output: 1
-
-// Example 2:
-// Input: grid = [
-//   ["1","1","0","0","0"],
-//   ["1","1","0","0","0"],
-//   ["0","0","1","0","0"],
-//   ["0","0","0","1","1"]
-// ]
-// Output: 3
-```
+**Targets:** Easy <15 min | Medium <30 min
 
 ---
 
-## Problem 2: Clone Graph
-**Difficulty:** Medium
+## Problem 1: Number of Islands ⭐ BLIND 75
+
+**Difficulty:** Medium | **Pattern:** Grid DFS
+**LeetCode:** https://leetcode.com/problems/number-of-islands/
+
+### Problem
+
+Given `m × n` 2D binary grid representing map of '1's (land) and '0's (water), return number of islands.
+
+Island = surrounded by water, formed by connecting adjacent lands horizontally or vertically. All four edges surrounded by water.
+
+### Examples
+
+```
+grid = [
+  ["1","1","1","1","0"],
+  ["1","1","0","1","0"],
+  ["1","1","0","0","0"],
+  ["0","0","0","0","0"]
+]
+Output: 1
+
+grid = [
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
+Output: 3
+```
+
+### Constraints
+
+- m, n ≤ 300
+- grid[i][j] is '0' or '1'
+
+### Hints
+- Each island is a connected component
+- DFS to explore entire island when found
+- Mark visited cells (modify grid or use Set)
+- Count how many DFS calls needed
+
+---
+
+## Problem 2: Clone Graph ⭐ BLIND 75
+
+**Difficulty:** Medium | **Pattern:** Graph DFS
 **LeetCode:** https://leetcode.com/problems/clone-graph/
 
-Given a reference of a node in a connected undirected graph, return a deep copy (clone) of the graph.
+### Problem
 
-Each node in the graph contains a value (int) and a list (List[Node]) of its neighbors.
+Given reference of node in connected undirected graph, return deep copy (clone) of the graph.
+
+Each node contains value (int) and list of neighbors.
 
 ```typescript
 class Node {
     val: number;
     neighbors: Node[];
-    constructor(val?: number, neighbors?: Node[]) {
-        this.val = (val === undefined ? 0 : val);
-        this.neighbors = (neighbors === undefined ? [] : neighbors);
-    }
 }
-
-function cloneGraph(node: Node | null): Node | null {
-    // Your code here
-}
-
-// Example:
-// Input: adjList = [[2,4],[1,3],[2,4],[1,3]]
-// Output: [[2,4],[1,3],[2,4],[1,3]]
-// Explanation: There are 4 nodes in the graph.
-// Node 1 has value 1 and is connected to nodes 2 and 4.
-// Node 2 has value 2 and is connected to nodes 1 and 3.
-// Node 3 has value 3 and is connected to nodes 2 and 4.
-// Node 4 has value 4 and is connected to nodes 1 and 3.
 ```
+
+### Examples
+
+```
+adjList = [[2,4],[1,3],[2,4],[1,3]]
+Output: [[2,4],[1,3],[2,4],[1,3]]
+
+Explanation: 4 nodes in graph.
+Node 1: connects to 2, 4
+Node 2: connects to 1, 3
+Node 3: connects to 2, 4
+Node 4: connects to 1, 3
+```
+
+### Constraints
+
+- Nodes: 0 to 100
+- 1 ≤ Node.val ≤ 100
+- Unique values
+- No repeated edges or self-loops
+- Graph is connected
+
+### Hints
+- Use HashMap: original → clone
+- Prevents duplicate clones
+- Handles cycles
+- If seen before, return existing clone
 
 ---
 
-## Problem 3: Max Area of Island
-**Difficulty:** Medium
+## Problem 3: Max Area of Island ⭐ BLIND 75
+
+**Difficulty:** Medium | **Pattern:** Grid DFS
 **LeetCode:** https://leetcode.com/problems/max-area-of-island/
 
-You are given an `m x n` binary matrix `grid`. An island is a group of 1's (representing land) connected 4-directionally (horizontal or vertical). You may assume all four edges of the grid are surrounded by water.
+### Problem
 
-The area of an island is the number of cells with a value 1 in the island.
+Given `m × n` binary matrix `grid`. Island = group of 1's connected 4-directionally.
 
-Return the maximum area of an island in `grid`. If there is no island, return 0.
+Area of island = number of cells with value 1 in island.
 
-```typescript
-function maxAreaOfIsland(grid: number[][]): number {
-    // Your code here
-}
+Return maximum area. If no island, return 0.
 
-// Example 1:
-// Input: grid = [
-//   [0,0,1,0,0,0,0,1,0,0,0,0,0],
-//   [0,0,0,0,0,0,0,1,1,1,0,0,0],
-//   [0,1,1,0,1,0,0,0,0,0,0,0,0],
-//   [0,1,0,0,1,1,0,0,1,0,1,0,0],
-//   [0,1,0,0,1,1,0,0,1,1,1,0,0],
-//   [0,0,0,0,0,0,0,0,0,0,1,0,0],
-//   [0,0,0,0,0,0,0,1,1,1,0,0,0],
-//   [0,0,0,0,0,0,0,1,1,0,0,0,0]
-// ]
-// Output: 6
-// Explanation: The answer is not 11, because the island must be connected 4-directionally.
+### Examples
 
-// Example 2:
-// Input: grid = [[0,0,0,0,0,0,0,0]]
-// Output: 0
 ```
+grid = [
+  [0,0,1,0,0,0,0,1,0,0,0,0,0],
+  [0,0,0,0,0,0,0,1,1,1,0,0,0],
+  [0,1,1,0,1,0,0,0,0,0,0,0,0],
+  [0,1,0,0,1,1,0,0,1,0,1,0,0],
+  [0,1,0,0,1,1,0,0,1,1,1,0,0],
+  [0,0,0,0,0,0,0,0,0,0,1,0,0],
+  [0,0,0,0,0,0,0,1,1,1,0,0,0],
+  [0,0,0,0,0,0,0,1,1,0,0,0,0]
+]
+Output: 6
+
+grid = [[0,0,0,0,0,0,0,0]]
+Output: 0
+```
+
+### Constraints
+
+- m, n ≤ 50
+- grid[i][j] is 0 or 1
+
+### Hints
+- Similar to Number of Islands
+- DFS returns area count
+- Area = 1 (current) + sum of 4 directions
+- Track maximum area found
 
 ---
 
-## Problem 4: Pacific Atlantic Water Flow
-**Difficulty:** Medium
+## Problem 4: Pacific Atlantic Water Flow ⭐ BLIND 75
+
+**Difficulty:** Medium | **Pattern:** Multi-source DFS
 **LeetCode:** https://leetcode.com/problems/pacific-atlantic-water-flow/
 
-There is an `m x n` rectangular island that borders both the Pacific Ocean and Atlantic Ocean. The Pacific Ocean touches the island's left and top edges, and the Atlantic Ocean touches the island's right and bottom edges.
+### Problem
 
-The island is partitioned into a grid of square cells. You are given an `m x n` integer matrix `heights` where `heights[r][c]` represents the height above sea level of the cell at coordinate `(r, c)`.
+`m × n` rectangular island borders Pacific Ocean and Atlantic Ocean.
 
-The island receives a lot of rain, and the rain water can flow to neighboring cells directly north, south, east, and west if the neighboring cell's height is less than or equal to the current cell's height. Water can flow from any cell adjacent to an ocean into the ocean.
+- Pacific: left and top edges
+- Atlantic: right and bottom edges
 
-Return a 2D list of grid coordinates `result` where `result[i] = [ri, ci]` denotes that rain water can flow from cell `(ri, ci)` to both the Pacific and Atlantic oceans.
+Given `heights[r][c]` = height above sea level at (r, c).
 
-```typescript
-function pacificAtlantic(heights: number[][]): number[][] {
-    // Your code here
-}
+Rain water flows to neighboring cells (N, S, E, W) if neighbor height ≤ current height. Water flows from any cell adjacent to ocean into ocean.
 
-// Example:
-// Input: heights = [
-//   [1,2,2,3,5],
-//   [3,2,3,4,4],
-//   [2,4,5,3,1],
-//   [6,7,1,4,5],
-//   [5,1,1,2,4]
-// ]
-// Output: [[0,4],[1,3],[1,4],[2,2],[3,0],[3,1],[4,0]]
-// Explanation: The cells with coordinates can flow to both oceans.
+Return coordinates where rain water can flow to BOTH Pacific and Atlantic oceans.
+
+### Examples
+
 ```
+heights = [
+  [1,2,2,3,5],
+  [3,2,3,4,4],
+  [2,4,5,3,1],
+  [6,7,1,4,5],
+  [5,1,1,2,4]
+]
+Output: [[0,4],[1,3],[1,4],[2,2],[3,0],[3,1],[4,0]]
+```
+
+### Constraints
+
+- m, n ≤ 200
+- 0 ≤ heights[i][j] ≤ 10⁵
+
+### Hints
+- Think backwards: from ocean to cells
+- DFS from Pacific borders (top, left)
+- DFS from Atlantic borders (bottom, right)
+- Answer = intersection of both sets
+- When going backwards: can move to cell if height ≥ current
 
 ---
 
-## Problem 5: Surrounded Regions
-**Difficulty:** Medium
+## Problem 5: Surrounded Regions ⭐ BLIND 75
+
+**Difficulty:** Medium | **Pattern:** Border DFS
 **LeetCode:** https://leetcode.com/problems/surrounded-regions/
 
-Given an `m x n` matrix `board` containing 'X' and 'O', capture all regions that are 4-directionally surrounded by 'X'.
+### Problem
 
-A region is captured by flipping all 'O's into 'X's in that surrounded region.
+Given `m × n` matrix `board` containing 'X' and 'O', capture all regions 4-directionally surrounded by 'X'.
 
-```typescript
-function solve(board: string[][]): void {
-    // Your code here
-}
+Region captured by flipping all 'O's into 'X's in that surrounded region.
 
-// Example:
-// Input: board = [
-//   ["X","X","X","X"],
-//   ["X","O","O","X"],
-//   ["X","X","O","X"],
-//   ["X","O","X","X"]
-// ]
-// Output: [
-//   ["X","X","X","X"],
-//   ["X","X","X","X"],
-//   ["X","X","X","X"],
-//   ["X","O","X","X"]
-// ]
-// Explanation: Surrounded regions should not be on the border.
-// The 'O' on the bottom is on the border, so it is not captured.
+### Examples
+
 ```
+board = [
+  ["X","X","X","X"],
+  ["X","O","O","X"],
+  ["X","X","O","X"],
+  ["X","O","X","X"]
+]
+Output: [
+  ["X","X","X","X"],
+  ["X","X","X","X"],
+  ["X","X","X","X"],
+  ["X","O","X","X"]
+]
+
+Explanation: Surrounded regions not on border.
+O on bottom is on border, so not captured.
+```
+
+### Constraints
+
+- m, n ≤ 200
+- board[i][j] is 'X' or 'O'
+
+### Hints
+- O's on border or connected to border cannot be surrounded
+- DFS from all border O's, mark as "safe"
+- Convert remaining O's to X's
+- Convert safe marks back to O's
 
 ---
 
 ## Problem 6: Flood Fill
-**Difficulty:** Easy
+
+**Difficulty:** Easy | **Pattern:** Grid DFS
 **LeetCode:** https://leetcode.com/problems/flood-fill/
 
-An image is represented by an `m x n` integer grid `image` where `image[i][j]` represents the pixel value of the image.
+### Problem
 
-You are also given three integers `sr`, `sc`, and `newColor`. You should perform a flood fill on the image starting from the pixel `image[sr][sc]`.
+Image = `m × n` integer grid `image[i][j]` = pixel value.
 
-To perform a flood fill, consider the starting pixel, plus any pixels connected 4-directionally to the starting pixel of the same color as the starting pixel, plus any pixels connected 4-directionally to those pixels (also with the same color), and so on. Replace the color of all of the aforementioned pixels with `newColor`.
+Given three integers `sr`, `sc`, and `newColor`. Perform flood fill starting from pixel `image[sr][sc]`.
 
-Return the modified image after performing the flood fill.
+Flood fill: Consider starting pixel + any pixels connected 4-directionally of same color as starting pixel, and so on. Replace color of all with `newColor`.
 
-```typescript
-function floodFill(image: number[][], sr: number, sc: number, newColor: number): number[][] {
-    // Your code here
-}
+### Examples
 
-// Example 1:
-// Input: image = [[1,1,1],[1,1,0],[1,0,1]], sr = 1, sc = 1, newColor = 2
-// Output: [[2,2,2],[2,2,0],[2,0,1]]
-// Explanation: From the center of the image with position (sr, sc) = (1, 1)
-// (i.e., the red pixel), all pixels connected by a path of the same color as
-// the starting pixel are colored with the new color.
-
-// Example 2:
-// Input: image = [[0,0,0],[0,0,0]], sr = 0, sc = 0, newColor = 2
-// Output: [[2,2,2],[2,2,2]]
 ```
+image = [[1,1,1],[1,1,0],[1,0,1]], sr = 1, sc = 1, newColor = 2
+Output: [[2,2,2],[2,2,0],[2,0,1]]
+
+image = [[0,0,0],[0,0,0]], sr = 0, sc = 0, newColor = 2
+Output: [[2,2,2],[2,2,2]]
+```
+
+### Constraints
+
+- m, n ≤ 50
+- 0 ≤ image[i][j], newColor < 2¹⁶
+
+### Hints
+- Basic DFS problem
+- Edge case: if newColor == originalColor → infinite loop
+- Store original color first
+- DFS changes all connected pixels with original color
 
 ---
 
-## Problem 7: Number of Connected Components in an Undirected Graph
-**Difficulty:** Medium
+## Problem 7: Number of Connected Components in Undirected Graph
+
+**Difficulty:** Medium | **Pattern:** Connected Components
 **LeetCode:** https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/ (Premium)
 
-You have a graph of `n` nodes. You are given an integer `n` and an array `edges` where `edges[i] = [ai, bi]` indicates that there is an edge between `ai` and `bi` in the graph.
+### Problem
 
-Return the number of connected components in the graph.
+Graph of `n` nodes. Given integer `n` and array `edges` where `edges[i] = [ai, bi]` indicates edge between ai and bi.
 
-```typescript
-function countComponents(n: number, edges: number[][]): number {
-    // Your code here
-}
+Return number of connected components in graph.
 
-// Example 1:
-// Input: n = 5, edges = [[0,1],[1,2],[3,4]]
-// Output: 2
-// Explanation: Node 0, 1, 2 are connected. Node 3, 4 are connected.
+### Examples
 
-// Example 2:
-// Input: n = 5, edges = [[0,1],[1,2],[2,3],[3,4]]
-// Output: 1
-// Explanation: All nodes are connected.
 ```
+n = 5, edges = [[0,1],[1,2],[3,4]]
+Output: 2
+Explanation: Nodes 0,1,2 connected. Nodes 3,4 connected.
+
+n = 5, edges = [[0,1],[1,2],[2,3],[3,4]]
+Output: 1
+Explanation: All nodes connected.
+```
+
+### Constraints
+
+- 1 ≤ n ≤ 2000
+- 0 ≤ edges.length ≤ 5000
+- edges[i].length == 2
+- 0 ≤ ai, bi < n
+- ai ≠ bi
+- No duplicate edges
+
+### Hints
+- Build adjacency list from edges
+- Track visited set
+- For each unvisited node, start DFS and increment counter
+- DFS marks all reachable nodes as visited
 
 ---
 
-## Problem 8: Word Search
-**Difficulty:** Medium
+## Problem 8: Word Search ⭐ BLIND 75
+
+**Difficulty:** Medium | **Pattern:** DFS + Backtracking
 **LeetCode:** https://leetcode.com/problems/word-search/
 
-Given an `m x n` grid of characters `board` and a string `word`, return `true` if `word` exists in the grid.
+### Problem
 
-The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once.
+Given `m × n` grid `board` and string `word`, return `true` if `word` exists in grid.
 
-```typescript
-function exist(board: string[][], word: string): boolean {
-    // Your code here
-}
+Word constructed from sequentially adjacent cells (horizontal/vertical). Same letter cell cannot be used more than once.
 
-// Example 1:
-// Input: board = [
-//   ["A","B","C","E"],
-//   ["S","F","C","S"],
-//   ["A","D","E","E"]
-// ], word = "ABCCED"
-// Output: true
+### Examples
 
-// Example 2:
-// Input: board = [
-//   ["A","B","C","E"],
-//   ["S","F","C","S"],
-//   ["A","D","E","E"]
-// ], word = "SEE"
-// Output: true
-
-// Example 3:
-// Input: board = [
-//   ["A","B","C","E"],
-//   ["S","F","C","S"],
-//   ["A","D","E","E"]
-// ], word = "ABCB"
-// Output: false
 ```
+board = [
+  ["A","B","C","E"],
+  ["S","F","C","S"],
+  ["A","D","E","E"]
+], word = "ABCCED"
+Output: true
+
+board = [
+  ["A","B","C","E"],
+  ["S","F","C","S"],
+  ["A","D","E","E"]
+], word = "SEE"
+Output: true
+
+board = [
+  ["A","B","C","E"],
+  ["S","F","C","S"],
+  ["A","D","E","E"]
+], word = "ABCB"
+Output: false
+```
+
+### Constraints
+
+- m, n ≤ 6
+- 1 ≤ word.length ≤ 15
+- board and word contain only lowercase and uppercase English letters
+
+### Hints
+- Try starting from each cell matching first character
+- Use backtracking: mark visited during exploration, unmark when backtracking
+- Track index in word
+- Temporarily mark cell as visited (e.g., change to '#')
 
 ---
 
 ## Problem 9: All Paths From Source to Target
-**Difficulty:** Medium
+
+**Difficulty:** Medium | **Pattern:** Path Enumeration
 **LeetCode:** https://leetcode.com/problems/all-paths-from-source-to-target/
 
-Given a directed acyclic graph (DAG) of `n` nodes labeled from 0 to n - 1, find all possible paths from node 0 to node n - 1 and return them in any order.
+### Problem
 
-The graph is given as follows: `graph[i]` is a list of all nodes you can visit from node `i` (i.e., there is a directed edge from node `i` to node `graph[i][j]`).
+Given directed acyclic graph (DAG) of `n` nodes labeled 0 to n-1, find all possible paths from node 0 to node n-1. Return in any order.
 
-```typescript
-function allPathsSourceTarget(graph: number[][]): number[][] {
-    // Your code here
-}
+Graph given as: `graph[i]` = list of all nodes you can visit from node i (directed edge from i to graph[i][j]).
 
-// Example 1:
-// Input: graph = [[1,2],[3],[3],[]]
-// Output: [[0,1,3],[0,2,3]]
-// Explanation: There are two paths: 0 -> 1 -> 3 and 0 -> 2 -> 3.
+### Examples
 
-// Example 2:
-// Input: graph = [[4,3,1],[3,2,4],[3],[4],[]]
-// Output: [[0,4],[0,3,4],[0,1,3,4],[0,1,2,3,4],[0,1,4]]
 ```
+graph = [[1,2],[3],[3],[]]
+Output: [[0,1,3],[0,2,3]]
+Explanation: Two paths: 0 → 1 → 3 and 0 → 2 → 3
+
+graph = [[4,3,1],[3,2,4],[3],[4],[]]
+Output: [[0,4],[0,3,4],[0,1,3,4],[0,1,2,3,4],[0,1,4]]
+```
+
+### Constraints
+
+- n ≤ 15
+- 0 ≤ graph[i][j] < n
+- All graph[i][j] unique
+- Input is DAG (no cycles)
+
+### Hints
+- Path enumeration problem
+- No visited set needed (DAG = no cycles)
+- Build path during traversal
+- Copy path when adding to result
+- Backtrack after exploring
 
 ---
 
-## Problem 10: Detect Cycle in an Undirected Graph
-**Difficulty:** Medium
+## Problem 10: Detect Cycle in Undirected Graph
+
+**Difficulty:** Medium | **Pattern:** Cycle Detection
 **LeetCode:** Similar to https://leetcode.com/problems/graph-valid-tree/ (Premium)
 
-Given `n` nodes labeled from 0 to n - 1 and a list of undirected edges (each edge is a pair of nodes), check whether the graph contains a cycle.
+### Problem
 
-```typescript
-function hasCycle(n: number, edges: number[][]): boolean {
-    // Your code here
-}
+Given `n` nodes labeled 0 to n-1 and list of undirected edges (each edge = pair of nodes), check if graph contains cycle.
 
-// Example 1:
-// Input: n = 5, edges = [[0,1],[0,2],[0,3],[1,4]]
-// Output: false
-// Explanation: It's a valid tree with no cycles.
+### Examples
 
-// Example 2:
-// Input: n = 5, edges = [[0,1],[1,2],[2,3],[1,3],[1,4]]
-// Output: true
-// Explanation: There is a cycle: 1 -> 2 -> 3 -> 1
+```
+n = 5, edges = [[0,1],[0,2],[0,3],[1,4]]
+Output: false
+Explanation: Valid tree, no cycles.
 
-// Example 3:
-// Input: n = 4, edges = [[0,1],[2,3]]
-// Output: false
-// Explanation: Two disconnected components, no cycle.
+n = 5, edges = [[0,1],[1,2],[2,3],[1,3],[1,4]]
+Output: true
+Explanation: Cycle: 1 → 2 → 3 → 1
+
+n = 4, edges = [[0,1],[2,3]]
+Output: false
+Explanation: Two disconnected components, no cycle.
 ```
 
----
+### Constraints
 
-## Problem Order Strategy
+- 1 ≤ n ≤ 2000
+- 0 ≤ edges.length ≤ 5000
 
-**Suggested solving order for learning:**
-1. **Start with:** Flood Fill (Easy - basic DFS)
-2. **Grid basics:** Number of Islands (classic problem)
-3. **Track size:** Max Area of Island (extension of islands)
-4. **Graph structure:** Clone Graph (understand graph representation)
-5. **Components:** Number of Connected Components
-6. **Cycle detection:** Detect Cycle in Undirected Graph
-7. **Boundary DFS:** Surrounded Regions
-8. **Multi-source:** Pacific Atlantic Water Flow
-9. **Backtracking:** Word Search
-10. **Path enumeration:** All Paths From Source to Target
+### Hints
+- Build adjacency list
+- Use DFS with parent tracking
+- If visit node that's already visited AND not parent → cycle
+- Check all disconnected components
 
 ---
 
-## Time Limits
+## Summary
 
-- Easy problems: 15 minutes
-- Medium problems: 30 minutes
-- Stop and check hints if stuck for >10 minutes
-- Review solution even if you solve it
+**Total:** 10 problems (1 Easy, 9 Medium)
 
-Good luck!
+**Patterns:**
+- Grid Traversal (4-directional)
+- Connected Components
+- Cycle Detection
+- Path Finding
+- Backtracking
+
+**Blind 75:** 6/75 problems (8%)
+
+**Solving Order:**
+1. Flood Fill (Easy - warmup)
+2. Number of Islands (classic)
+3. Max Area of Island (variant)
+4. Clone Graph (graph structure)
+5. Connected Components (counting)
+6. Detect Cycle (parent tracking)
+7. Surrounded Regions (border DFS)
+8. Pacific Atlantic (multi-source)
+9. Word Search (backtracking)
+10. All Paths (path enumeration)
+
+---
+
+**Ready?** Say: `"Claude, give me the problem"` or `"Go"`
+
+[Solutions](./SOLUTIONS.md) | [Hints](./HINTS.md)

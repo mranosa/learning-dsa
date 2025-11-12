@@ -1,5 +1,17 @@
 # Interviewer Script: Tries
 
+This guide helps you conduct effective problem-solving sessions for Tries problems.
+
+---
+
+## Session Structure
+
+**Total Time:** 3-4 hours
+**Problems:** 10 (0 Easy, 5 Medium, 5 Hard)
+**Focus:** Trie implementation, wildcard matching, backtracking, optimization
+
+---
+
 ## Phase 1: Video Assignment (5 min)
 
 **You:** "Claude, start session 7 19"
@@ -8,9 +20,12 @@
 
 Today we'll master Trie data structures - the go-to solution for efficient string operations, autocomplete, and word games.
 
-**Watch this video first:** [Implement Trie - Leetcode 208](https://www.youtube.com/watch?v=oobqoCJlHA0) (20 min)
+**Watch these videos:**
+1. [Implement Trie - Leetcode 208](https://www.youtube.com/watch?v=oobqoCJlHA0) (20 min)
+2. [Design Add and Search Words - Leetcode 211](https://www.youtube.com/watch?v=BTf05gs_8iU) (10 min)
+3. [Word Search II - Leetcode 212](https://www.youtube.com/watch?v=asbcE9mZz_U) (15 min)
 
-Say 'I watched the video' when you're ready for the concept check."
+Say 'I watched the videos' when you're ready for the concept check."
 
 ---
 

@@ -1,222 +1,264 @@
 # Hints - Session 3: Sliding Window
 
-Progressive hints for all 10 problems. Use sparingly - struggling is part of learning!
+Progressive hints. Struggling is part of learning.
 
 ---
 
-## Problem 1: Best Time to Buy and Sell Stock
+## Problem 1: Best Time to Buy/Sell Stock
 
-### Hint Level 1 (Gentle Nudge)
-Think of this as finding the maximum difference between two elements where the smaller element comes before the larger. Can you do this in one pass?
+### Level 1
+What's the minimum price seen so far? What's the profit if selling today?
 
-### Hint Level 2 (More Direct)
-Keep track of the minimum price seen so far. At each new price, calculate what profit you'd make if you sold today (current - min). Update your max profit.
+### Level 2
+Track minPrice and maxProfit. At each price: `profit = price - minPrice`.
 
-### Hint Level 3 (Step-by-Step)
-Algorithm:
-1. Initialize `minPrice = prices[0]` and `maxProfit = 0`
-2. For each price from index 1:
-   - Calculate `profit = prices[i] - minPrice`
-   - Update `maxProfit = Math.max(maxProfit, profit)`
-   - Update `minPrice = Math.min(minPrice, prices[i])`
-3. Return `maxProfit`
+### Level 3
+```typescript
+let minPrice = prices[0], maxProfit = 0;
+for (let i = 1; i < prices.length; i++) {
+  maxProfit = Math.max(maxProfit, prices[i] - minPrice);
+  minPrice = Math.min(minPrice, prices[i]);
+}
+```
 
 ---
 
-## Problem 2: Longest Substring Without Repeating Characters
+## Problem 2: Longest Substring Without Repeating
 
-### Hint Level 1
-Use a sliding window approach. What data structure helps you quickly check if a character is already in your window?
+### Level 1
+Use Set to track window. When find duplicate, shrink from left until removed.
 
-### Hint Level 2
-Use a Set to track characters in the current window. When you find a duplicate, you need to shrink the window from the left until the duplicate is removed.
+### Level 2
+Two pointers. While s[right] in Set, remove s[left] and increment left.
 
-### Hint Level 3
-Complete approach:
-1. Use `Set` for characters in window
-2. Two pointers: `left = 0`, iterate `right`
-3. If `s[right]` is in Set:
-   - Remove `s[left]` from Set and increment `left`
-   - Repeat until `s[right]` not in Set
-4. Add `s[right]` to Set
-5. Update `maxLength = Math.max(maxLength, right - left + 1)`
+### Level 3
+```typescript
+const seen = new Set<string>();
+let left = 0, maxLen = 0;
+for (let right = 0; right < s.length; right++) {
+  while (seen.has(s[right])) {
+    seen.delete(s[left++]);
+  }
+  seen.add(s[right]);
+  maxLen = Math.max(maxLen, right - left + 1);
+}
+```
 
 ---
 
 ## Problem 3: Longest Repeating Character Replacement
 
-### Hint Level 1
-The key insight: in a valid window, you can replace all characters except the most frequent one. So `windowSize - maxFrequency <= k`.
+### Level 1
+Valid window when: `windowSize - maxFrequency ≤ k`.
 
-### Hint Level 2
-Track character frequencies in your window. You don't need to decrease `maxFreq` when sliding - you only care about windows that could be larger than your current best.
+### Level 2
+Track frequencies. Don't decrease maxFreq - only care about larger windows.
 
-### Hint Level 3
-Algorithm:
-1. Use Map for character frequencies
-2. Track `maxFreq` (highest frequency in current window)
-3. For each character:
-   - Update frequency and `maxFreq`
-   - If `windowSize - maxFreq > k`, shrink from left
-   - Update result with current window size
+### Level 3
+```typescript
+const count = new Map<string, number>();
+let left = 0, maxFreq = 0, result = 0;
+for (let right = 0; right < s.length; right++) {
+  count.set(s[right], (count.get(s[right]) || 0) + 1);
+  maxFreq = Math.max(maxFreq, count.get(s[right])!);
+  if (right - left + 1 - maxFreq > k) {
+    count.set(s[left], count.get(s[left])! - 1);
+    left++;
+  }
+  result = Math.max(result, right - left + 1);
+}
+```
 
 ---
 
 ## Problem 4: Permutation in String
 
-### Hint Level 1
-A permutation means the same characters with the same frequencies. Use a fixed-size sliding window equal to `s1.length`.
+### Level 1
+Fixed window of size s1.length. Compare character frequencies.
 
-### Hint Level 2
-Compare character frequencies: create a frequency map for `s1`, then slide a window of the same size through `s2` and check if frequencies match.
+### Level 2
+Use array[26] for counts. Track number of matching positions (when matches === 26).
 
-### Hint Level 3
-Optimization approach:
-1. Count characters in `s1` using array `[26]`
-2. Count first window in `s2`
-3. Track number of matching character frequencies
-4. Slide window:
-   - Update counts for leaving/entering characters
-   - Update match count accordingly
-   - If all 26 positions match, found permutation
+### Level 3
+```typescript
+const s1Count = new Array(26).fill(0);
+const windowCount = new Array(26).fill(0);
+// Count s1, build initial window
+let matches = 0;
+for (let i = 0; i < 26; i++) {
+  if (s1Count[i] === windowCount[i]) matches++;
+}
+// Slide and check matches === 26
+```
 
 ---
 
 ## Problem 5: Minimum Window Substring
 
-### Hint Level 1
-Use variable-size sliding window. Expand to include all required characters, then contract to find minimum while maintaining validity.
+### Level 1
+Expand to include all needed characters. Contract to find minimum.
 
-### Hint Level 2
-Track two things: characters you "need" (from t) and characters you "have" (in current window). When have == need, you have a valid window.
+### Level 2
+Track "have" (matching character frequencies) vs "need" (distinct chars in t).
 
-### Hint Level 3
-Detailed algorithm:
-1. Count characters in `t` → `need` map
-2. Use `have` counter for matching character frequencies
-3. Expand right:
-   - Add character to window
-   - If frequency matches `need`, increment `have`
-4. While `have == need.size`:
-   - Update minimum window
-   - Contract from left
-   - If frequency drops below need, decrement `have`
-
----
-
-## Problem 6: Sliding Window Maximum
-
-### Hint Level 1
-Brute force: find max in each window. Can we avoid recalculating the max from scratch? Think about what elements could potentially be the maximum.
-
-### Hint Level 2
-Use a deque (double-ended queue) to maintain elements in decreasing order. The front of the deque is always the maximum of the current window.
-
-### Hint Level 3
-Monotonic deque approach:
-1. Store indices (not values) in deque
-2. Before adding new element:
-   - Remove indices outside current window (front of deque)
-   - Remove indices of smaller elements (back of deque)
-3. Add current index
-4. Front of deque points to maximum element
+### Level 3
+```typescript
+const tCount = new Map<string, number>();
+// Count t
+let have = 0, need = tCount.size;
+const windowCount = new Map<string, number>();
+// Expand right, when have === need, contract left
+while (have === need) {
+  // Update min, then shrink
+}
+```
 
 ---
 
-## Problem 7: Maximum Sum of Distinct Subarrays
+## Problem 6: Maximum Sum of Distinct Subarrays
 
-### Hint Level 1
-Fixed-size sliding window with an additional constraint: all elements must be distinct. How can you track if elements are unique?
+### Level 1
+Fixed window k. Track sum and frequencies. Valid when freq.size === k.
 
-### Hint Level 2
-Use a frequency map. The window is valid when `map.size === k` (all elements appear exactly once).
+### Level 2
+Build initial window. Slide: add right, remove left. Check freq.size === k.
 
-### Hint Level 3
-Algorithm:
-1. Build initial window of size k
-2. Track sum and frequencies
-3. Check if `freq.size === k` for valid window
-4. Slide window:
-   - Add new element (update sum and freq)
-   - Remove old element (update sum and freq)
-   - If `freq.size === k`, update max sum
-
----
-
-## Problem 8: Fruit Into Baskets
-
-### Hint Level 1
-Reframe the problem: find the longest contiguous subarray with at most 2 distinct elements. Classic sliding window!
-
-### Hint Level 2
-Use a Map to track fruit types in your current window. When you have more than 2 types, shrink from the left.
-
-### Hint Level 3
-Implementation:
-1. Map tracks fruit type → count
-2. Expand window by adding fruits
-3. While `map.size > 2`:
-   - Remove leftmost fruit
-   - If count becomes 0, delete from map
-   - Move left pointer
-4. Update max with current window size
+### Level 3
+```typescript
+const freq = new Map<number, number>();
+let sum = 0;
+// Build first k elements
+for (let i = k; i < nums.length; i++) {
+  sum += nums[i];
+  freq.set(nums[i], (freq.get(nums[i]) || 0) + 1);
+  // Remove left
+  sum -= nums[i - k];
+  // Update freq
+  if (freq.size === k) maxSum = Math.max(maxSum, sum);
+}
+```
 
 ---
 
-## Problem 9: Longest Substring with At Most K Distinct
+## Problem 7: Fruit Into Baskets
 
-### Hint Level 1
-Variable-size sliding window. The constraint is having at most k distinct characters. What data structure tracks distinct elements?
+### Level 1
+"Longest subarray with at most 2 distinct elements".
 
-### Hint Level 2
-Use a Map for character frequencies. When map.size > k, you need to shrink the window from the left until valid again.
+### Level 2
+Map tracks fruit type → count. Contract when map.size > 2.
 
-### Hint Level 3
-Step-by-step:
-1. Map: character → frequency
-2. Expand with right pointer
-3. While `map.size > k`:
-   - Decrease frequency of `s[left]`
-   - If frequency becomes 0, remove from map
-   - Increment left
-4. Update max length with current window
-
----
-
-## Problem 10: Minimum Size Subarray Sum
-
-### Hint Level 1
-Variable-size window: expand until sum >= target, then try to contract while maintaining validity to find minimum size.
-
-### Hint Level 2
-Since all numbers are positive, once your window sum >= target, you can greedily shrink from the left to find the minimum valid window.
-
-### Hint Level 3
-Algorithm:
-1. Initialize `left = 0`, `sum = 0`, `minLen = Infinity`
-2. Expand with right pointer:
-   - Add `nums[right]` to sum
-3. While `sum >= target`:
-   - Update `minLen` with current window size
-   - Subtract `nums[left]` and increment left
-4. Return `minLen` or 0 if no valid window
+### Level 3
+```typescript
+const basket = new Map<number, number>();
+let left = 0;
+for (let right = 0; right < fruits.length; right++) {
+  basket.set(fruits[right], (basket.get(fruits[right]) || 0) + 1);
+  while (basket.size > 2) {
+    basket.set(fruits[left], basket.get(fruits[left])! - 1);
+    if (basket.get(fruits[left]) === 0) basket.delete(fruits[left]);
+    left++;
+  }
+  maxFruits = Math.max(maxFruits, right - left + 1);
+}
+```
 
 ---
 
-## General Sliding Window Tips
+## Problem 8: Longest Substring with At Most K Distinct
 
-### Recognizing the Pattern
-- Keywords: "subarray", "substring", "window", "contiguous"
-- Optimization from O(n²) to O(n)
-- Finding optimal (longest/shortest/max/min) sequence
+### Level 1
+Variable window. Contract when map.size > k.
 
-### Fixed vs Variable
-- **Fixed:** Window size k is given
-- **Variable:** Find optimal window size meeting constraints
+### Level 2
+Map tracks character frequencies. When > k distinct, shrink left.
 
-### Common Mistakes to Avoid
-1. Not handling empty input
-2. Off-by-one errors in window size calculation
-3. Forgetting to update result before contracting
-4. Using wrong data structure (Set vs Map)
-5. Not considering when no valid window exists
+### Level 3
+```typescript
+const charCount = new Map<string, number>();
+let left = 0;
+for (let right = 0; right < s.length; right++) {
+  charCount.set(s[right], (charCount.get(s[right]) || 0) + 1);
+  while (charCount.size > k) {
+    charCount.set(s[left], charCount.get(s[left])! - 1);
+    if (charCount.get(s[left]) === 0) charCount.delete(s[left]);
+    left++;
+  }
+  maxLen = Math.max(maxLen, right - left + 1);
+}
+```
+
+---
+
+## Problem 9: Minimum Size Subarray Sum
+
+### Level 1
+Expand until sum ≥ target. Contract while maintaining validity.
+
+### Level 2
+All positive: greedy shrinking works. Contract while sum ≥ target.
+
+### Level 3
+```typescript
+let left = 0, sum = 0, minLen = Infinity;
+for (let right = 0; right < nums.length; right++) {
+  sum += nums[right];
+  while (sum >= target) {
+    minLen = Math.min(minLen, right - left + 1);
+    sum -= nums[left++];
+  }
+}
+return minLen === Infinity ? 0 : minLen;
+```
+
+---
+
+## Problem 10: Sliding Window Maximum
+
+### Level 1
+Brute force finds max in each window O(nk). Can we avoid recalculating?
+
+### Level 2
+Monotonic decreasing deque. Store indices. Front always has maximum.
+
+### Level 3
+```typescript
+const deque: number[] = []; // indices
+for (let i = 0; i < nums.length; i++) {
+  // Remove outside window
+  while (deque.length && deque[0] <= i - k) deque.shift();
+  // Remove smaller elements
+  while (deque.length && nums[deque[deque.length - 1]] <= nums[i]) {
+    deque.pop();
+  }
+  deque.push(i);
+  if (i >= k - 1) result.push(nums[deque[0]]);
+}
+```
+
+---
+
+## Pattern Recognition
+
+**Fixed window indicators:**
+- "Subarray of size k"
+- "Window size k"
+- Comparing patterns
+
+**Variable window indicators:**
+- "Longest/shortest"
+- "With at most/at least"
+- "Meeting constraint"
+
+**Use Map when:**
+- Need frequencies
+- Tracking distinct elements
+- Comparing character counts
+
+**Use Set when:**
+- Only need presence/absence
+- No frequency counting
+
+---
+
+[Back to Problems](./PROBLEMS.md) | [Back to Solutions](./SOLUTIONS.md)

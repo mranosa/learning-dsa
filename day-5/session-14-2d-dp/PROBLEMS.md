@@ -1,300 +1,385 @@
-# Session 14: 2D Dynamic Programming Problems
+# Problems - Session 14: 2D Dynamic Programming
 
-## Problem 1: Unique Paths (Medium)
+10 problems in order. Use UMPIRE method.
+
+**Targets:** Medium <25 min | Hard <40 min
+
+---
+
+## Problem 1: Unique Paths
+
+**Difficulty:** Medium | **Pattern:** Grid DP
 **LeetCode:** https://leetcode.com/problems/unique-paths/
 
-A robot is located at the top-left corner of a `m x n` grid. The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid.
+### Problem
 
-How many possible unique paths are there?
+Robot at top-left of `m × n` grid. Can only move down or right. How many unique paths to bottom-right?
 
-### Examples:
+### Examples
+
 ```
-Input: m = 3, n = 7
+m = 3, n = 7
 Output: 28
 
-Input: m = 3, n = 2
+m = 3, n = 2
 Output: 3
-Explanation: From the top-left corner, there are 3 ways to reach bottom-right:
-1. Right -> Down -> Down
-2. Down -> Down -> Right
-3. Down -> Right -> Down
+Explanation:
+1. Right → Down → Down
+2. Down → Down → Right
+3. Down → Right → Down
 ```
 
-### Constraints:
-- 1 <= m, n <= 100
+### Constraints
+
+- 1 ≤ m, n ≤ 100
+
+### Hints
+- dp[i][j] = ways to reach position (i,j)
+- Can only come from top or left
+- Base case: first row and column all 1s
 
 ---
 
-## Problem 2: Unique Paths II (Medium)
+## Problem 2: Unique Paths II
+
+**Difficulty:** Medium | **Pattern:** Grid DP with Obstacles
 **LeetCode:** https://leetcode.com/problems/unique-paths-ii/
 
-You are given an `m x n` integer array grid. There is a robot initially located at the top-left corner. The robot can only move either down or right. The robot is trying to reach the bottom-right corner.
+### Problem
 
-An obstacle and space are marked as 1 or 0 respectively in grid. A path that the robot takes cannot include any square that is an obstacle.
+Same as Unique Paths, but grid has obstacles (marked as 1). 0 = empty space. Return number of unique paths.
 
-Return the number of possible unique paths that the robot can take to reach the bottom-right corner.
+### Examples
 
-### Examples:
 ```
-Input: obstacleGrid = [[0,0,0],[0,1,0],[0,0,0]]
+obstacleGrid = [[0,0,0],[0,1,0],[0,0,0]]
 Output: 2
-Explanation: There is one obstacle in the middle of the 3x3 grid.
-There are two ways to reach the bottom-right corner:
-1. Right -> Right -> Down -> Down
-2. Down -> Down -> Right -> Right
+Explanation: One obstacle in middle
 
-Input: obstacleGrid = [[0,1],[0,0]]
+obstacleGrid = [[0,1],[0,0]]
 Output: 1
 ```
 
-### Constraints:
+### Constraints
+
 - m == obstacleGrid.length
 - n == obstacleGrid[i].length
-- 1 <= m, n <= 100
+- 1 ≤ m, n ≤ 100
 - obstacleGrid[i][j] is 0 or 1
 
+### Hints
+- If cell has obstacle, 0 ways to reach it
+- Handle first row/column carefully (obstacle blocks all after)
+- Check start/end positions for obstacles
+
 ---
 
-## Problem 3: Longest Common Subsequence (Medium)
+## Problem 3: Longest Common Subsequence
+
+**Difficulty:** Medium | **Pattern:** String DP
 **LeetCode:** https://leetcode.com/problems/longest-common-subsequence/
 
-Given two strings `text1` and `text2`, return the length of their longest common subsequence. If there is no common subsequence, return 0.
+### Problem
 
-A subsequence of a string is a new string generated from the original string with some characters (can be none) deleted without changing the relative order of the remaining characters.
+Given two strings `text1` and `text2`, return length of longest common subsequence. Subsequence: characters in order but not necessarily contiguous.
 
-A common subsequence of two strings is a subsequence that is common to both strings.
+### Examples
 
-### Examples:
 ```
-Input: text1 = "abcde", text2 = "ace"
-Output: 3
-Explanation: The longest common subsequence is "ace" and its length is 3.
+text1 = "abcde", text2 = "ace"
+Output: 3  ("ace")
 
-Input: text1 = "abc", text2 = "abc"
-Output: 3
-Explanation: The longest common subsequence is "abc" and its length is 3.
+text1 = "abc", text2 = "abc"
+Output: 3  ("abc")
 
-Input: text1 = "abc", text2 = "def"
+text1 = "abc", text2 = "def"
 Output: 0
-Explanation: There is no common subsequence, return 0.
 ```
 
-### Constraints:
-- 1 <= text1.length, text2.length <= 1000
-- text1 and text2 consist of only lowercase English characters
+### Constraints
+
+- 1 ≤ text1.length, text2.length ≤ 1000
+- Only lowercase English letters
+
+### Hints
+- dp[i][j] = LCS of first i chars of text1 and first j chars of text2
+- If chars match: dp[i][j] = dp[i-1][j-1] + 1
+- If don't match: dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+- Need (m+1) × (n+1) table for empty string base case
 
 ---
 
-## Problem 4: Edit Distance (Medium)
+## Problem 4: Edit Distance
+
+**Difficulty:** Medium | **Pattern:** String DP
 **LeetCode:** https://leetcode.com/problems/edit-distance/
 
-Given two strings `word1` and `word2`, return the minimum number of operations required to convert `word1` to `word2`.
+### Problem
 
-You have the following three operations permitted on a word:
-- Insert a character
-- Delete a character
-- Replace a character
+Convert `word1` to `word2` using minimum operations. Operations: insert, delete, replace a character.
 
-### Examples:
+### Examples
+
 ```
-Input: word1 = "horse", word2 = "ros"
+word1 = "horse", word2 = "ros"
 Output: 3
 Explanation:
-horse -> rorse (replace 'h' with 'r')
-rorse -> rose (remove 'r')
-rose -> ros (remove 'e')
+horse → rorse (replace 'h' with 'r')
+rorse → rose (remove 'r')
+rose → ros (remove 'e')
 
-Input: word1 = "intention", word2 = "execution"
+word1 = "intention", word2 = "execution"
 Output: 5
-Explanation:
-intention -> inention (remove 't')
-inention -> enention (replace 'i' with 'e')
-enention -> exention (replace 'n' with 'x')
-exention -> exection (replace 'n' with 'c')
-exection -> execution (insert 'u')
 ```
 
-### Constraints:
-- 0 <= word1.length, word2.length <= 500
-- word1 and word2 consist of lowercase English letters
+### Constraints
+
+- 0 ≤ word1.length, word2.length ≤ 500
+- Only lowercase English letters
+
+### Hints
+- dp[i][j] = min operations to convert word1[0..i-1] to word2[0..j-1]
+- If chars match: dp[i][j] = dp[i-1][j-1]
+- If don't match: 1 + min(delete, insert, replace)
+- Base: dp[i][0] = i (delete all), dp[0][j] = j (insert all)
 
 ---
 
-## Problem 5: Minimum Path Sum (Medium)
+## Problem 5: Minimum Path Sum
+
+**Difficulty:** Medium | **Pattern:** Grid DP
 **LeetCode:** https://leetcode.com/problems/minimum-path-sum/
 
-Given a `m x n` grid filled with non-negative numbers, find a path from top left to bottom right, which minimizes the sum of all numbers along its path.
+### Problem
 
-Note: You can only move either down or right at any point in time.
+Given `m × n` grid of non-negative numbers, find path from top-left to bottom-right minimizing sum. Can only move down or right.
 
-### Examples:
+### Examples
+
 ```
-Input: grid = [[1,3,1],[1,5,1],[4,2,1]]
+grid = [[1,3,1],[1,5,1],[4,2,1]]
 Output: 7
-Explanation: The path 1 → 3 → 1 → 1 → 1 minimizes the sum.
+Path: 1→3→1→1→1
 
-Input: grid = [[1,2,3],[4,5,6]]
+grid = [[1,2,3],[4,5,6]]
 Output: 12
-Explanation: The path 1 → 2 → 3 → 6 minimizes the sum.
 ```
 
-### Constraints:
+### Constraints
+
 - m == grid.length
 - n == grid[i].length
-- 1 <= m, n <= 200
-- 0 <= grid[i][j] <= 200
+- 1 ≤ m, n ≤ 200
+- 0 ≤ grid[i][j] ≤ 200
+
+### Hints
+- dp[i][j] = minimum sum to reach (i,j)
+- dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+- Initialize first row/column with cumulative sums
+- Can optimize to O(1) space by modifying input
 
 ---
 
-## Problem 6: Maximal Square (Medium)
+## Problem 6: Maximal Square
+
+**Difficulty:** Medium | **Pattern:** Grid DP
 **LeetCode:** https://leetcode.com/problems/maximal-square/
 
-Given an `m x n` binary matrix filled with 0's and 1's, find the largest square containing only 1's and return its area.
+### Problem
 
-### Examples:
+Given `m × n` binary matrix (0s and 1s), find largest square containing only 1s. Return area.
+
+### Examples
+
 ```
-Input: matrix = [["1","0","1","0","0"],
-                 ["1","0","1","1","1"],
-                 ["1","1","1","1","1"],
-                 ["1","0","0","1","0"]]
-Output: 4
-Explanation: The largest square has side length 2.
+matrix = [["1","0","1","0","0"],
+          ["1","0","1","1","1"],
+          ["1","1","1","1","1"],
+          ["1","0","0","1","0"]]
+Output: 4  (2×2 square)
 
-Input: matrix = [["0","1"],["1","0"]]
+matrix = [["0","1"],["1","0"]]
 Output: 1
 
-Input: matrix = [["0"]]
+matrix = [["0"]]
 Output: 0
 ```
 
-### Constraints:
+### Constraints
+
 - m == matrix.length
 - n == matrix[i].length
-- 1 <= m, n <= 300
+- 1 ≤ m, n ≤ 300
 - matrix[i][j] is '0' or '1'
+
+### Hints
+- dp[i][j] = side length of largest square with bottom-right at (i,j)
+- If matrix[i][j] == '1': dp[i][j] = min(top, left, diagonal) + 1
+- Track max side length seen
+- Return maxSide × maxSide for area
 
 ---
 
-## Problem 7: Triangle (Medium)
+## Problem 7: Triangle
+
+**Difficulty:** Medium | **Pattern:** Grid DP (Irregular)
 **LeetCode:** https://leetcode.com/problems/triangle/
 
-Given a triangle array, return the minimum path sum from top to bottom.
+### Problem
 
-For each step, you may move to an adjacent number of the row below. More formally, if you are on index i on the current row, you may move to either index i or index i + 1 on the next row.
+Given triangle array, return minimum path sum from top to bottom. Each step moves to adjacent number in row below (index i → i or i+1).
 
-### Examples:
+### Examples
+
 ```
-Input: triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
-Output: 11
-Explanation: The minimum path sum from top to bottom is 2 + 3 + 5 + 1 = 11.
+triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
+Output: 11  (2+3+5+1)
 
-Input: triangle = [[-10]]
+triangle = [[-10]]
 Output: -10
 ```
 
-### Constraints:
-- 1 <= triangle.length <= 200
+### Constraints
+
+- 1 ≤ triangle.length ≤ 200
 - triangle[0].length == 1
-- triangle[i].length == triangle[i - 1].length + 1
-- -10^4 <= triangle[i][j] <= 10^4
+- triangle[i].length == triangle[i-1].length + 1
+- -10⁴ ≤ triangle[i][j] ≤ 10⁴
+
+### Hints
+- Work bottom-up is easier
+- dp[j] = min(dp[j], dp[j+1]) + triangle[i][j]
+- Start with last row, work upward
+- O(n) space solution
 
 ---
 
-## Problem 8: Interleaving String (Medium)
+## Problem 8: Interleaving String
+
+**Difficulty:** Medium | **Pattern:** String DP
 **LeetCode:** https://leetcode.com/problems/interleaving-string/
 
-Given strings `s1`, `s2`, and `s3`, find whether `s3` is formed by an interleaving of `s1` and `s2`.
+### Problem
 
-An interleaving of two strings `s` and `t` is a configuration where `s` and `t` are divided into `n` and `m` substrings respectively, such that:
-- s = s₁ + s₂ + ... + sₙ
-- t = t₁ + t₂ + ... + tₘ
-- |n - m| <= 1
-- The interleaving is s₁ + t₁ + s₂ + t₂ + s₃ + t₃ + ... or t₁ + s₁ + t₂ + s₂ + t₃ + s₃ + ...
+Given `s1`, `s2`, `s3`, determine if `s3` is formed by interleaving `s1` and `s2`.
 
-### Examples:
+### Examples
+
 ```
-Input: s1 = "aabcc", s2 = "dbbca", s3 = "aadbbcbcac"
+s1 = "aabcc", s2 = "dbbca", s3 = "aadbbcbcac"
 Output: true
-Explanation: One way to obtain s3 is:
-Split s1 into s1 = "aa" + "bc" + "c", and s2 into s2 = "dbbc" + "a".
-Interleaving the two splits, we get "aa" + "dbbc" + "bc" + "a" + "c" = "aadbbcbcac".
 
-Input: s1 = "aabcc", s2 = "dbbca", s3 = "aadbbbaccc"
+s1 = "aabcc", s2 = "dbbca", s3 = "aadbbbaccc"
 Output: false
 
-Input: s1 = "", s2 = "", s3 = ""
+s1 = "", s2 = "", s3 = ""
 Output: true
 ```
 
-### Constraints:
-- 0 <= s1.length, s2.length <= 100
-- 0 <= s3.length <= 200
-- s1, s2, and s3 consist of lowercase English letters
+### Constraints
+
+- 0 ≤ s1.length, s2.length ≤ 100
+- 0 ≤ s3.length ≤ 200
+- Lowercase English letters only
+
+### Hints
+- dp[i][j] = can first i+j chars of s3 be formed from s1[0..i-1] and s2[0..j-1]
+- dp[i][j] = (dp[i-1][j] && s1[i-1]==s3[i+j-1]) || (dp[i][j-1] && s2[j-1]==s3[i+j-1])
+- Check lengths: s1.length + s2.length == s3.length
 
 ---
 
-## Problem 9: Distinct Subsequences (Hard)
+## Problem 9: Distinct Subsequences
+
+**Difficulty:** Hard | **Pattern:** String DP
 **LeetCode:** https://leetcode.com/problems/distinct-subsequences/
 
-Given two strings `s` and `t`, return the number of distinct subsequences of `s` which equals `t`.
+### Problem
 
-The test cases are generated so that the answer fits on a 32-bit signed integer.
+Given strings `s` and `t`, return number of distinct subsequences of `s` which equal `t`.
 
-### Examples:
+### Examples
+
 ```
-Input: s = "rabbbit", t = "rabbit"
+s = "rabbbit", t = "rabbit"
 Output: 3
-Explanation: There are 3 ways you can generate "rabbit" from s.
-rabb_bit
-rab_bbit
-ra_bbbit
+Explanation: rabb_bit, rab_bbit, ra_bbbit
 
-Input: s = "babgbag", t = "bag"
+s = "babgbag", t = "bag"
 Output: 5
-Explanation: There are 5 ways you can generate "bag" from s.
-ba_g_bag
-ba_gb_ag
-b_abgb_ag
-_babg_bag
-_babgba_g
 ```
 
-### Constraints:
-- 1 <= s.length, t.length <= 1000
-- s and t consist of English letters
+### Constraints
+
+- 1 ≤ s.length, t.length ≤ 1000
+- English letters only
+
+### Hints
+- dp[i][j] = number of ways to form t[0..j-1] from s[0..i-1]
+- Always can skip s[i-1]: dp[i][j] = dp[i-1][j]
+- If s[i-1] == t[j-1], also add dp[i-1][j-1]
+- Base: dp[i][0] = 1 (empty t can always be formed)
 
 ---
 
-## Problem 10: Regular Expression Matching (Hard)
+## Problem 10: Regular Expression Matching
+
+**Difficulty:** Hard | **Pattern:** String DP
 **LeetCode:** https://leetcode.com/problems/regular-expression-matching/
 
-Given an input string `s` and a pattern `p`, implement regular expression matching with support for '.' and '*' where:
-- '.' Matches any single character
-- '*' Matches zero or more of the preceding element
+### Problem
 
-The matching should cover the entire input string (not partial).
+Implement regex matching with '.' and '*':
+- '.' matches any single character
+- '*' matches zero or more of preceding element
 
-### Examples:
+### Examples
+
 ```
-Input: s = "aa", p = "a"
+s = "aa", p = "a"
 Output: false
-Explanation: "a" does not match the entire string "aa".
 
-Input: s = "aa", p = "a*"
-Output: true
-Explanation: '*' means zero or more of the preceding element, 'a'.
+s = "aa", p = "a*"
+Output: true  (* matches multiple 'a')
 
-Input: s = "ab", p = ".*"
-Output: true
-Explanation: ".*" means "zero or more (*) of any character (.)".
+s = "ab", p = ".*"
+Output: true  (.* matches any string)
 
-Input: s = "mississippi", p = "mis*is*p*."
+s = "mississippi", p = "mis*is*p*."
 Output: false
 ```
 
-### Constraints:
-- 1 <= s.length <= 20
-- 1 <= p.length <= 20
-- s contains only lowercase English letters
-- p contains only lowercase English letters, '.', and '*'
-- It is guaranteed for each appearance of the character '*', there will be a previous valid character to match
+### Constraints
+
+- 1 ≤ s.length ≤ 20
+- 1 ≤ p.length ≤ 20
+- s contains only lowercase letters
+- p contains lowercase, '.', '*'
+- Each '*' has valid preceding character
+
+### Hints
+- dp[i][j] = s[0..i-1] matches p[0..j-1]
+- If p[j-1] == '*': match 0 (dp[i][j-2]) or 1+ (dp[i-1][j] if chars match)
+- If p[j-1] == '.' or matches s[i-1]: dp[i][j] = dp[i-1][j-1]
+- Handle patterns like "a*" at start carefully
+
+---
+
+## Summary
+
+**Total:** 10 problems (7 Medium, 3 Hard)
+
+**Patterns:**
+- Grid DP (paths, sums, squares)
+- String comparison (LCS, edit distance)
+- String matching (interleaving, regex)
+
+**Complexity Targets:**
+- Time: O(m×n) standard
+- Space: O(m×n) → optimize to O(n)
+
+---
+
+**Ready?** Say: `"Claude, give me the problem"` or `"Go"`
+
+[Solutions](./SOLUTIONS.md) | [Hints](./HINTS.md)

@@ -1,597 +1,424 @@
-# Solutions: Binary Search
+# Solutions - Session 6: Binary Search
+
+TypeScript solutions with complexity analysis.
+
+---
 
 ## Problem 1: Binary Search
 
-### Approach 1: Iterative Binary Search
+### Approach: Iterative Binary Search (Optimal) ✅
 
 ```typescript
 function search(nums: number[], target: number): number {
-    let left = 0;
-    let right = nums.length - 1;
+  let left = 0;
+  let right = nums.length - 1;
 
-    while (left <= right) {
-        // Prevent overflow
-        const mid = left + Math.floor((right - left) / 2);
-
-        if (nums[mid] === target) {
-            return mid;
-        } else if (nums[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
-    }
-
-    return -1;
-}
-```
-
-**Time Complexity:** O(log n)
-**Space Complexity:** O(1)
-
-### Approach 2: Recursive Binary Search
-
-```typescript
-function search(nums: number[], target: number): number {
-    return binarySearchRecursive(nums, target, 0, nums.length - 1);
-}
-
-function binarySearchRecursive(nums: number[], target: number, left: number, right: number): number {
-    if (left > right) return -1;
-
+  while (left <= right) {
     const mid = left + Math.floor((right - left) / 2);
 
     if (nums[mid] === target) {
-        return mid;
+      return mid;
     } else if (nums[mid] < target) {
-        return binarySearchRecursive(nums, target, mid + 1, right);
+      left = mid + 1;
     } else {
-        return binarySearchRecursive(nums, target, left, mid - 1);
+      right = mid - 1;
     }
+  }
+
+  return -1;
 }
 ```
 
-**Time Complexity:** O(log n)
-**Space Complexity:** O(log n) - recursive call stack
+**Time:** O(log n) | **Space:** O(1)
+
+**Key:** Standard binary search template. Use `left + (right - left) / 2` to prevent overflow.
+
+**Say:** "Classic binary search with O(log n) time by eliminating half the search space each iteration. Iterative approach uses O(1) space."
 
 ---
 
-## Problem 2: Search in Rotated Sorted Array
+## Problem 2: Search Insert Position
 
-### Approach: Modified Binary Search
-
-```typescript
-function search(nums: number[], target: number): number {
-    let left = 0;
-    let right = nums.length - 1;
-
-    while (left <= right) {
-        const mid = left + Math.floor((right - left) / 2);
-
-        // Found target
-        if (nums[mid] === target) {
-            return mid;
-        }
-
-        // Determine which half is sorted
-        if (nums[left] <= nums[mid]) {
-            // Left half is sorted
-            if (nums[left] <= target && target < nums[mid]) {
-                // Target is in the sorted left half
-                right = mid - 1;
-            } else {
-                // Target is in the unsorted right half
-                left = mid + 1;
-            }
-        } else {
-            // Right half is sorted
-            if (nums[mid] < target && target <= nums[right]) {
-                // Target is in the sorted right half
-                left = mid + 1;
-            } else {
-                // Target is in the unsorted left half
-                right = mid - 1;
-            }
-        }
-    }
-
-    return -1;
-}
-```
-
-**Time Complexity:** O(log n)
-**Space Complexity:** O(1)
-
-**Key Insight:** At least one half of the array is always sorted after rotation. We can determine which half is sorted and whether the target lies in that half.
-
----
-
-## Problem 3: Find Minimum in Rotated Sorted Array
-
-### Approach 1: Binary Search for Inflection Point
-
-```typescript
-function findMin(nums: number[]): number {
-    let left = 0;
-    let right = nums.length - 1;
-
-    while (left < right) {
-        const mid = left + Math.floor((right - left) / 2);
-
-        // If mid element is greater than right element,
-        // minimum must be in the right half
-        if (nums[mid] > nums[right]) {
-            left = mid + 1;
-        } else {
-            // Minimum is in left half (including mid)
-            right = mid;
-        }
-    }
-
-    return nums[left];
-}
-```
-
-**Time Complexity:** O(log n)
-**Space Complexity:** O(1)
-
-### Approach 2: Check Already Sorted First
-
-```typescript
-function findMin(nums: number[]): number {
-    let left = 0;
-    let right = nums.length - 1;
-
-    // Handle case when array is not rotated
-    if (nums[left] <= nums[right]) {
-        return nums[left];
-    }
-
-    while (left < right) {
-        const mid = left + Math.floor((right - left) / 2);
-
-        if (nums[mid] > nums[right]) {
-            left = mid + 1;
-        } else {
-            right = mid;
-        }
-    }
-
-    return nums[left];
-}
-```
-
-**Time Complexity:** O(log n)
-**Space Complexity:** O(1)
-
----
-
-## Problem 4: Search a 2D Matrix
-
-### Approach 1: Treat as 1D Array
-
-```typescript
-function searchMatrix(matrix: number[][], target: number): boolean {
-    if (!matrix.length || !matrix[0].length) return false;
-
-    const m = matrix.length;
-    const n = matrix[0].length;
-    let left = 0;
-    let right = m * n - 1;
-
-    while (left <= right) {
-        const mid = left + Math.floor((right - left) / 2);
-        // Convert 1D index to 2D coordinates
-        const row = Math.floor(mid / n);
-        const col = mid % n;
-        const value = matrix[row][col];
-
-        if (value === target) {
-            return true;
-        } else if (value < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
-    }
-
-    return false;
-}
-```
-
-**Time Complexity:** O(log(m*n))
-**Space Complexity:** O(1)
-
-### Approach 2: Two Binary Searches
-
-```typescript
-function searchMatrix(matrix: number[][], target: number): boolean {
-    if (!matrix.length || !matrix[0].length) return false;
-
-    const m = matrix.length;
-    const n = matrix[0].length;
-
-    // Binary search to find the correct row
-    let top = 0;
-    let bottom = m - 1;
-
-    while (top <= bottom) {
-        const midRow = top + Math.floor((bottom - top) / 2);
-
-        if (matrix[midRow][0] <= target && target <= matrix[midRow][n - 1]) {
-            // Target might be in this row, do binary search
-            return binarySearchRow(matrix[midRow], target);
-        } else if (target < matrix[midRow][0]) {
-            bottom = midRow - 1;
-        } else {
-            top = midRow + 1;
-        }
-    }
-
-    return false;
-}
-
-function binarySearchRow(row: number[], target: number): boolean {
-    let left = 0;
-    let right = row.length - 1;
-
-    while (left <= right) {
-        const mid = left + Math.floor((right - left) / 2);
-        if (row[mid] === target) return true;
-        if (row[mid] < target) left = mid + 1;
-        else right = mid - 1;
-    }
-
-    return false;
-}
-```
-
-**Time Complexity:** O(log m + log n) = O(log(m*n))
-**Space Complexity:** O(1)
-
----
-
-## Problem 5: Koko Eating Bananas
-
-### Approach: Binary Search on Answer Space
-
-```typescript
-function minEatingSpeed(piles: number[], h: number): number {
-    // Binary search on eating speed
-    let left = 1;
-    let right = Math.max(...piles);
-    let result = right;
-
-    while (left <= right) {
-        const mid = left + Math.floor((right - left) / 2);
-
-        if (canEatAll(piles, h, mid)) {
-            result = mid;
-            right = mid - 1;  // Try to find smaller speed
-        } else {
-            left = mid + 1;   // Need faster speed
-        }
-    }
-
-    return result;
-}
-
-function canEatAll(piles: number[], h: number, speed: number): boolean {
-    let hoursNeeded = 0;
-
-    for (const pile of piles) {
-        // Hours needed for this pile at given speed
-        hoursNeeded += Math.ceil(pile / speed);
-
-        // Early termination
-        if (hoursNeeded > h) return false;
-    }
-
-    return hoursNeeded <= h;
-}
-```
-
-**Time Complexity:** O(n * log(max(piles)))
-**Space Complexity:** O(1)
-
-**Key Insight:** We're not searching in an array, but in the answer space [1, max(piles)]. Binary search works because if Koko can eat all bananas at speed k, she can also eat them at any speed > k.
-
----
-
-## Problem 6: Find Peak Element
-
-### Approach: Binary Search on Slope
-
-```typescript
-function findPeakElement(nums: number[]): number {
-    let left = 0;
-    let right = nums.length - 1;
-
-    while (left < right) {
-        const mid = left + Math.floor((right - left) / 2);
-
-        // Compare mid with mid + 1
-        if (nums[mid] > nums[mid + 1]) {
-            // Peak is in left half (including mid)
-            right = mid;
-        } else {
-            // Peak is in right half (excluding mid)
-            left = mid + 1;
-        }
-    }
-
-    return left;
-}
-```
-
-**Time Complexity:** O(log n)
-**Space Complexity:** O(1)
-
-**Key Insight:** If nums[mid] < nums[mid + 1], we're on an ascending slope, so there must be a peak to the right. Otherwise, we're on a descending slope or at a peak, so the peak is to the left (or at mid).
-
----
-
-## Problem 7: Search Insert Position
-
-### Approach 1: Standard Binary Search with Modification
+### Approach: Binary Search (Optimal) ✅
 
 ```typescript
 function searchInsert(nums: number[], target: number): number {
-    let left = 0;
-    let right = nums.length - 1;
+  let left = 0;
+  let right = nums.length - 1;
 
-    while (left <= right) {
-        const mid = left + Math.floor((right - left) / 2);
+  while (left <= right) {
+    const mid = left + Math.floor((right - left) / 2);
 
-        if (nums[mid] === target) {
-            return mid;
-        } else if (nums[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
+    if (nums[mid] === target) {
+      return mid;
+    } else if (nums[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
     }
+  }
 
-    // If not found, left is the insert position
-    return left;
+  return left;
 }
 ```
 
-**Time Complexity:** O(log n)
-**Space Complexity:** O(1)
+**Time:** O(log n) | **Space:** O(1)
 
-### Approach 2: Find First Position >= Target
+**Key:** Standard binary search. When target not found, `left` is the insertion position. After loop terminates, all elements before `left` are < target.
 
-```typescript
-function searchInsert(nums: number[], target: number): number {
-    let left = 0;
-    let right = nums.length;
-
-    while (left < right) {
-        const mid = left + Math.floor((right - left) / 2);
-
-        if (nums[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid;
-        }
-    }
-
-    return left;
-}
-```
-
-**Time Complexity:** O(log n)
-**Space Complexity:** O(1)
+**Say:** "Using binary search to find position. When not found, left pointer indicates insertion index to maintain sorted order."
 
 ---
 
-## Problem 8: First Bad Version
+## Problem 3: First Bad Version
 
-### Approach: Binary Search for First True
+### Approach: Binary Search for First True (Optimal) ✅
 
 ```typescript
-/**
- * The knows API is defined in the parent class Relation.
- * isBadVersion(version: number): boolean {
- *     ...
- * };
- */
-
 var solution = function(isBadVersion: (version: number) => boolean) {
-    return function(n: number): number {
-        let left = 1;
-        let right = n;
+  return function(n: number): number {
+    let left = 1;
+    let right = n;
 
-        while (left < right) {
-            const mid = left + Math.floor((right - left) / 2);
+    while (left < right) {
+      const mid = left + Math.floor((right - left) / 2);
 
-            if (isBadVersion(mid)) {
-                // First bad version is at mid or before
-                right = mid;
-            } else {
-                // First bad version is after mid
-                left = mid + 1;
-            }
-        }
+      if (isBadVersion(mid)) {
+        right = mid; // First bad at mid or before
+      } else {
+        left = mid + 1; // First bad after mid
+      }
+    }
 
-        return left;
-    };
+    return left;
+  };
 };
 ```
 
-**Time Complexity:** O(log n)
-**Space Complexity:** O(1)
+**Time:** O(log n) | **Space:** O(1)
 
-**Key Pattern:** This is a template for finding the first position where a condition becomes true in a sorted boolean array [F, F, F, T, T, T].
+**Key:** Find first position where condition becomes true. Use `left < right` (not `<=`). When isBadVersion(mid) true, search left including mid.
+
+**Say:** "Finding boundary where false becomes true. Template for finding first occurrence in sorted boolean array."
+
+---
+
+## Problem 4: Find Minimum in Rotated Sorted Array
+
+### Approach: Modified Binary Search (Optimal) ✅
+
+```typescript
+function findMin(nums: number[]): number {
+  let left = 0;
+  let right = nums.length - 1;
+
+  while (left < right) {
+    const mid = Math.floor((left + right) / 2);
+
+    if (nums[mid] > nums[right]) {
+      // Minimum in right half
+      left = mid + 1;
+    } else {
+      // Minimum in left half (including mid)
+      right = mid;
+    }
+  }
+
+  return nums[left];
+}
+```
+
+**Time:** O(log n) | **Space:** O(1)
+
+**Key:** Compare mid with right. If `nums[mid] > nums[right]`, array is rotated and minimum is in right half (inflection point). Otherwise minimum is left including mid.
+
+**Say:** "Comparing mid with right endpoint. In sorted array, mid should be less than right. If greater, rotation happened and minimum is right."
+
+---
+
+## Problem 5: Search in Rotated Sorted Array
+
+### Approach: Modified Binary Search (Optimal) ✅
+
+```typescript
+function search(nums: number[], target: number): number {
+  let left = 0;
+  let right = nums.length - 1;
+
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+
+    if (nums[mid] === target) return mid;
+
+    // Determine which half is sorted
+    if (nums[left] <= nums[mid]) {
+      // Left half sorted
+      if (nums[left] <= target && target < nums[mid]) {
+        right = mid - 1;
+      } else {
+        left = mid + 1;
+      }
+    } else {
+      // Right half sorted
+      if (nums[mid] < target && target <= nums[right]) {
+        left = mid + 1;
+      } else {
+        right = mid - 1;
+      }
+    }
+  }
+
+  return -1;
+}
+```
+
+**Time:** O(log n) | **Space:** O(1)
+
+**Key:** At least one half always sorted. Determine which half, check if target in that half using boundary values. If yes, search it; else search other half.
+
+**Say:** "Identifying sorted half then checking if target lies within that range. Always have at least one monotonic half to work with."
+
+---
+
+## Problem 6: Search a 2D Matrix
+
+### Approach: Treat as 1D Array (Optimal) ✅
+
+```typescript
+function searchMatrix(matrix: number[][], target: number): boolean {
+  if (!matrix.length || !matrix[0].length) return false;
+
+  const m = matrix.length;
+  const n = matrix[0].length;
+  let left = 0;
+  let right = m * n - 1;
+
+  while (left <= right) {
+    const mid = left + Math.floor((right - left) / 2);
+    const row = Math.floor(mid / n);
+    const col = mid % n;
+    const value = matrix[row][col];
+
+    if (value === target) return true;
+    if (value < target) left = mid + 1;
+    else right = mid - 1;
+  }
+
+  return false;
+}
+```
+
+**Time:** O(log(m × n)) | **Space:** O(1)
+
+**Key:** Treat 2D matrix as flattened 1D sorted array. Convert 1D index to 2D: `row = idx / cols`, `col = idx % cols`.
+
+**Say:** "Treating matrix as single sorted array. Converting between 1D and 2D indices allows standard binary search with O(log mn) time."
+
+---
+
+## Problem 7: Koko Eating Bananas
+
+### Approach: Binary Search on Answer Space (Optimal) ✅
+
+```typescript
+function minEatingSpeed(piles: number[], h: number): number {
+  let left = 1;
+  let right = Math.max(...piles);
+
+  while (left < right) {
+    const mid = Math.floor((left + right) / 2);
+
+    if (canFinish(piles, mid, h)) {
+      right = mid; // Try smaller speed
+    } else {
+      left = mid + 1; // Need faster
+    }
+  }
+
+  return left;
+}
+
+function canFinish(piles: number[], speed: number, h: number): boolean {
+  let hours = 0;
+  for (const pile of piles) {
+    hours += Math.ceil(pile / speed);
+    if (hours > h) return false; // Early termination
+  }
+  return hours <= h;
+}
+```
+
+**Time:** O(n log m) where m = max(piles) | **Space:** O(1)
+
+**Key:** Binary search on answer (speed) not on array. Min speed = 1, max speed = max(piles). Check if speed k works, adjust range. Monotonic: if speed k works, any speed > k also works.
+
+**Say:** "Binary searching the answer space from 1 to max pile size. For each candidate speed, checking if can finish in time. Monotonic property allows binary search."
+
+---
+
+## Problem 8: Find Peak Element
+
+### Approach: Binary Search on Slope (Optimal) ✅
+
+```typescript
+function findPeakElement(nums: number[]): number {
+  let left = 0;
+  let right = nums.length - 1;
+
+  while (left < right) {
+    const mid = Math.floor((left + right) / 2);
+
+    if (nums[mid] > nums[mid + 1]) {
+      // Descending, peak at mid or left
+      right = mid;
+    } else {
+      // Ascending, peak to right
+      left = mid + 1;
+    }
+  }
+
+  return left;
+}
+```
+
+**Time:** O(log n) | **Space:** O(1)
+
+**Key:** If `nums[mid] < nums[mid+1]`, ascending slope → peak must be right. Otherwise descending → peak at mid or left. Always move toward higher values.
+
+**Say:** "Following the slope upward. If ascending, peak ahead. If descending, peak behind or here. Eliminates half search space each iteration."
 
 ---
 
 ## Problem 9: Time Based Key-Value Store
 
-### Approach: HashMap with Binary Search
+### Approach: HashMap + Binary Search (Optimal) ✅
 
 ```typescript
 class TimeMap {
-    private store: Map<string, Array<[number, string]>>;
+  private store: Map<string, Array<[number, string]>>;
 
-    constructor() {
-        this.store = new Map();
+  constructor() {
+    this.store = new Map();
+  }
+
+  set(key: string, value: string, timestamp: number): void {
+    if (!this.store.has(key)) {
+      this.store.set(key, []);
+    }
+    this.store.get(key)!.push([timestamp, value]);
+  }
+
+  get(key: string, timestamp: number): string {
+    if (!this.store.has(key)) return "";
+
+    const values = this.store.get(key)!;
+    let left = 0;
+    let right = values.length - 1;
+    let result = "";
+
+    while (left <= right) {
+      const mid = left + Math.floor((right - left) / 2);
+
+      if (values[mid][0] <= timestamp) {
+        result = values[mid][1];
+        left = mid + 1; // Look for larger valid timestamp
+      } else {
+        right = mid - 1;
+      }
     }
 
-    set(key: string, value: string, timestamp: number): void {
-        if (!this.store.has(key)) {
-            this.store.set(key, []);
-        }
-        this.store.get(key)!.push([timestamp, value]);
-    }
-
-    get(key: string, timestamp: number): string {
-        if (!this.store.has(key)) {
-            return "";
-        }
-
-        const values = this.store.get(key)!;
-
-        // Binary search for largest timestamp <= given timestamp
-        let left = 0;
-        let right = values.length - 1;
-        let result = "";
-
-        while (left <= right) {
-            const mid = left + Math.floor((right - left) / 2);
-
-            if (values[mid][0] <= timestamp) {
-                result = values[mid][1];
-                left = mid + 1;  // Look for a larger valid timestamp
-            } else {
-                right = mid - 1;
-            }
-        }
-
-        return result;
-    }
+    return result;
+  }
 }
 ```
 
-**Time Complexity:**
-- set: O(1)
-- get: O(log n) where n is the number of values for the key
+**Time:** set O(1), get O(log n) | **Space:** O(n)
 
-**Space Complexity:** O(n) where n is total number of set operations
+**Key:** Store [timestamp, value] pairs per key. Timestamps strictly increasing → sorted. Binary search for largest timestamp ≤ requested.
+
+**Say:** "Using map with sorted timestamp arrays. Binary search finds largest valid timestamp. Timestamps are strictly increasing so array naturally sorted."
 
 ---
 
 ## Problem 10: Median of Two Sorted Arrays
 
-### Approach 1: Binary Search on Smaller Array
+### Approach: Binary Search on Smaller Array (Optimal) ✅
 
 ```typescript
 function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    // Ensure nums1 is the smaller array
-    if (nums1.length > nums2.length) {
-        return findMedianSortedArrays(nums2, nums1);
+  // Ensure nums1 is smaller
+  if (nums1.length > nums2.length) {
+    return findMedianSortedArrays(nums2, nums1);
+  }
+
+  const m = nums1.length;
+  const n = nums2.length;
+  let left = 0;
+  let right = m;
+
+  while (left <= right) {
+    const partitionX = Math.floor((left + right) / 2);
+    const partitionY = Math.floor((m + n + 1) / 2) - partitionX;
+
+    const maxLeftX = partitionX === 0 ? -Infinity : nums1[partitionX - 1];
+    const minRightX = partitionX === m ? Infinity : nums1[partitionX];
+
+    const maxLeftY = partitionY === 0 ? -Infinity : nums2[partitionY - 1];
+    const minRightY = partitionY === n ? Infinity : nums2[partitionY];
+
+    if (maxLeftX <= minRightY && maxLeftY <= minRightX) {
+      // Found correct partition
+      if ((m + n) % 2 === 0) {
+        return (Math.max(maxLeftX, maxLeftY) + Math.min(minRightX, minRightY)) / 2;
+      } else {
+        return Math.max(maxLeftX, maxLeftY);
+      }
+    } else if (maxLeftX > minRightY) {
+      right = partitionX - 1;
+    } else {
+      left = partitionX + 1;
     }
+  }
 
-    const m = nums1.length;
-    const n = nums2.length;
-    let left = 0;
-    let right = m;
-
-    while (left <= right) {
-        const partitionX = left + Math.floor((right - left) / 2);
-        const partitionY = Math.floor((m + n + 1) / 2) - partitionX;
-
-        const maxLeftX = partitionX === 0 ? -Infinity : nums1[partitionX - 1];
-        const minRightX = partitionX === m ? Infinity : nums1[partitionX];
-
-        const maxLeftY = partitionY === 0 ? -Infinity : nums2[partitionY - 1];
-        const minRightY = partitionY === n ? Infinity : nums2[partitionY];
-
-        if (maxLeftX <= minRightY && maxLeftY <= minRightX) {
-            // Found correct partition
-            if ((m + n) % 2 === 0) {
-                return (Math.max(maxLeftX, maxLeftY) + Math.min(minRightX, minRightY)) / 2;
-            } else {
-                return Math.max(maxLeftX, maxLeftY);
-            }
-        } else if (maxLeftX > minRightY) {
-            // We are too far on right side for partitionX
-            right = partitionX - 1;
-        } else {
-            // We are too far on left side for partitionX
-            left = partitionX + 1;
-        }
-    }
-
-    throw new Error("Input arrays are not sorted");
+  throw new Error("Input arrays not sorted");
 }
 ```
 
-**Time Complexity:** O(log(min(m, n)))
-**Space Complexity:** O(1)
+**Time:** O(log(min(m, n))) | **Space:** O(1)
 
-### Approach 2: Find Kth Element (More Intuitive)
+**Key:** Binary search on smaller array to find partition. Partition both arrays so left halves have (m+n+1)/2 elements. Ensure max(left) ≤ min(right) for valid partition. Calculate median from partition boundaries.
 
-```typescript
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    const total = nums1.length + nums2.length;
-
-    if (total % 2 === 1) {
-        return findKth(nums1, nums2, Math.floor(total / 2));
-    } else {
-        const left = findKth(nums1, nums2, Math.floor(total / 2) - 1);
-        const right = findKth(nums1, nums2, Math.floor(total / 2));
-        return (left + right) / 2;
-    }
-}
-
-function findKth(nums1: number[], nums2: number[], k: number): number {
-    // Finds the kth smallest element (0-indexed)
-    const m = nums1.length;
-    const n = nums2.length;
-
-    if (m > n) {
-        return findKth(nums2, nums1, k);
-    }
-
-    if (m === 0) {
-        return nums2[k];
-    }
-
-    if (k === 0) {
-        return Math.min(nums1[0], nums2[0]);
-    }
-
-    const i = Math.min(m, Math.floor((k + 1) / 2));
-    const j = Math.floor((k + 1) / 2);
-
-    if (nums1[i - 1] < nums2[j - 1]) {
-        return findKth(nums1.slice(i), nums2, k - i);
-    } else {
-        return findKth(nums1, nums2.slice(j), k - j);
-    }
-}
-```
-
-**Time Complexity:** O(log(m + n))
-**Space Complexity:** O(log(m + n)) due to recursion
+**Say:** "Binary searching partition point in smaller array. Calculating corresponding partition in larger array. Valid when all left elements ≤ all right elements. Median derived from partition boundaries."
 
 ---
 
-## Common Patterns Summary
+## Pattern Summary
 
-1. **Classic Binary Search:** Use when searching for exact value in sorted array
-2. **Find First/Last Position:** Use different templates based on need
-3. **Search in Rotated Array:** Identify which half is sorted
-4. **Binary Search on Answer:** When optimizing a value within a range
-5. **Peak Finding:** Use slope comparison
-6. **2D to 1D Conversion:** Treat 2D matrix as flattened array
+### Classic Binary Search (Problems 1, 2, 6)
+- Standard template: `while (left <= right)`
+- Return `left` when not found for insertion
+- Works on flattened 2D arrays
 
-## Interview Tips
+### Boundary Finding (Problems 3, 8)
+- Use `while (left < right)`
+- Finding first/last occurrence
+- Peak finding with slope comparison
 
-- Always handle edge cases (empty array, single element)
-- Use `left + (right - left) / 2` to prevent overflow
-- Be clear about inclusive vs exclusive bounds
-- Test with small examples to verify logic
-- Consider whether duplicates affect the solution
+### Modified Binary Search (Problems 4, 5)
+- At least one half always sorted
+- Compare with endpoints to determine sorted half
+- Handle rotation/pivot points
+
+### Binary Search on Answer Space (Problems 7)
+- Search answer range, not array
+- Check if answer valid (helper function)
+- Monotonic property required
+
+### Advanced Applications (Problems 9, 10)
+- Binary search in data structures
+- Complex partitioning logic
+- Multiple array coordination
+
+---
+
+[Back to Problems](./PROBLEMS.md) | [Back to README](./README.md)

@@ -1,760 +1,536 @@
-# BST Solutions
+# Solutions - Session 9: Binary Search Trees
 
-## 1. Search in a BST
-
-### Approach 1: Recursive
-```typescript
-function searchBST(root: TreeNode | null, val: number): TreeNode | null {
-    // Base case: null or found
-    if (!root || root.val === val) {
-        return root;
-    }
-
-    // Use BST property to decide direction
-    if (val < root.val) {
-        return searchBST(root.left, val);
-    } else {
-        return searchBST(root.right, val);
-    }
-}
-
-// Time: O(h) where h is height of tree
-// Space: O(h) for recursion stack
-```
-
-### Approach 2: Iterative (Space Optimized)
-```typescript
-function searchBST(root: TreeNode | null, val: number): TreeNode | null {
-    let current = root;
-
-    while (current) {
-        if (current.val === val) {
-            return current;
-        } else if (val < current.val) {
-            current = current.left;
-        } else {
-            current = current.right;
-        }
-    }
-
-    return null;
-}
-
-// Time: O(h)
-// Space: O(1)
-```
+TypeScript solutions with complexity analysis.
 
 ---
 
-## 2. Validate Binary Search Tree
+## Problem 1: Search in a BST
 
-### Approach 1: Range Bounds
+### Approach 1: Recursive
+
+```typescript
+function searchBST(root: TreeNode | null, val: number): TreeNode | null {
+  if (!root || root.val === val) return root;
+
+  if (val < root.val) {
+    return searchBST(root.left, val);
+  } else {
+    return searchBST(root.right, val);
+  }
+}
+```
+
+**Time:** O(h) | **Space:** O(h) recursion
+
+---
+
+### Approach 2: Iterative (Optimal) ✅
+
+```typescript
+function searchBST(root: TreeNode | null, val: number): TreeNode | null {
+  let current = root;
+
+  while (current) {
+    if (val === current.val) return current;
+    current = val < current.val ? current.left : current.right;
+  }
+
+  return null;
+}
+```
+
+**Time:** O(h) | **Space:** O(1)
+
+**Key:** Use BST property to eliminate half the tree at each step. Iterative saves space.
+
+**Say:** "Leveraging BST property, we can search in O(h) time. Iterative version uses O(1) space vs O(h) for recursion."
+
+---
+
+## Problem 2: Validate Binary Search Tree
+
+### Approach 1: Range Validation (Optimal) ✅
+
 ```typescript
 function isValidBST(root: TreeNode | null): boolean {
-    return validate(root, -Infinity, Infinity);
+  return validate(root, -Infinity, Infinity);
 }
 
-function validate(node: TreeNode | null, min: number, max: number): boolean {
-    // Empty tree is valid
-    if (!node) return true;
+function validate(
+  node: TreeNode | null,
+  min: number,
+  max: number
+): boolean {
+  if (!node) return true;
 
-    // Check current node violates BST property
-    if (node.val <= min || node.val >= max) {
-        return false;
-    }
+  if (node.val <= min || node.val >= max) {
+    return false;
+  }
 
-    // Recursively validate subtrees with updated bounds
-    return validate(node.left, min, node.val) &&
-           validate(node.right, node.val, max);
+  return validate(node.left, min, node.val) &&
+         validate(node.right, node.val, max);
 }
-
-// Time: O(n) - visit each node once
-// Space: O(h) - recursion stack
 ```
+
+**Time:** O(n) | **Space:** O(h)
+
+---
 
 ### Approach 2: Inorder Traversal
+
 ```typescript
 function isValidBST(root: TreeNode | null): boolean {
-    let prev: number | null = null;
+  let prev: number | null = null;
 
-    function inorder(node: TreeNode | null): boolean {
-        if (!node) return true;
+  function inorder(node: TreeNode | null): boolean {
+    if (!node) return true;
 
-        // Check left subtree
-        if (!inorder(node.left)) return false;
+    if (!inorder(node.left)) return false;
 
-        // Check current node
-        if (prev !== null && node.val <= prev) {
-            return false;
-        }
-        prev = node.val;
-
-        // Check right subtree
-        return inorder(node.right);
+    if (prev !== null && node.val <= prev) {
+      return false;
     }
+    prev = node.val;
 
-    return inorder(root);
+    return inorder(node.right);
+  }
+
+  return inorder(root);
 }
-
-// Time: O(n)
-// Space: O(h)
 ```
 
-### Approach 3: Iterative with Stack
-```typescript
-function isValidBST(root: TreeNode | null): boolean {
-    if (!root) return true;
+**Time:** O(n) | **Space:** O(h)
 
-    const stack: Array<[TreeNode, number, number]> = [];
-    stack.push([root, -Infinity, Infinity]);
+**Key:** Range validation ensures BST property holds for ALL nodes, not just immediate children. Inorder approach checks if traversal is strictly increasing.
 
-    while (stack.length > 0) {
-        const [node, min, max] = stack.pop()!;
-
-        if (node.val <= min || node.val >= max) {
-            return false;
-        }
-
-        if (node.left) {
-            stack.push([node.left, min, node.val]);
-        }
-        if (node.right) {
-            stack.push([node.right, node.val, max]);
-        }
-    }
-
-    return true;
-}
-
-// Time: O(n)
-// Space: O(h)
-```
+**Say:** "Using range bounds (min, max) propagates valid range down the tree. Left child gets (min, parent.val), right gets (parent.val, max)."
 
 ---
 
-## 3. Kth Smallest Element in a BST
+## Problem 3: Kth Smallest Element in BST
 
-### Approach 1: Inorder Traversal with Early Stop
 ```typescript
 function kthSmallest(root: TreeNode | null, k: number): number {
-    let count = 0;
-    let result = -1;
+  let count = 0;
+  let result = 0;
 
-    function inorder(node: TreeNode | null): void {
-        if (!node || count >= k) return;
+  function inorder(node: TreeNode | null): void {
+    if (!node || count >= k) return;
 
-        // Process left subtree
-        inorder(node.left);
+    inorder(node.left);
 
-        // Process current node
-        count++;
-        if (count === k) {
-            result = node.val;
-            return;
-        }
-
-        // Process right subtree
-        inorder(node.right);
+    count++;
+    if (count === k) {
+      result = node.val;
+      return;
     }
 
-    inorder(root);
-    return result;
-}
+    inorder(node.right);
+  }
 
-// Time: O(k) in best case, O(n) worst case
-// Space: O(h)
+  inorder(root);
+  return result;
+}
 ```
 
-### Approach 2: Iterative Inorder
-```typescript
-function kthSmallest(root: TreeNode | null, k: number): number {
-    const stack: TreeNode[] = [];
-    let current = root;
-    let count = 0;
+**Time:** O(k) best case, O(n) worst | **Space:** O(h)
 
-    while (current || stack.length > 0) {
-        // Go to leftmost node
-        while (current) {
-            stack.push(current);
-            current = current.left;
-        }
+**Key:** Inorder traversal of BST visits nodes in sorted order. Stop at kth visit for efficiency.
 
-        // Process current node
-        current = stack.pop()!;
-        count++;
-
-        if (count === k) {
-            return current.val;
-        }
-
-        // Move to right subtree
-        current = current.right;
-    }
-
-    return -1;
-}
-
-// Time: O(k)
-// Space: O(h)
-```
+**Say:** "Inorder traversal gives sorted sequence. Track counter and return value at kth position. Early termination optimizes to O(k) in best case."
 
 ---
 
-## 4. Lowest Common Ancestor of a BST
-
-### Approach 1: Recursive Using BST Property
-```typescript
-function lowestCommonAncestor(
-    root: TreeNode | null,
-    p: TreeNode,
-    q: TreeNode
-): TreeNode | null {
-    if (!root) return null;
-
-    // Both nodes in left subtree
-    if (p.val < root.val && q.val < root.val) {
-        return lowestCommonAncestor(root.left, p, q);
-    }
-
-    // Both nodes in right subtree
-    if (p.val > root.val && q.val > root.val) {
-        return lowestCommonAncestor(root.right, p, q);
-    }
-
-    // Nodes are on different sides or one is the root
-    return root;
-}
-
-// Time: O(h)
-// Space: O(h)
-```
-
-### Approach 2: Iterative
-```typescript
-function lowestCommonAncestor(
-    root: TreeNode | null,
-    p: TreeNode,
-    q: TreeNode
-): TreeNode | null {
-    let current = root;
-
-    while (current) {
-        if (p.val < current.val && q.val < current.val) {
-            current = current.left;
-        } else if (p.val > current.val && q.val > current.val) {
-            current = current.right;
-        } else {
-            return current;
-        }
-    }
-
-    return null;
-}
-
-// Time: O(h)
-// Space: O(1)
-```
-
----
-
-## 5. Insert into a BST
+## Problem 4: Lowest Common Ancestor of BST
 
 ### Approach 1: Recursive
+
 ```typescript
-function insertIntoBST(root: TreeNode | null, val: number): TreeNode | null {
-    // Base case: found insertion point
-    if (!root) {
-        return new TreeNode(val);
-    }
+function lowestCommonAncestor(
+  root: TreeNode,
+  p: TreeNode,
+  q: TreeNode
+): TreeNode {
+  if (p.val < root.val && q.val < root.val) {
+    return lowestCommonAncestor(root.left!, p, q);
+  }
 
-    // Recursively find correct position
-    if (val < root.val) {
-        root.left = insertIntoBST(root.left, val);
-    } else {
-        root.right = insertIntoBST(root.right, val);
-    }
+  if (p.val > root.val && q.val > root.val) {
+    return lowestCommonAncestor(root.right!, p, q);
+  }
 
-    return root;
+  return root;
 }
-
-// Time: O(h)
-// Space: O(h)
 ```
 
-### Approach 2: Iterative
-```typescript
-function insertIntoBST(root: TreeNode | null, val: number): TreeNode | null {
-    const newNode = new TreeNode(val);
-
-    if (!root) return newNode;
-
-    let current = root;
-
-    while (true) {
-        if (val < current.val) {
-            if (!current.left) {
-                current.left = newNode;
-                break;
-            }
-            current = current.left;
-        } else {
-            if (!current.right) {
-                current.right = newNode;
-                break;
-            }
-            current = current.right;
-        }
-    }
-
-    return root;
-}
-
-// Time: O(h)
-// Space: O(1)
-```
+**Time:** O(h) | **Space:** O(h)
 
 ---
 
-## 6. Delete Node in a BST
+### Approach 2: Iterative (Optimal) ✅
 
-### Complete Solution with All Cases
+```typescript
+function lowestCommonAncestor(
+  root: TreeNode,
+  p: TreeNode,
+  q: TreeNode
+): TreeNode {
+  let current = root;
+
+  while (current) {
+    if (p.val < current.val && q.val < current.val) {
+      current = current.left!;
+    } else if (p.val > current.val && q.val > current.val) {
+      current = current.right!;
+    } else {
+      return current;
+    }
+  }
+
+  return root;
+}
+```
+
+**Time:** O(h) | **Space:** O(1)
+
+**Key:** Use BST property. If both nodes less than current, LCA is in left subtree. If both greater, LCA is in right. Otherwise, current is LCA.
+
+---
+
+## Problem 5: Insert into a BST
+
+### Approach 1: Recursive
+
+```typescript
+function insertIntoBST(root: TreeNode | null, val: number): TreeNode {
+  if (!root) return new TreeNode(val);
+
+  if (val < root.val) {
+    root.left = insertIntoBST(root.left, val);
+  } else {
+    root.right = insertIntoBST(root.right, val);
+  }
+
+  return root;
+}
+```
+
+**Time:** O(h) | **Space:** O(h)
+
+---
+
+### Approach 2: Iterative (Optimal) ✅
+
+```typescript
+function insertIntoBST(root: TreeNode | null, val: number): TreeNode {
+  if (!root) return new TreeNode(val);
+
+  let current = root;
+
+  while (true) {
+    if (val < current.val) {
+      if (!current.left) {
+        current.left = new TreeNode(val);
+        break;
+      }
+      current = current.left;
+    } else {
+      if (!current.right) {
+        current.right = new TreeNode(val);
+        break;
+      }
+      current = current.right;
+    }
+  }
+
+  return root;
+}
+```
+
+**Time:** O(h) | **Space:** O(1)
+
+**Key:** New nodes always inserted as leaves. Navigate like search until finding null position.
+
+---
+
+## Problem 6: Delete Node in a BST
+
 ```typescript
 function deleteNode(root: TreeNode | null, key: number): TreeNode | null {
-    if (!root) return null;
+  if (!root) return null;
 
-    // Find the node to delete
-    if (key < root.val) {
-        root.left = deleteNode(root.left, key);
-    } else if (key > root.val) {
-        root.right = deleteNode(root.right, key);
-    } else {
-        // Found the node to delete
+  if (key < root.val) {
+    root.left = deleteNode(root.left, key);
+  } else if (key > root.val) {
+    root.right = deleteNode(root.right, key);
+  } else {
+    // Found node to delete
 
-        // Case 1: Leaf node (no children)
-        if (!root.left && !root.right) {
-            return null;
-        }
+    // Case 1: Leaf node
+    if (!root.left && !root.right) return null;
 
-        // Case 2: Node with only one child
-        if (!root.left) return root.right;
-        if (!root.right) return root.left;
+    // Case 2: One child
+    if (!root.left) return root.right;
+    if (!root.right) return root.left;
 
-        // Case 3: Node with two children
-        // Find inorder successor (smallest in right subtree)
-        let successor = root.right;
-        while (successor.left) {
-            successor = successor.left;
-        }
-
-        // Replace current node's value with successor's value
-        root.val = successor.val;
-
-        // Delete the successor
-        root.right = deleteNode(root.right, successor.val);
+    // Case 3: Two children
+    // Find inorder successor (min in right subtree)
+    let minNode = root.right;
+    while (minNode.left) {
+      minNode = minNode.left;
     }
 
-    return root;
-}
+    // Replace value with successor
+    root.val = minNode.val;
 
-// Time: O(h)
-// Space: O(h)
+    // Delete successor
+    root.right = deleteNode(root.right, minNode.val);
+  }
+
+  return root;
+}
 ```
 
-### Alternative: Using Predecessor Instead
-```typescript
-function deleteNodePredecessor(root: TreeNode | null, key: number): TreeNode | null {
-    if (!root) return null;
+**Time:** O(h) | **Space:** O(h)
 
-    if (key < root.val) {
-        root.left = deleteNodePredecessor(root.left, key);
-    } else if (key > root.val) {
-        root.right = deleteNodePredecessor(root.right, key);
-    } else {
-        if (!root.left && !root.right) return null;
-        if (!root.left) return root.right;
-        if (!root.right) return root.left;
+**Key:** Three cases based on children count:
+1. **Leaf:** Simply remove
+2. **One child:** Replace with child
+3. **Two children:** Replace with inorder successor, then delete successor
 
-        // Find predecessor (largest in left subtree)
-        let predecessor = root.left;
-        while (predecessor.right) {
-            predecessor = predecessor.right;
-        }
-
-        root.val = predecessor.val;
-        root.left = deleteNodePredecessor(root.left, predecessor.val);
-    }
-
-    return root;
-}
-
-// Time: O(h)
-// Space: O(h)
-```
+**Say:** "Deletion has three cases. Two children is tricky - replace node value with inorder successor (min of right subtree), then recursively delete that successor."
 
 ---
 
-## 7. Convert Sorted Array to BST
+## Problem 7: Convert Sorted Array to BST
 
-### Approach 1: Recursive Binary Search
 ```typescript
 function sortedArrayToBST(nums: number[]): TreeNode | null {
-    return buildBST(nums, 0, nums.length - 1);
-}
+  return buildBST(0, nums.length - 1);
 
-function buildBST(nums: number[], left: number, right: number): TreeNode | null {
+  function buildBST(left: number, right: number): TreeNode | null {
     if (left > right) return null;
 
-    // Choose middle element as root
     const mid = Math.floor((left + right) / 2);
     const root = new TreeNode(nums[mid]);
 
-    // Recursively build left and right subtrees
-    root.left = buildBST(nums, left, mid - 1);
-    root.right = buildBST(nums, mid + 1, right);
+    root.left = buildBST(left, mid - 1);
+    root.right = buildBST(mid + 1, right);
 
     return root;
+  }
 }
-
-// Time: O(n) - process each element once
-// Space: O(log n) - recursion stack for balanced tree
 ```
 
-### Approach 2: Choose Different Mid for Balance
-```typescript
-function sortedArrayToBST(nums: number[]): TreeNode | null {
-    return buildBST(nums, 0, nums.length - 1);
-}
+**Time:** O(n) | **Space:** O(log n)
 
-function buildBST(nums: number[], left: number, right: number): TreeNode | null {
-    if (left > right) return null;
+**Key:** Choose middle element as root to ensure balance. Recursively build left and right subtrees from corresponding halves.
 
-    // Alternative: always choose left middle for consistency
-    const mid = left + Math.floor((right - left) / 2);
-    // Or: always choose right middle
-    // const mid = left + Math.ceil((right - left) / 2);
-
-    const root = new TreeNode(nums[mid]);
-    root.left = buildBST(nums, left, mid - 1);
-    root.right = buildBST(nums, mid + 1, right);
-
-    return root;
-}
-
-// Time: O(n)
-// Space: O(log n)
-```
+**Say:** "Using middle element as root ensures equal elements on each side, creating balanced BST. Recursively apply to left and right halves."
 
 ---
 
-## 8. Two Sum IV - Input is a BST
+## Problem 8: Two Sum IV - Input is BST
 
-### Approach 1: HashSet with Any Traversal
+### Approach 1: HashSet (Simple)
+
 ```typescript
 function findTarget(root: TreeNode | null, k: number): boolean {
-    const seen = new Set<number>();
+  const seen = new Set<number>();
 
-    function dfs(node: TreeNode | null): boolean {
-        if (!node) return false;
+  function dfs(node: TreeNode | null): boolean {
+    if (!node) return false;
 
-        // Check if complement exists
-        if (seen.has(k - node.val)) {
-            return true;
-        }
+    if (seen.has(k - node.val)) return true;
 
-        seen.add(node.val);
+    seen.add(node.val);
 
-        return dfs(node.left) || dfs(node.right);
-    }
+    return dfs(node.left) || dfs(node.right);
+  }
 
-    return dfs(root);
+  return dfs(root);
 }
-
-// Time: O(n)
-// Space: O(n)
 ```
 
-### Approach 2: Two Pointers on Sorted Array
-```typescript
-function findTarget(root: TreeNode | null, k: number): boolean {
-    const sorted: number[] = [];
-
-    // Get sorted array via inorder traversal
-    function inorder(node: TreeNode | null): void {
-        if (!node) return;
-        inorder(node.left);
-        sorted.push(node.val);
-        inorder(node.right);
-    }
-
-    inorder(root);
-
-    // Two pointers on sorted array
-    let left = 0, right = sorted.length - 1;
-
-    while (left < right) {
-        const sum = sorted[left] + sorted[right];
-        if (sum === k) return true;
-        if (sum < k) left++;
-        else right--;
-    }
-
-    return false;
-}
-
-// Time: O(n)
-// Space: O(n)
-```
-
-### Approach 3: BST Iterator (Advanced)
-```typescript
-class BSTIterator {
-    private stack: TreeNode[] = [];
-    private reverse: boolean;
-
-    constructor(root: TreeNode | null, reverse: boolean = false) {
-        this.reverse = reverse;
-        this.pushAll(root);
-    }
-
-    next(): number {
-        const node = this.stack.pop()!;
-        this.pushAll(this.reverse ? node.left : node.right);
-        return node.val;
-    }
-
-    hasNext(): boolean {
-        return this.stack.length > 0;
-    }
-
-    private pushAll(node: TreeNode | null): void {
-        while (node) {
-            this.stack.push(node);
-            node = this.reverse ? node.right : node.left;
-        }
-    }
-}
-
-function findTarget(root: TreeNode | null, k: number): boolean {
-    if (!root) return false;
-
-    const leftIter = new BSTIterator(root, false);
-    const rightIter = new BSTIterator(root, true);
-
-    let left = leftIter.next();
-    let right = rightIter.next();
-
-    while (left < right) {
-        const sum = left + right;
-        if (sum === k) return true;
-        if (sum < k) left = leftIter.next();
-        else right = rightIter.next();
-    }
-
-    return false;
-}
-
-// Time: O(n)
-// Space: O(h)
-```
+**Time:** O(n) | **Space:** O(n)
 
 ---
 
-## 9. Serialize and Deserialize BST
+### Approach 2: Two Pointers on Sorted Array ✅
 
-### Approach 1: Preorder Traversal
+```typescript
+function findTarget(root: TreeNode | null, k: number): boolean {
+  const sorted: number[] = [];
+
+  function inorder(node: TreeNode | null): void {
+    if (!node) return;
+    inorder(node.left);
+    sorted.push(node.val);
+    inorder(node.right);
+  }
+
+  inorder(root);
+
+  let left = 0, right = sorted.length - 1;
+
+  while (left < right) {
+    const sum = sorted[left] + sorted[right];
+    if (sum === k) return true;
+    if (sum < k) left++;
+    else right--;
+  }
+
+  return false;
+}
+```
+
+**Time:** O(n) | **Space:** O(n)
+
+**Key:** Leverage BST property - inorder gives sorted array. Then use two pointers for two sum.
+
+---
+
+## Problem 9: Serialize and Deserialize BST
+
 ```typescript
 class Codec {
-    // Serialize using preorder traversal
-    serialize(root: TreeNode | null): string {
-        const result: number[] = [];
+  serialize(root: TreeNode | null): string {
+    const result: number[] = [];
 
-        function preorder(node: TreeNode | null): void {
-            if (!node) return;
-            result.push(node.val);
-            preorder(node.left);
-            preorder(node.right);
-        }
-
-        preorder(root);
-        return result.join(',');
+    function preorder(node: TreeNode | null): void {
+      if (!node) return;
+      result.push(node.val);
+      preorder(node.left);
+      preorder(node.right);
     }
 
-    // Deserialize using BST property
-    deserialize(data: string): TreeNode | null {
-        if (!data) return null;
+    preorder(root);
+    return result.join(',');
+  }
 
-        const values = data.split(',').map(Number);
-        let index = 0;
+  deserialize(data: string): TreeNode | null {
+    if (!data) return null;
 
-        function buildBST(min: number, max: number): TreeNode | null {
-            if (index >= values.length) return null;
+    const values = data.split(',').map(Number);
+    let index = 0;
 
-            const val = values[index];
-            if (val < min || val > max) return null;
+    function buildBST(min: number, max: number): TreeNode | null {
+      if (index >= values.length) return null;
 
-            index++;
-            const root = new TreeNode(val);
-            root.left = buildBST(min, val);
-            root.right = buildBST(val, max);
+      const val = values[index];
+      if (val < min || val > max) return null;
 
-            return root;
-        }
+      index++;
+      const root = new TreeNode(val);
+      root.left = buildBST(min, val);
+      root.right = buildBST(val, max);
 
-        return buildBST(-Infinity, Infinity);
+      return root;
     }
+
+    return buildBST(-Infinity, Infinity);
+  }
 }
-
-// Time: O(n) for both operations
-// Space: O(n) for serialized string, O(h) for recursion
 ```
 
-### Approach 2: Postorder Traversal
-```typescript
-class Codec {
-    serialize(root: TreeNode | null): string {
-        const result: number[] = [];
+**Time:** O(n) | **Space:** O(n)
 
-        function postorder(node: TreeNode | null): void {
-            if (!node) return;
-            postorder(node.left);
-            postorder(node.right);
-            result.push(node.val);
-        }
+**Key:** Preorder traversal for serialization. Use BST property with range bounds for deserialization - no need for null markers unlike general trees.
 
-        postorder(root);
-        return result.join(',');
-    }
-
-    deserialize(data: string): TreeNode | null {
-        if (!data) return null;
-
-        const values = data.split(',').map(Number);
-
-        function buildBST(min: number, max: number): TreeNode | null {
-            if (values.length === 0) return null;
-
-            const val = values[values.length - 1];
-            if (val < min || val > max) return null;
-
-            values.pop();
-            const root = new TreeNode(val);
-            // Build right first (reverse of postorder)
-            root.right = buildBST(val, max);
-            root.left = buildBST(min, val);
-
-            return root;
-        }
-
-        return buildBST(-Infinity, Infinity);
-    }
-}
-
-// Time: O(n)
-// Space: O(n)
-```
+**Say:** "BST property allows reconstruction from preorder alone. Use min/max bounds to determine where each value belongs without null markers."
 
 ---
 
-## 10. Recover Binary Search Tree
+## Problem 10: Inorder Successor in BST
 
-### Approach 1: Inorder Traversal with Array
 ```typescript
-function recoverTree(root: TreeNode | null): void {
-    const inorder: TreeNode[] = [];
+function inorderSuccessor(root: TreeNode | null, p: TreeNode): TreeNode | null {
+  let successor: TreeNode | null = null;
+  let current = root;
 
-    // Get inorder traversal
-    function traverse(node: TreeNode | null): void {
-        if (!node) return;
-        traverse(node.left);
-        inorder.push(node);
-        traverse(node.right);
+  while (current) {
+    if (p.val < current.val) {
+      // Current could be successor, go left for smaller
+      successor = current;
+      current = current.left;
+    } else {
+      // p.val >= current.val, go right
+      current = current.right;
     }
+  }
 
-    traverse(root);
-
-    // Find two swapped nodes
-    let first: TreeNode | null = null;
-    let second: TreeNode | null = null;
-
-    for (let i = 0; i < inorder.length - 1; i++) {
-        if (inorder[i].val > inorder[i + 1].val) {
-            if (!first) {
-                first = inorder[i];
-                second = inorder[i + 1];
-            } else {
-                second = inorder[i + 1];
-            }
-        }
-    }
-
-    // Swap values
-    if (first && second) {
-        [first.val, second.val] = [second.val, first.val];
-    }
+  return successor;
 }
-
-// Time: O(n)
-// Space: O(n)
 ```
 
-### Approach 2: Morris Traversal (O(1) Space)
+**Time:** O(h) | **Space:** O(1)
+
+**Alternative with right subtree:**
+
 ```typescript
-function recoverTree(root: TreeNode | null): void {
-    let first: TreeNode | null = null;
-    let second: TreeNode | null = null;
-    let prev: TreeNode | null = null;
-    let current = root;
-
-    // Morris inorder traversal
-    while (current) {
-        if (!current.left) {
-            // Process current node
-            if (prev && prev.val > current.val) {
-                if (!first) {
-                    first = prev;
-                    second = current;
-                } else {
-                    second = current;
-                }
-            }
-            prev = current;
-            current = current.right;
-        } else {
-            // Find inorder predecessor
-            let predecessor = current.left;
-            while (predecessor.right && predecessor.right !== current) {
-                predecessor = predecessor.right;
-            }
-
-            if (!predecessor.right) {
-                // Create thread
-                predecessor.right = current;
-                current = current.left;
-            } else {
-                // Process current node
-                if (prev && prev.val > current.val) {
-                    if (!first) {
-                        first = prev;
-                        second = current;
-                    } else {
-                        second = current;
-                    }
-                }
-                prev = current;
-
-                // Remove thread
-                predecessor.right = null;
-                current = current.right;
-            }
-        }
+function inorderSuccessor(root: TreeNode | null, p: TreeNode): TreeNode | null {
+  // If p has right child, successor is min of right subtree
+  if (p.right) {
+    let min = p.right;
+    while (min.left) {
+      min = min.left;
     }
+    return min;
+  }
 
-    // Swap values
-    if (first && second) {
-        [first.val, second.val] = [second.val, first.val];
+  // Otherwise, find ancestor where we last turned left
+  let successor: TreeNode | null = null;
+  let current = root;
+
+  while (current) {
+    if (p.val < current.val) {
+      successor = current;
+      current = current.left;
+    } else {
+      current = current.right;
     }
+  }
+
+  return successor;
 }
-
-// Time: O(n)
-// Space: O(1) - true constant space!
 ```
+
+**Time:** O(h) | **Space:** O(1)
+
+**Key:** Two cases:
+1. If node has right child: successor is min of right subtree
+2. Otherwise: successor is ancestor where we last turned left
+
+---
+
+## Pattern Summary
+
+### Range Validation (Problem 2)
+- Track (min, max) bounds for each node
+- Left child: (min, node.val)
+- Right child: (node.val, max)
+- Validates BST property globally
+
+### Inorder Traversal (Problems 3, 8)
+- BST inorder gives sorted sequence
+- Use for kth element, validation, two sum
+- Can optimize with early termination
+
+### BST Navigation (Problems 1, 4, 10)
+- Use BST property to eliminate half
+- O(h) time vs O(n) for general tree
+- Iterative saves space
+
+### BST Modification (Problems 5, 6)
+- Insert: always as leaf
+- Delete: three cases by children count
+- Successor/predecessor for two children case
+
+### BST Construction (Problems 7, 9)
+- From sorted: use middle as root
+- Serialization: preorder + BST property
+- No null markers needed
+
+---
+
+[Back to Problems](./PROBLEMS.md) | [Back to README](./README.md)

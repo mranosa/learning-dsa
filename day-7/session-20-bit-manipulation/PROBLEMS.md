@@ -1,349 +1,385 @@
-# Problems: Bit Manipulation
+# Problems - Session 20: Bit Manipulation
 
-## Problem 1: Single Number
-**Difficulty:** Easy
-**LeetCode:** [136. Single Number](https://leetcode.com/problems/single-number/)
+10 problems in order. Use UMPIRE method.
 
-Given a non-empty array of integers where every element appears twice except for one, find that single element.
-
-**Constraints:**
-- You must implement a solution with O(n) runtime complexity
-- You must use only O(1) extra space
-
-**Example:**
-```typescript
-Input: nums = [2,2,1]
-Output: 1
-
-Input: nums = [4,1,2,1,2]
-Output: 4
-
-Input: nums = [1]
-Output: 1
-```
+**Targets:** Easy <15 min | Medium <30 min
 
 ---
 
-## Problem 2: Number of 1 Bits
-**Difficulty:** Easy
-**LeetCode:** [191. Number of 1 Bits](https://leetcode.com/problems/number-of-1-bits/)
+## Problem 1: Single Number
 
-Write a function that takes an unsigned integer and returns the number of '1' bits it has (also known as the Hamming weight).
+**Difficulty:** Easy | **Pattern:** XOR
+**LeetCode:** https://leetcode.com/problems/single-number/
 
-**Constraints:**
-- The input must be a binary string of length 32
+### Problem
 
-**Example:**
-```typescript
-Input: n = 00000000000000000000000000001011
-Output: 3
-Explanation: The input has three '1' bits.
+Given non-empty array where every element appears twice except one, find the single element.
 
-Input: n = 00000000000000000000000010000000
+Must use O(n) time and O(1) space.
+
+### Examples
+
+```
+nums = [2,2,1]
 Output: 1
 
-Input: n = 11111111111111111111111111111101
+nums = [4,1,2,1,2]
+Output: 4
+
+nums = [1]
+Output: 1
+```
+
+### Constraints
+
+- 1 ≤ nums.length ≤ 3×10⁴
+- -3×10⁴ ≤ nums[i] ≤ 3×10⁴
+- Every element appears twice except one
+
+### Hints
+- What operation gives 0 when used with itself?
+- XOR properties: a^a=0, a^0=a
+- All pairs cancel out
+
+---
+
+## Problem 2: Number of 1 Bits (Hamming Weight)
+
+**Difficulty:** Easy | **Pattern:** Bit Counting
+**LeetCode:** https://leetcode.com/problems/number-of-1-bits/
+
+### Problem
+
+Return the number of '1' bits in an unsigned integer (Hamming weight).
+
+### Examples
+
+```
+n = 00000000000000000000000000001011
+Output: 3
+
+n = 00000000000000000000000010000000
+Output: 1
+
+n = 11111111111111111111111111111101
 Output: 31
 ```
+
+### Constraints
+
+- Input is 32-bit unsigned integer
+
+### Hints
+- Naive: Check each of 32 bits
+- Better: n & (n-1) removes rightmost set bit
+- Brian Kernighan's algorithm - loop only k times for k set bits
 
 ---
 
 ## Problem 3: Counting Bits
-**Difficulty:** Easy
-**LeetCode:** [338. Counting Bits](https://leetcode.com/problems/counting-bits/)
 
-Given an integer n, return an array ans of length n + 1 such that for each i (0 <= i <= n), ans[i] is the number of 1's in the binary representation of i.
+**Difficulty:** Easy | **Pattern:** DP + Bit Manipulation
+**LeetCode:** https://leetcode.com/problems/counting-bits/
 
-**Constraints:**
-- 0 <= n <= 10^5
+### Problem
 
-**Example:**
-```typescript
-Input: n = 2
+Given integer n, return array where `ans[i]` is the number of 1's in binary of i.
+
+### Examples
+
+```
+n = 2
 Output: [0,1,1]
 Explanation:
-0 --> 0
-1 --> 1
-2 --> 10
+0 → 0
+1 → 1
+2 → 10
 
-Input: n = 5
+n = 5
 Output: [0,1,1,2,1,2]
 Explanation:
-0 --> 0
-1 --> 1
-2 --> 10
-3 --> 11
-4 --> 100
-5 --> 101
+0 → 0
+1 → 1
+2 → 10
+3 → 11
+4 → 100
+5 → 101
 ```
+
+### Constraints
+
+- 0 ≤ n ≤ 10⁵
+
+### Hints
+- DP relation: count[i] relates to count[i/2]
+- i >> 1 removes last bit, i & 1 checks last bit
+- result[i] = result[i >> 1] + (i & 1)
 
 ---
 
 ## Problem 4: Reverse Bits
-**Difficulty:** Easy
-**LeetCode:** [190. Reverse Bits](https://leetcode.com/problems/reverse-bits/)
 
-Reverse bits of a given 32 bits unsigned integer.
+**Difficulty:** Easy | **Pattern:** Bit Manipulation
+**LeetCode:** https://leetcode.com/problems/reverse-bits/
 
-**Constraints:**
-- The input must be a binary string of length 32
+### Problem
 
-**Example:**
-```typescript
-Input: n = 00000010100101000001111010011100
-Output:    00111001011110000010100101000000
-Explanation: The reversed bit string is 00111001011110000010100101000000.
+Reverse bits of a 32-bit unsigned integer.
 
-Input: n = 11111111111111111111111111111101
-Output:   10111111111111111111111111111111
+### Examples
+
 ```
+n = 00000010100101000001111010011100
+Output: 00111001011110000010100101000000
+
+n = 11111111111111111111111111111101
+Output: 10111111111111111111111111111111
+```
+
+### Constraints
+
+- Input is 32-bit unsigned integer
+
+### Hints
+- Process bit by bit from right
+- Build result from left
+- Use >>> for unsigned shift
 
 ---
 
 ## Problem 5: Missing Number
-**Difficulty:** Easy
-**LeetCode:** [268. Missing Number](https://leetcode.com/problems/missing-number/)
 
-Given an array nums containing n distinct numbers in the range [0, n], return the only number in the range that is missing from the array.
+**Difficulty:** Easy | **Pattern:** XOR/Math
+**LeetCode:** https://leetcode.com/problems/missing-number/
 
-**Constraints:**
-- n == nums.length
-- 1 <= n <= 10^4
-- 0 <= nums[i] <= n
-- All numbers in nums are unique
+### Problem
 
-**Example:**
-```typescript
-Input: nums = [3,0,1]
-Output: 2
-Explanation: n = 3, numbers are in range [0,3]. 2 is missing.
+Array contains n distinct numbers in range [0, n]. Find the missing number.
 
-Input: nums = [0,1]
+### Examples
+
+```
+nums = [3,0,1]
 Output: 2
 
-Input: nums = [9,6,4,2,3,5,7,0,1]
+nums = [0,1]
+Output: 2
+
+nums = [9,6,4,2,3,5,7,0,1]
 Output: 8
 ```
+
+### Constraints
+
+- n == nums.length
+- 1 ≤ n ≤ 10⁴
+- 0 ≤ nums[i] ≤ n
+- All numbers unique
+
+### Hints
+- XOR approach: XOR indices with array values
+- Math approach: expectedSum - actualSum
+- XOR: all present numbers cancel out
 
 ---
 
 ## Problem 6: Sum of Two Integers
-**Difficulty:** Medium
-**LeetCode:** [371. Sum of Two Integers](https://leetcode.com/problems/sum-of-two-integers/)
 
-Given two integers a and b, return the sum of the two integers without using the operators + and -.
+**Difficulty:** Medium | **Pattern:** Bit Arithmetic
+**LeetCode:** https://leetcode.com/problems/sum-of-two-integers/
 
-**Constraints:**
-- -1000 <= a, b <= 1000
+### Problem
 
-**Example:**
-```typescript
-Input: a = 1, b = 2
+Return sum of two integers without using + or - operators.
+
+### Examples
+
+```
+a = 1, b = 2
 Output: 3
 
-Input: a = 2, b = 3
+a = 2, b = 3
 Output: 5
 
-Input: a = -1, b = 1
+a = -1, b = 1
 Output: 0
 ```
+
+### Constraints
+
+- -1000 ≤ a, b ≤ 1000
+
+### Hints
+- XOR for sum without carry
+- AND for carry positions
+- Shift carry left by 1
+- Repeat until no carry
 
 ---
 
 ## Problem 7: Single Number II
-**Difficulty:** Medium
-**LeetCode:** [137. Single Number II](https://leetcode.com/problems/single-number-ii/)
 
-Given an integer array nums where every element appears three times except for one, which appears exactly once. Find the single element and return it.
+**Difficulty:** Medium | **Pattern:** Bit Counting
+**LeetCode:** https://leetcode.com/problems/single-number-ii/
 
-**Constraints:**
-- You must implement a solution with O(n) runtime complexity
-- You must use only O(1) extra space
+### Problem
 
-**Example:**
-```typescript
-Input: nums = [2,2,3,2]
+Every element appears three times except one which appears once. Find it.
+
+Must use O(n) time and O(1) space.
+
+### Examples
+
+```
+nums = [2,2,3,2]
 Output: 3
 
-Input: nums = [0,1,0,1,0,1,99]
+nums = [0,1,0,1,0,1,99]
 Output: 99
 
-Input: nums = [1]
+nums = [1]
 Output: 1
 ```
+
+### Constraints
+
+- 1 ≤ nums.length ≤ 3×10⁴
+- -2³¹ ≤ nums[i] ≤ 2³¹-1
+
+### Hints
+- Count bits at each position
+- If count % 3 != 0, single number has 1 there
+- Loop through 32 bit positions
 
 ---
 
 ## Problem 8: Single Number III
-**Difficulty:** Medium
-**LeetCode:** [260. Single Number III](https://leetcode.com/problems/single-number-iii/)
 
-Given an integer array nums, in which exactly two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once.
+**Difficulty:** Medium | **Pattern:** XOR + Partitioning
+**LeetCode:** https://leetcode.com/problems/single-number-iii/
 
-**Constraints:**
-- 2 <= nums.length <= 3 * 10^4
-- -2^31 <= nums[i] <= 2^31 - 1
-- Each integer in nums appears twice, except for two integers that appear once
+### Problem
 
-**Example:**
-```typescript
-Input: nums = [1,2,1,3,2,5]
-Output: [3,5] or [5,3]
-Explanation: 3 and 5 appear only once.
+Array where exactly two elements appear once, all others appear twice. Find the two unique elements.
 
-Input: nums = [-1,0]
-Output: [-1,0] or [0,-1]
+### Examples
 
-Input: nums = [0,1]
-Output: [0,1] or [1,0]
 ```
+nums = [1,2,1,3,2,5]
+Output: [3,5]
+
+nums = [-1,0]
+Output: [-1,0]
+
+nums = [0,1]
+Output: [0,1]
+```
+
+### Constraints
+
+- 2 ≤ nums.length ≤ 3×10⁴
+- -2³¹ ≤ nums[i] ≤ 2³¹-1
+- Each integer appears twice except two
+
+### Hints
+- First XOR all → gets a^b
+- Find bit where a and b differ (xor & -xor)
+- Partition array based on this bit
+- XOR each partition separately
 
 ---
 
 ## Problem 9: Bitwise AND of Numbers Range
-**Difficulty:** Medium
-**LeetCode:** [201. Bitwise AND of Numbers Range](https://leetcode.com/problems/bitwise-and-of-numbers-range/)
 
-Given two integers left and right that represent the range [left, right], return the bitwise AND of all numbers in this range, inclusive.
+**Difficulty:** Medium | **Pattern:** Bit Analysis
+**LeetCode:** https://leetcode.com/problems/bitwise-and-of-numbers-range/
 
-**Constraints:**
-- 0 <= left <= right <= 2^31 - 1
+### Problem
 
-**Example:**
-```typescript
-Input: left = 5, right = 7
+Return bitwise AND of all numbers in range [left, right] inclusive.
+
+### Examples
+
+```
+left = 5, right = 7
 Output: 4
 Explanation: 5 AND 6 AND 7 = 4
 
-Input: left = 0, right = 0
+left = 0, right = 0
 Output: 0
 
-Input: left = 1, right = 2147483647
+left = 1, right = 2147483647
 Output: 0
 ```
 
+### Constraints
+
+- 0 ≤ left ≤ right ≤ 2³¹-1
+
+### Hints
+- Bits that change in range become 0
+- Find common prefix of left and right
+- Shift both right until equal, track shifts
+- Shift result back left
+
 ---
 
-## Problem 10: Maximum XOR of Two Numbers in an Array
-**Difficulty:** Medium
-**LeetCode:** [421. Maximum XOR of Two Numbers in an Array](https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/)
+## Problem 10: Maximum XOR of Two Numbers
 
-Given an integer array nums, return the maximum result of nums[i] XOR nums[j], where 0 <= i <= j < n.
+**Difficulty:** Medium | **Pattern:** Greedy + Trie
+**LeetCode:** https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/
 
-**Constraints:**
-- 1 <= nums.length <= 2 * 10^5
-- 0 <= nums[i] <= 2^31 - 1
+### Problem
 
-**Example:**
-```typescript
-Input: nums = [3,10,5,25,2,8]
+Return maximum result of nums[i] XOR nums[j] where 0 ≤ i ≤ j < n.
+
+### Examples
+
+```
+nums = [3,10,5,25,2,8]
 Output: 28
-Explanation: The maximum XOR is 5 XOR 25 = 28.
+Explanation: 5 XOR 25 = 28
 
-Input: nums = [14,70,53,83,49,91,36,80,92,51,66,70]
+nums = [14,70,53,83,49,91,36,80,92,51,66,70]
 Output: 127
 
-Input: nums = [1]
+nums = [1]
 Output: 0
 ```
 
----
+### Constraints
 
-## Problem-Solving Strategy
+- 1 ≤ nums.length ≤ 2×10⁵
+- 0 ≤ nums[i] ≤ 2³¹-1
 
-### For XOR Problems (1, 5, 7, 8):
-1. Remember XOR properties: a^a=0, a^0=a
-2. Think about cancellation patterns
-3. Consider bit-by-bit analysis for complex cases
-
-### For Bit Counting (2, 3):
-1. Use Brian Kernighan's algorithm for efficiency
-2. Consider dynamic programming for ranges
-3. Look for patterns in binary representation
-
-### For Bit Manipulation (4, 6):
-1. Process bit-by-bit
-2. Use masks to isolate specific bits
-3. Handle overflow and negative numbers carefully
-
-### For Range Problems (9, 10):
-1. Look for common bit patterns
-2. Consider prefix/suffix analysis
-3. Think about when bits become stable
+### Hints
+- Build result bit by bit from MSB to LSB
+- Use prefix matching with HashSet
+- Or build Trie of binary representations
+- Try to set each bit to 1 greedily
 
 ---
 
-## Approach Order
+## Summary
 
-**Beginner Path:**
-1. Start with Problem 1 (Single Number) - Basic XOR
-2. Move to Problem 2 (Number of 1 Bits) - Bit counting
-3. Try Problem 5 (Missing Number) - XOR application
-4. Tackle Problem 3 (Counting Bits) - DP with bits
-5. Solve Problem 4 (Reverse Bits) - Bit manipulation
+**Total:** 10 problems (5 Easy, 5 Medium)
 
-**Intermediate Path:**
-6. Problem 6 (Sum of Two Integers) - Bit addition
-7. Problem 7 (Single Number II) - Advanced XOR
-8. Problem 8 (Single Number III) - Complex XOR pattern
+**Patterns:**
+- XOR for Uniqueness
+- Brian Kernighan's Algorithm
+- Bit Counting with DP
+- Bit Masking & Manipulation
+- Prefix Analysis
 
-**Advanced Path:**
-9. Problem 9 (Bitwise AND Range) - Range analysis
-10. Problem 10 (Maximum XOR) - Trie optimization
-
----
-
-## Time Management
-
-**Suggested time allocation:**
-- Easy problems (1-5): 10-15 minutes each
-- Medium problems (6-10): 20-25 minutes each
-- Review and optimization: 30 minutes
-
-**If stuck:**
-- 5 minutes: Review the bit operation needed
-- 10 minutes: Check hint level 1
-- 15 minutes: Check hint level 2
-- 20 minutes: Review solution approach
+**Key Techniques:**
+- n & (n-1) removes rightmost set bit
+- n & -n isolates rightmost set bit
+- XOR cancellation property
+- Bit-by-bit processing
+- Greedy bit construction
 
 ---
 
-## Self-Evaluation Checklist
+**Ready?** Say: `"Claude, give me the problem"` or `"Go"`
 
-After completing each problem:
-- [ ] Did I recognize the bit pattern immediately?
-- [ ] Did I use the most efficient bit operations?
-- [ ] Did I handle edge cases (0, negative, overflow)?
-- [ ] Can I explain why the bit manipulation works?
-- [ ] Did I achieve optimal time/space complexity?
-
----
-
-## Common Pitfalls
-
-1. **Forgetting XOR properties**
-   - Review: a^a=0, a^0=a, commutative, associative
-
-2. **Not handling negative numbers**
-   - Remember two's complement representation
-
-3. **Integer overflow in JavaScript**
-   - Use >>> for unsigned right shift
-
-4. **Inefficient bit counting**
-   - Use n & (n-1) to remove rightmost bit
-
-5. **Complex solutions for simple problems**
-   - Most bit problems have elegant tricks
-
----
-
-## Next Steps
-
-After completing all problems:
-1. Review all XOR-based solutions
-2. Practice bit manipulation without looking at references
-3. Try to optimize further using bit tricks
-4. Implement a bit manipulation utility library
-
-Remember: Bit manipulation is about recognizing patterns and applying the right tricks!
+[Solutions](./SOLUTIONS.md) | [Hints](./HINTS.md)

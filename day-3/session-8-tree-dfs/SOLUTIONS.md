@@ -1,67 +1,25 @@
 # Solutions - Session 8: Tree DFS
 
-Comprehensive TypeScript solutions with multiple approaches and complexity analysis.
+TypeScript solutions with complexity analysis.
 
 ---
 
 ## Problem 1: Maximum Depth of Binary Tree
 
-### Approach 1: Recursive DFS (Optimal) ✅
-
-```typescript
-function maxDepth(root: TreeNode | null): number {
-  // Base case: empty tree has depth 0
-  if (!root) return 0;
-
-  // Recursive case: 1 + max of subtree depths
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
-
-  return 1 + Math.max(leftDepth, rightDepth);
-}
-```
-
-**Complexity:**
-- Time: O(n) - visit every node once
-- Space: O(h) - recursion stack, h is height
-
-**Key Insight:** The depth of a tree is 1 (for current node) plus the maximum depth of its subtrees.
-
----
-
-### Approach 2: Iterative BFS
+### Approach: Recursive DFS (Optimal) ✅
 
 ```typescript
 function maxDepth(root: TreeNode | null): number {
   if (!root) return 0;
-
-  const queue: TreeNode[] = [root];
-  let depth = 0;
-
-  while (queue.length > 0) {
-    const levelSize = queue.length;
-    depth++;
-
-    // Process all nodes at current level
-    for (let i = 0; i < levelSize; i++) {
-      const node = queue.shift()!;
-      if (node.left) queue.push(node.left);
-      if (node.right) queue.push(node.right);
-    }
-  }
-
-  return depth;
+  return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
 }
 ```
 
-**Complexity:**
-- Time: O(n) - visit every node
-- Space: O(w) - queue holds at most w nodes, where w is max width
+**Time:** O(n) | **Space:** O(h)
 
-**Interview Points:**
-- "Recursive is more intuitive for depth calculation"
-- "BFS naturally counts levels which equals max depth"
-- "Space complexity differs: O(h) for DFS vs O(w) for BFS"
+**Key:** Depth = 1 + max of subtree depths.
+
+**Say:** "Recursive DFS visits each node once. Base case null returns 0. Combine subtree results with 1 plus max. Space is O(h) for recursion stack where h is height."
 
 ---
 
@@ -74,32 +32,27 @@ function isSameTree(p: TreeNode | null, q: TreeNode | null): boolean {
   // Both null - same
   if (!p && !q) return true;
 
-  // One null, other not - different
+  // One null - different
   if (!p || !q) return false;
 
-  // Check current values and recurse
+  // Check current and recurse
   return p.val === q.val &&
          isSameTree(p.left, q.left) &&
          isSameTree(p.right, q.right);
 }
 ```
 
-**Complexity:**
-- Time: O(min(n, m)) - where n and m are tree sizes
-- Space: O(min(h1, h2)) - recursion depth
+**Time:** O(min(n, m)) | **Space:** O(min(h1, h2))
 
-**Key Insight:** Trees are same if roots match AND left subtrees match AND right subtrees match.
+**Key:** Trees same if roots match AND subtrees match.
 
-**Interview Points:**
-- "Check structural equality first (both null or both non-null)"
-- "Then check value equality"
-- "Short-circuit evaluation with && stops early if mismatch found"
+**Say:** "Check structural equality first, then value equality. Short-circuit with && stops early on mismatch."
 
 ---
 
 ## Problem 3: Invert Binary Tree
 
-### Approach 1: Recursive (Clean) ✅
+### Approach: Recursive Swap ✅
 
 ```typescript
 function invertTree(root: TreeNode | null): TreeNode | null {
@@ -118,52 +71,26 @@ function invertTree(root: TreeNode | null): TreeNode | null {
 }
 ```
 
-**Complexity:**
-- Time: O(n) - visit every node
-- Space: O(h) - recursion stack
+**Time:** O(n) | **Space:** O(h)
 
----
+**Key:** Swap at each node, then recurse.
 
-### Approach 2: Recursive (Functional Style)
-
-```typescript
-function invertTree(root: TreeNode | null): TreeNode | null {
-  if (!root) return null;
-
-  // Invert subtrees first, then swap
-  const left = invertTree(root.left);
-  const right = invertTree(root.right);
-
-  root.left = right;
-  root.right = left;
-
-  return root;
-}
-```
-
-**Interview Points:**
-- "Can swap before or after recursion - both work"
-- "This is the problem that tripped up the Homebrew creator at Google!"
-- "Simple problem but tests understanding of tree structure"
+**Say:** "Famous interview question. Swap children before or after recursion - both work. O(n) time to visit all nodes."
 
 ---
 
 ## Problem 4: Symmetric Tree
 
-### Approach 1: Recursive Helper ✅
+### Approach: Recursive Helper ✅
 
 ```typescript
 function isSymmetric(root: TreeNode | null): boolean {
   if (!root) return true;
 
   function isMirror(left: TreeNode | null, right: TreeNode | null): boolean {
-    // Both null - symmetric
     if (!left && !right) return true;
-
-    // One null - not symmetric
     if (!left || !right) return false;
 
-    // Check values and cross-compare children
     return left.val === right.val &&
            isMirror(left.left, right.right) &&
            isMirror(left.right, right.left);
@@ -173,48 +100,17 @@ function isSymmetric(root: TreeNode | null): boolean {
 }
 ```
 
-**Complexity:**
-- Time: O(n) - visit every node
-- Space: O(h) - recursion depth
+**Time:** O(n) | **Space:** O(h)
 
-**Key Insight:** For symmetry, left child of left subtree should mirror right child of right subtree.
+**Key:** For symmetry, left's left mirrors right's right (and vice versa).
 
----
-
-### Approach 2: Iterative with Queue
-
-```typescript
-function isSymmetric(root: TreeNode | null): boolean {
-  if (!root) return true;
-
-  const queue: (TreeNode | null)[] = [root.left, root.right];
-
-  while (queue.length > 0) {
-    const left = queue.shift();
-    const right = queue.shift();
-
-    if (!left && !right) continue;
-    if (!left || !right) return false;
-    if (left.val !== right.val) return false;
-
-    // Add in mirror order
-    queue.push(left.left, right.right);
-    queue.push(left.right, right.left);
-  }
-
-  return true;
-}
-```
-
-**Interview Points:**
-- "Process nodes in pairs that should be mirrors"
-- "Queue maintains pairing throughout traversal"
+**Say:** "Helper function compares subtrees in mirror fashion. Left child of left subtree should equal right child of right subtree."
 
 ---
 
 ## Problem 5: Diameter of Binary Tree
 
-### Approach: Height Calculation with Global Max ✅
+### Approach: Height with Global Max ✅
 
 ```typescript
 function diameterOfBinaryTree(root: TreeNode | null): number {
@@ -223,14 +119,13 @@ function diameterOfBinaryTree(root: TreeNode | null): number {
   function height(node: TreeNode | null): number {
     if (!node) return 0;
 
-    // Get height of subtrees
     const leftHeight = height(node.left);
     const rightHeight = height(node.right);
 
-    // Update max diameter (path through this node)
+    // Update max diameter
     maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
 
-    // Return height of this subtree
+    // Return height
     return 1 + Math.max(leftHeight, rightHeight);
   }
 
@@ -239,46 +134,33 @@ function diameterOfBinaryTree(root: TreeNode | null): number {
 }
 ```
 
-**Complexity:**
-- Time: O(n) - visit every node once
-- Space: O(h) - recursion stack
+**Time:** O(n) | **Space:** O(h)
 
-**Key Insight:**
-- Diameter at each node = left height + right height
-- Keep global max as we calculate heights
-- Don't confuse diameter (edges) with height (nodes)
+**Key:** Diameter at node = left height + right height. Track global max.
 
-**Interview Points:**
-- "Diameter may not pass through root"
-- "Calculate height while tracking max diameter"
-- "Diameter is edges, not nodes, so it's leftHeight + rightHeight"
+**Say:** "Diameter may not pass through root, so check at every node. Calculate height while tracking max diameter. Diameter is edges not nodes, so leftHeight + rightHeight."
 
 ---
 
 ## Problem 6: Balanced Binary Tree
 
-### Approach: Bottom-Up with Early Termination ✅
+### Approach: Bottom-Up with -1 Sentinel ✅
 
 ```typescript
 function isBalanced(root: TreeNode | null): boolean {
   function checkHeight(node: TreeNode | null): number {
-    // Empty tree is balanced with height 0
     if (!node) return 0;
 
-    // Check left subtree
     const leftHeight = checkHeight(node.left);
-    if (leftHeight === -1) return -1;  // Not balanced
+    if (leftHeight === -1) return -1;
 
-    // Check right subtree
     const rightHeight = checkHeight(node.right);
-    if (rightHeight === -1) return -1;  // Not balanced
+    if (rightHeight === -1) return -1;
 
-    // Check current node's balance
     if (Math.abs(leftHeight - rightHeight) > 1) {
-      return -1;  // Not balanced
+      return -1;
     }
 
-    // Return height if balanced
     return Math.max(leftHeight, rightHeight) + 1;
   }
 
@@ -286,22 +168,17 @@ function isBalanced(root: TreeNode | null): boolean {
 }
 ```
 
-**Complexity:**
-- Time: O(n) - visit each node once
-- Space: O(h) - recursion depth
+**Time:** O(n) | **Space:** O(h)
 
-**Key Insight:** Use -1 as sentinel value to indicate imbalance and stop early.
+**Key:** Use -1 as sentinel for imbalance. Early termination.
 
-**Interview Points:**
-- "Bottom-up approach calculates height while checking balance"
-- "Early termination with -1 prevents unnecessary computation"
-- "Single pass solution instead of naive O(n²) approach"
+**Say:** "Bottom-up approach calculates height while checking balance. Use -1 to signal imbalance and stop early. Single pass instead of naive O(n²)."
 
 ---
 
 ## Problem 7: Lowest Common Ancestor
 
-### Approach: Recursive Search ✅
+### Approach: Post-Order Search ✅
 
 ```typescript
 function lowestCommonAncestor(
@@ -309,35 +186,25 @@ function lowestCommonAncestor(
   p: TreeNode,
   q: TreeNode
 ): TreeNode | null {
-  // Base cases
   if (!root) return null;
   if (root === p || root === q) return root;
 
-  // Search in subtrees
   const left = lowestCommonAncestor(root.left, p, q);
   const right = lowestCommonAncestor(root.right, p, q);
 
-  // If both found in different subtrees, current is LCA
+  // Both in different subtrees
   if (left && right) return root;
 
-  // Otherwise, return whichever side found something
+  // Return whichever found something
   return left || right;
 }
 ```
 
-**Complexity:**
-- Time: O(n) - worst case visit all nodes
-- Space: O(h) - recursion stack
+**Time:** O(n) | **Space:** O(h)
 
-**Key Insight:**
-- If p and q are in different subtrees, current node is LCA
-- If both in same subtree, LCA is in that subtree
-- Post-order traversal bubbles up the result
+**Key:** If p and q in different subtrees, current is LCA.
 
-**Interview Points:**
-- "If current node is p or q, it could be the LCA"
-- "LCA is where paths to p and q diverge"
-- "Post-order ensures we check children before deciding"
+**Say:** "Post-order traversal bubbles up results. If current node is p or q, return it. If both subtrees return non-null, current is LCA where paths diverge."
 
 ---
 
@@ -347,31 +214,25 @@ function lowestCommonAncestor(
 
 ```typescript
 function hasPathSum(root: TreeNode | null, targetSum: number): boolean {
-  // Empty tree has no paths
   if (!root) return false;
 
-  // Check if we've reached a leaf with target sum
+  // Check leaf
   if (!root.left && !root.right) {
     return root.val === targetSum;
   }
 
-  // Check if path exists in either subtree
+  // Check subtrees
   const remainingSum = targetSum - root.val;
   return hasPathSum(root.left, remainingSum) ||
          hasPathSum(root.right, remainingSum);
 }
 ```
 
-**Complexity:**
-- Time: O(n) - might visit all nodes
-- Space: O(h) - recursion depth
+**Time:** O(n) | **Space:** O(h)
 
-**Key Insight:** Subtract current value from target as we go down, check if we hit 0 at a leaf.
+**Key:** Subtract current from target going down. Check at leaf.
 
-**Interview Points:**
-- "Must be root-to-leaf path, not just any path"
-- "Subtract from target rather than accumulating sum"
-- "Short-circuit with || when path found"
+**Say:** "Must be root-to-leaf path, not any path. Subtract from target rather than accumulating. Short-circuit with || when path found."
 
 ---
 
@@ -387,20 +248,16 @@ function pathSum(root: TreeNode | null, targetSum: number): number[][] {
   function dfs(node: TreeNode | null, remainingSum: number): void {
     if (!node) return;
 
-    // Add current node to path
     currentPath.push(node.val);
 
-    // Check if we've found a valid path at leaf
     if (!node.left && !node.right && node.val === remainingSum) {
-      result.push([...currentPath]);  // Copy current path
+      result.push([...currentPath]);  // Copy!
     } else {
-      // Continue searching in subtrees
       dfs(node.left, remainingSum - node.val);
       dfs(node.right, remainingSum - node.val);
     }
 
-    // Backtrack: remove current node from path
-    currentPath.pop();
+    currentPath.pop();  // Backtrack
   }
 
   dfs(root, targetSum);
@@ -408,41 +265,34 @@ function pathSum(root: TreeNode | null, targetSum: number): number[][] {
 }
 ```
 
-**Complexity:**
-- Time: O(n²) - worst case n/2 leaves, each path length n/2
-- Space: O(n) - recursion stack + path storage
+**Time:** O(n²) worst case | **Space:** O(n)
 
-**Key Insight:** Use backtracking to maintain current path, copy when valid path found.
+**Key:** Backtrack to maintain path. Copy array when adding to result.
 
-**Interview Points:**
-- "Must copy array when adding to result (JavaScript arrays are references)"
-- "Backtrack by removing node after exploring both subtrees"
-- "Check for leaf node AND target sum"
+**Say:** "Must copy array when adding to result - JavaScript arrays are references. Backtrack by popping after exploring both subtrees. Check leaf AND target sum."
 
 ---
 
 ## Problem 10: Binary Tree Maximum Path Sum
 
-### Approach: Post-Order DFS with Global Max ✅
+### Approach: Post-Order with Global Max ✅
 
 ```typescript
 function maxPathSum(root: TreeNode | null): number {
-  let maxSum = -Infinity;  // Global maximum
+  let maxSum = -Infinity;
 
   function maxGain(node: TreeNode | null): number {
     if (!node) return 0;
 
-    // Get max gain from subtrees (ignore negative paths)
+    // Get max from subtrees (ignore negatives)
     const leftGain = Math.max(0, maxGain(node.left));
     const rightGain = Math.max(0, maxGain(node.right));
 
-    // Max path through current node
+    // Max path through this node
     const currentMax = node.val + leftGain + rightGain;
-
-    // Update global maximum
     maxSum = Math.max(maxSum, currentMax);
 
-    // Return max gain if we continue path through parent
+    // Return max gain for parent
     return node.val + Math.max(leftGain, rightGain);
   }
 
@@ -451,23 +301,50 @@ function maxPathSum(root: TreeNode | null): number {
 }
 ```
 
-**Complexity:**
-- Time: O(n) - visit each node once
-- Space: O(h) - recursion stack
+**Time:** O(n) | **Space:** O(h)
 
 **Key Insights:**
-1. At each node, calculate max path that passes through it
-2. A path through a node = node.val + left path + right path
-3. When returning to parent, can only use one branch (not both)
-4. Negative paths can be ignored (take 0 instead)
+1. At each node, max path = node.val + left + right
+2. When returning to parent, can only use one branch
+3. Negative paths can be ignored (take 0)
+4. Track global max separately
 
-**Interview Points:**
-- "Track global max separately from return value"
-- "Return value is max gain for paths continuing upward"
-- "Current max includes both subtrees, return value includes only one"
-- "Use Math.max(0, gain) to exclude negative paths"
+**Say:** "Track global max separately from return value. Return value is max gain for paths continuing upward. Current max includes both subtrees, return includes only one. Use Math.max(0, gain) to exclude negative paths."
 
-**Edge Cases to Consider:**
-- All negative values (must include at least one node)
-- Single node tree
-- Skewed tree (essentially a linked list)
+---
+
+## Pattern Summary
+
+### Basic DFS (Problems 1, 2, 8)
+- Recursively visit nodes
+- Combine subtree results
+- O(n) time, O(h) space
+
+### Tree Modification (Problem 3)
+- Swap/modify at each node
+- Recurse on children
+- In-place or return new structure
+
+### Tree Comparison (Problems 2, 4)
+- Helper functions for symmetry/equality
+- Check structure AND values
+- Early termination on mismatch
+
+### Properties with Global State (Problems 5, 6, 10)
+- Use global variable for tree-wide property
+- Calculate one thing, track another
+- -1 sentinel for early termination
+
+### Path Problems (Problems 8, 9)
+- Top-down: pass remaining target
+- Backtracking: maintain current path
+- Must reach leaf for root-to-leaf paths
+
+### Search Problems (Problem 7)
+- Post-order to bubble up results
+- Check current before recursing
+- Combine left and right results
+
+---
+
+[Back to Problems](./PROBLEMS.md) | [Back to README](./README.md)

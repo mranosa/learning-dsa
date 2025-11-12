@@ -1,46 +1,36 @@
 # Day 6, Session 18: Intervals
 
 ## Overview
-Master interval problems - a crucial pattern that appears in scheduling, calendar, and resource allocation problems.
 
-**Duration:** 3-5 hours
-**Problems:** 10 (1 Easy, 7 Medium, 2 Hard)
-**Prerequisites:** Arrays, Sorting, Greedy algorithms
+Master interval problems - crucial for scheduling, calendar, and resource allocation challenges in technical interviews.
+
+**Duration:** 2-4 hours | **Problems:** 10 (1 Easy, 7 Medium, 2 Hard)
 
 ---
 
 ## Learning Objectives
 
-By the end of this session, you will:
-- ✅ Understand interval representations and operations
-- ✅ Master merging overlapping intervals
-- ✅ Handle interval insertions and deletions
-- ✅ Solve scheduling and conflict resolution problems
-- ✅ Apply greedy algorithms to interval problems
+- ✅ Understand interval representation and operations
+- ✅ Master merge and insert patterns
+- ✅ Detect overlaps efficiently
+- ✅ Apply greedy algorithms to scheduling
+- ✅ Solve interval problems in O(n log n) time
 
 ---
 
 ## Session Flow
 
-### 1. Video (30 min)
-Watch the assigned video on Interval problems and sorting strategies.
+### 1. Videos (30 min)
+- Interval Fundamentals & Merging (15 min)
+- Meeting Rooms & Scheduling (15 min)
 
 ### 2. Concept Check (10 min)
-Claude will quiz you on:
-- Interval representation
-- Sorting strategies for intervals
-- Overlap detection
-- Greedy approach for intervals
+Quiz on overlap detection, sorting strategies, merge patterns.
 
 ### 3. Tips & Tricks (5 min)
-Learn interview-specific insights about:
-- Common interval patterns
-- Sorting strategies (start vs end)
-- Edge cases in interval problems
-- TypeScript interval handling
+Sorting strategies, overlap formulas, boundary handling, TypeScript patterns.
 
-### 4. Problem Solving (3-4 hours)
-Solve 10 carefully selected problems:
+### 4. Problems (2-3 hours)
 1. Meeting Rooms (Easy)
 2. Merge Intervals (Medium)
 3. Insert Interval (Medium)
@@ -56,102 +46,88 @@ Solve 10 carefully selected problems:
 
 ## Key Concepts
 
-### Interval Operations
+### Interval Basics
+- **Representation:** `[start, end]` tuples
+- **Overlap:** When two intervals share time
 - **Merge:** Combine overlapping intervals
-- **Insert:** Add new interval and merge if needed
-- **Remove:** Delete intervals or overlapping portions
-- **Intersect:** Find common intervals
-- **Count:** Track concurrent intervals
+- **Insert:** Add and merge new interval
+- **Sort:** Usually first step (by start or end)
 
-### Common Patterns
-- **Sort by start time:** For merging/grouping
-- **Sort by end time:** For activity selection
-- **Line sweep:** Track events at time points
-- **Priority queue:** For concurrent intervals
-- **Greedy selection:** For optimal scheduling
+### Operations
+- **O(1)** - Check overlap between two intervals
+- **O(n log n)** - Sort intervals
+- **O(n)** - Merge sorted intervals
+- **O(n)** - Insert into sorted intervals
 
-### Time Complexities
-- **Sorting:** O(n log n)
-- **Merging:** O(n) after sorting
-- **Insertion:** O(n) in sorted list
-- **Interval tree:** O(log n) operations
+### Patterns
+- Sort by start time (merging)
+- Sort by end time (greedy selection)
+- Line sweep (concurrent events)
+- Priority queue (active intervals)
 
 ---
 
 ## Prerequisites
 
 **Must know:**
-- Array manipulation in TypeScript
-- Sorting algorithms and comparators
-- Basic greedy algorithm concepts
-
-**Nice to have:**
-- Priority queue/heap understanding
-- Line sweep algorithm
-- Calendar/scheduling domain knowledge
+- Array manipulation
+- Sorting with comparators
+- Basic greedy concepts
 
 ---
 
 ## Success Criteria
 
-You're ready to move on when you can:
-- [ ] Detect interval overlaps efficiently
-- [ ] Merge intervals in O(n log n) time
-- [ ] Handle interval insertions correctly
-- [ ] Apply greedy strategies to scheduling
-- [ ] Solve Medium interval problems in <25 min
+- [ ] Detect overlaps in O(1)
+- [ ] Merge intervals correctly
+- [ ] Handle boundary cases (adjacent intervals)
+- [ ] Explain greedy strategies
+- [ ] Solve Easy problems <15 min
 
 ---
 
 ## Resources
 
-**Video:** See LESSON.md for link
-
-**Readings:**
-- Interval algorithms guide
-- Greedy scheduling strategies
-- TypeScript sorting patterns
-
-**Practice:**
-- All problems in PROBLEMS.md
-- Solutions in SOLUTIONS.md
-- Hints in HINTS.md
+**Video:** LESSON.md
+**Practice:** PROBLEMS.md
+**Solutions:** SOLUTIONS.md
+**Hints:** HINTS.md
 
 ---
 
-## Tips for Success
+## Tips
 
-1. **Always consider sorting** - Most interval problems require it
-2. **Draw the intervals** - Visualize overlaps and gaps
-3. **Check edge cases** - Adjacent intervals, single point
-4. **Think greedy** - Often optimal for interval problems
-5. **Use clear variable names** - start/end, not a/b
-6. **Handle boundaries carefully** - Inclusive vs exclusive
-7. **Test with examples** - Use timeline visualization
+1. Always visualize on timeline
+2. Sort first in 90% of problems
+3. Master overlap formula: `max(start1, start2) < min(end1, end2)`
+4. Check adjacent vs overlapping carefully
+5. Use clear variable names: `prevEnd`, `currentInterval`
+6. Draw examples during planning
+7. Consider inclusive vs exclusive endpoints
 
 ---
 
 ## Common Mistakes
 
-**Avoid these:**
-- ❌ Forgetting to sort intervals first
-- ❌ Wrong comparison for overlaps (< vs <=)
-- ❌ Not handling adjacent intervals correctly
-- ❌ Mutating input array without checking
-- ❌ Off-by-one errors in interval boundaries
+- ❌ Forgetting to sort intervals
+- ❌ Wrong overlap check (`<` vs `<=`)
+- ❌ Not handling adjacent intervals [1,2] and [2,3]
+- ❌ Mutating input without permission
+- ❌ Off-by-one errors with boundaries
+- ❌ Using wrong sort key (start vs end)
 
 ---
 
 ## What's Next
 
-After completing this session:
-1. Take a 15-minute break
-2. Review your performance scores
-3. Practice drawing interval scenarios
-4. Move to Session 19: Tries
+After completion:
+1. 10-minute break
+2. Review scores
+3. Practice drawing intervals
+4. Session 19: Tries
 
 Session 19 introduces prefix trees for efficient string operations.
 
 ---
 
-**Ready to start?** Say: `"Claude, start session 6 18"`
+**Ready?** Say: `"Claude, start session 6 18"`

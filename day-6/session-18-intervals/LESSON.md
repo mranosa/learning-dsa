@@ -1,66 +1,108 @@
-# Lesson: Interval Problems
-
-## Video Assignment
-
-**Watch this video:** [Merge Intervals & Meeting Rooms - NeetCode](https://www.youtube.com/watch?v=44H3cEC2fFM)
-
-**Duration:** 30 minutes
-
-**Backup videos:**
-- [Interval Problems Playlist](https://www.youtube.com/watch?v=Zb4eRjuPHbM)
-- [Meeting Rooms Problem](https://www.youtube.com/watch?v=PaJxqZVPhbg)
+# Lesson: Intervals
 
 ---
 
-## Core Concepts
+## 📹 Video 1: Interval Fundamentals & Merging (15 min)
 
-### 1. What are Intervals?
+**"Merge Intervals - Leetcode 56" by NeetCode**
+https://www.youtube.com/watch?v=44H3cEC2fFM
 
-An interval represents a range between two points:
+**Focus on:**
+- Interval representation
+- Detecting overlaps
+- Sorting strategy
+- Merging algorithm
+- Time/space complexity
+
+---
+
+## 📹 Video 2: Meeting Rooms & Scheduling (15 min)
+
+**"Meeting Rooms II - Leetcode 253" by NeetCode**
+https://www.youtube.com/watch?v=FdzJmTCVyJU
+
+**Alternative:**
+https://www.youtube.com/watch?v=4MEkHeDGIl8
+
+**Focus on:**
+- Min heap approach
+- Line sweep technique
+- Greedy algorithm
+- Activity selection
+- Real-world applications
+
+---
+
+## 🎯 Interval Fundamentals
+
+### What are Intervals?
+
+An interval represents a continuous range between two points:
+
 ```typescript
 type Interval = [number, number]; // [start, end]
 
 // Examples:
 const meeting = [9, 11];     // 9:00 AM to 11:00 AM
-const task = [1, 5];         // Time units 1 to 5
-const range = [100, 200];    // Values from 100 to 200
+const event = [1, 5];         // Time units 1 to 5
+const range = [100, 200];     // Numbers from 100 to 200
 ```
 
 **Key Properties:**
 - Start point and end point
-- Can be inclusive or exclusive
+- Can be inclusive or exclusive (clarify in interviews)
 - May overlap with other intervals
-- Can be sorted by start or end
+- Can be adjacent without overlapping
+- Sorting enables efficient operations
 
-### 2. Detecting Overlaps
+---
+
+## 🔍 Detecting Overlaps
 
 Two intervals overlap if they share any common time:
 
 ```typescript
+// Method 1: Direct comparison
 function doOverlap(a: [number, number], b: [number, number]): boolean {
-    // Overlap if a starts before b ends AND b starts before a ends
     return a[0] < b[1] && b[0] < a[1];
 }
 
-// Visual representation:
+// Method 2: Using max/min
+function doOverlap(a: [number, number], b: [number, number]): boolean {
+    return Math.max(a[0], b[0]) < Math.min(a[1], b[1]);
+}
+
+// Visual:
 // a: [1, 5]    |-----|
 // b: [3, 7]        |-----|
 //                  ^^^ overlap
+
+// Non-overlapping:
+// a: [1, 3]    |---|
+// b: [4, 6]            |---|
 ```
 
-**Non-overlapping conditions:**
-- `a` ends before `b` starts: `a[1] <= b[0]`
-- `b` ends before `a` starts: `b[1] <= a[0]`
+**Adjacent intervals:**
+```typescript
+// [1, 2] and [2, 3] - typically NOT overlapping (touching only)
+// Use <= if you want to merge adjacent intervals
+intervals[i][0] <= intervals[j][1]  // Merge adjacent
+intervals[i][0] < intervals[j][1]   // Only overlap
+```
 
-### 3. Merging Intervals
+---
 
-Combining overlapping intervals into single intervals:
+## 🔧 Core Operations
+
+### 1. Merging Intervals
+
+Combine overlapping intervals into single intervals:
 
 ```typescript
 function merge(intervals: number[][]): number[][] {
     if (intervals.length <= 1) return intervals;
 
-    // Sort by start time
+    // Sort by start time - CRITICAL
     intervals.sort((a, b) => a[0] - b[0]);
 
     const merged: number[][] = [intervals[0]];
@@ -69,11 +111,11 @@ function merge(intervals: number[][]): number[][] {
         const last = merged[merged.length - 1];
         const current = intervals[i];
 
-        if (last[1] >= current[0]) {
-            // Overlapping - merge
+        if (current[0] <= last[1]) {
+            // Overlapping - extend last interval
             last[1] = Math.max(last[1], current[1]);
         } else {
-            // Non-overlapping - add new
+            // Non-overlapping - add new interval
             merged.push(current);
         }
     }
@@ -82,22 +124,28 @@ function merge(intervals: number[][]): number[][] {
 }
 ```
 
-### 4. Interval Insertion
+**Time:** O(n log n) | **Space:** O(n)
 
-Adding a new interval and merging if necessary:
+**Key insight:** After sorting by start time, overlapping intervals are consecutive.
+
+---
+
+### 2. Inserting Interval
+
+Add new interval and merge if necessary:
 
 ```typescript
 function insert(intervals: number[][], newInterval: number[]): number[][] {
     const result: number[][] = [];
     let i = 0;
 
-    // Add all intervals before newInterval
+    // Phase 1: Add all intervals before newInterval
     while (i < intervals.length && intervals[i][1] < newInterval[0]) {
         result.push(intervals[i]);
         i++;
     }
 
-    // Merge overlapping intervals
+    // Phase 2: Merge overlapping intervals with newInterval
     while (i < intervals.length && intervals[i][0] <= newInterval[1]) {
         newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
         newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
@@ -105,7 +153,7 @@ function insert(intervals: number[][], newInterval: number[]): number[][] {
     }
     result.push(newInterval);
 
-    // Add remaining intervals
+    // Phase 3: Add remaining intervals
     while (i < intervals.length) {
         result.push(intervals[i]);
         i++;
@@ -115,31 +163,63 @@ function insert(intervals: number[][], newInterval: number[]): number[][] {
 }
 ```
 
+**Time:** O(n) | **Space:** O(n)
+
+**Key insight:** Three phases - before, during overlap, after.
+
 ---
 
-## Interval Patterns
+### 3. Finding Intersection
 
-### Pattern 1: Sort and Iterate
-
-Most interval problems start with sorting:
+Find common intervals between two lists:
 
 ```typescript
-// Sort by start time for merging
-intervals.sort((a, b) => a[0] - b[0]);
+function intersection(a: number[], b: number[]): number[] | null {
+    const start = Math.max(a[0], b[0]);
+    const end = Math.min(a[1], b[1]);
+    return start < end ? [start, end] : null;
+}
 
-// Sort by end time for activity selection
+// Example:
+intersection([1, 5], [3, 7])  // [3, 5]
+intersection([1, 3], [4, 6])  // null
+```
+
+---
+
+## 🧩 Common Patterns
+
+### Pattern 1: Sort by Start Time
+
+**Use when:** Merging, grouping, sequential processing
+
+```typescript
+intervals.sort((a, b) => a[0] - b[0]);
+```
+
+**Problems:**
+- Merge Intervals
+- Insert Interval
+- Meeting Rooms
+- Employee Free Time
+
+---
+
+### Pattern 2: Sort by End Time (Greedy)
+
+**Use when:** Activity selection, optimization, minimum removals
+
+```typescript
 intervals.sort((a, b) => a[1] - b[1]);
 ```
 
-### Pattern 2: Greedy Selection
-
-For finding minimum intervals to remove:
+**Why it works:** Choosing intervals that end earliest leaves maximum room for future intervals.
 
 ```typescript
 function eraseOverlapIntervals(intervals: number[][]): number {
     if (intervals.length <= 1) return 0;
 
-    // Sort by end time (greedy: earliest ending first)
+    // Sort by end time
     intervals.sort((a, b) => a[1] - b[1]);
 
     let count = 0;
@@ -159,21 +239,27 @@ function eraseOverlapIntervals(intervals: number[][]): number {
 }
 ```
 
+**Problems:**
+- Non-overlapping Intervals
+- Minimum Arrows to Burst Balloons
+
+---
+
 ### Pattern 3: Line Sweep
 
-Track events at time points:
+**Use when:** Counting concurrent events, tracking active intervals
 
 ```typescript
 function minMeetingRooms(intervals: number[][]): number {
     const events: [number, number][] = [];
 
     for (const [start, end] of intervals) {
-        events.push([start, 1]);   // Start event
-        events.push([end, -1]);     // End event
+        events.push([start, 1]);   // Start event: +1 room
+        events.push([end, -1]);    // End event: -1 room
     }
 
-    // Sort by time, starts before ends if same time
-    events.sort((a, b) => a[0] - b[0] || b[1] - a[1]);
+    // Sort by time; if equal, ends before starts
+    events.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
 
     let maxRooms = 0;
     let currentRooms = 0;
@@ -187,27 +273,208 @@ function minMeetingRooms(intervals: number[][]): number {
 }
 ```
 
-### Pattern 4: Priority Queue
+**Time:** O(n log n) | **Space:** O(n)
 
-For tracking active intervals:
+**Problems:**
+- Meeting Rooms II
+- Number of Flowers in Bloom
+
+---
+
+### Pattern 4: Two Pointers
+
+**Use when:** Comparing two sorted interval lists
 
 ```typescript
-import { MinHeap } from './heap';
+function intervalIntersection(
+    firstList: number[][],
+    secondList: number[][]
+): number[][] {
+    const result: number[][] = [];
+    let i = 0, j = 0;
 
-function minMeetingRooms(intervals: number[][]): number {
+    while (i < firstList.length && j < secondList.length) {
+        // Find intersection
+        const start = Math.max(firstList[i][0], secondList[j][0]);
+        const end = Math.min(firstList[i][1], secondList[j][1]);
+
+        if (start <= end) {
+            result.push([start, end]);
+        }
+
+        // Move pointer for interval that ends first
+        if (firstList[i][1] < secondList[j][1]) {
+            i++;
+        } else {
+            j++;
+        }
+    }
+
+    return result;
+}
+```
+
+**Time:** O(n + m) | **Space:** O(min(n, m))
+
+---
+
+## 📊 Complexity Analysis
+
+### Time Complexities
+
+| Operation | Complexity | Notes |
+|-----------|-----------|-------|
+| Sort intervals | O(n log n) | Usually required first step |
+| Merge sorted | O(n) | Linear scan after sorting |
+| Insert interval | O(n) | Already sorted input |
+| Check overlap | O(1) | Simple comparison |
+| Find all overlaps | O(n²) | Check every pair |
+
+### Space Complexities
+
+| Operation | Complexity | Notes |
+|-----------|-----------|-------|
+| In-place merge | O(1) | Mutate input |
+| New merged array | O(n) | Store result |
+| Line sweep events | O(n) | Store start/end events |
+| Priority queue | O(n) | Track active intervals |
+
+---
+
+## 💡 Interview Tips
+
+### Always Clarify
+
+```typescript
+// 1. Inclusive or exclusive endpoints?
+[1, 3] and [3, 5]  // Overlapping or adjacent?
+
+// 2. Can intervals be modified?
+// In-place vs new array affects space complexity
+
+// 3. What about empty input?
+intervals.length === 0  // Return [] or special value?
+
+// 4. Sorted input?
+// Some problems give pre-sorted intervals
+```
+
+---
+
+### Visualize on Timeline
+
+```
+Problem: Merge [[1,3], [2,6], [8,10], [15,18]]
+
+Timeline:
+     1   3      6        10         15  18
+     |---|
+       |--------|
+                 |--|
+                            |-----|
+
+After merge: [1,6], [8,10], [15,18]
+```
+
+---
+
+### Common Formulas
+
+```typescript
+// Overlap check
+overlap = a[0] < b[1] && b[0] < a[1]
+
+// Intersection
+intersection = [Math.max(a[0], b[0]), Math.min(a[1], b[1])]
+
+// Coverage (a covers b)
+covers = a[0] <= b[0] && a[1] >= b[1]
+
+// Adjacent (touching but not overlapping)
+adjacent = a[1] === b[0] || b[1] === a[0]
+
+// Gap between intervals (a before b)
+gap = Math.max(0, b[0] - a[1])
+```
+
+---
+
+## 🎓 Advanced Techniques
+
+### Priority Queue for Dynamic Intervals
+
+```typescript
+class MinHeap {
+    private heap: number[] = [];
+
+    push(val: number): void {
+        this.heap.push(val);
+        this.bubbleUp(this.heap.length - 1);
+    }
+
+    pop(): number | undefined {
+        if (this.heap.length === 0) return undefined;
+        if (this.heap.length === 1) return this.heap.pop();
+
+        const min = this.heap[0];
+        this.heap[0] = this.heap.pop()!;
+        this.bubbleDown(0);
+        return min;
+    }
+
+    peek(): number | undefined {
+        return this.heap[0];
+    }
+
+    size(): number {
+        return this.heap.length;
+    }
+
+    private bubbleUp(index: number): void {
+        while (index > 0) {
+            const parent = Math.floor((index - 1) / 2);
+            if (this.heap[parent] <= this.heap[index]) break;
+            [this.heap[parent], this.heap[index]] =
+                [this.heap[index], this.heap[parent]];
+            index = parent;
+        }
+    }
+
+    private bubbleDown(index: number): void {
+        while (true) {
+            const left = 2 * index + 1;
+            const right = 2 * index + 2;
+            let smallest = index;
+
+            if (left < this.heap.length &&
+                this.heap[left] < this.heap[smallest]) {
+                smallest = left;
+            }
+            if (right < this.heap.length &&
+                this.heap[right] < this.heap[smallest]) {
+                smallest = right;
+            }
+
+            if (smallest === index) break;
+
+            [this.heap[index], this.heap[smallest]] =
+                [this.heap[smallest], this.heap[index]];
+            index = smallest;
+        }
+    }
+}
+
+function minMeetingRoomsHeap(intervals: number[][]): number {
     if (!intervals.length) return 0;
 
-    // Sort by start time
     intervals.sort((a, b) => a[0] - b[0]);
 
-    // Min heap to track end times
-    const heap = new MinHeap<number>();
+    const heap = new MinHeap();
     heap.push(intervals[0][1]);
 
     for (let i = 1; i < intervals.length; i++) {
-        // If earliest ending meeting has ended
-        if (intervals[i][0] >= heap.peek()) {
-            heap.pop();
+        if (intervals[i][0] >= heap.peek()!) {
+            heap.pop();  // Room freed
         }
         heap.push(intervals[i][1]);
     }
@@ -218,181 +485,74 @@ function minMeetingRooms(intervals: number[][]): number {
 
 ---
 
-## Common Operations
-
-### 1. Check if Intervals Overlap
+### Special Sorting for Covered Intervals
 
 ```typescript
-const overlap = (a: number[], b: number[]): boolean => {
-    return Math.max(a[0], b[0]) < Math.min(a[1], b[1]);
-};
-```
-
-### 2. Find Intersection
-
-```typescript
-const intersection = (a: number[], b: number[]): number[] | null => {
-    const start = Math.max(a[0], b[0]);
-    const end = Math.min(a[1], b[1]);
-    return start < end ? [start, end] : null;
-};
-```
-
-### 3. Check if Interval Covers Another
-
-```typescript
-const covers = (a: number[], b: number[]): boolean => {
-    return a[0] <= b[0] && a[1] >= b[1];
-};
-```
-
-### 4. Calculate Gap Between Intervals
-
-```typescript
-const gap = (a: number[], b: number[]): number => {
-    // Assumes a comes before b
-    return Math.max(0, b[0] - a[1]);
-};
-```
-
----
-
-## Advanced Techniques
-
-### 1. Interval Tree
-
-For efficient interval queries:
-
-```typescript
-class IntervalTreeNode {
-    interval: [number, number];
-    max: number;  // Maximum end in subtree
-    left: IntervalTreeNode | null = null;
-    right: IntervalTreeNode | null = null;
-
-    constructor(interval: [number, number]) {
-        this.interval = interval;
-        this.max = interval[1];
+// Sort by start ascending, end descending
+// Ensures parent intervals come before children
+intervals.sort((a, b) => {
+    if (a[0] === b[0]) {
+        return b[1] - a[1];  // Longer first if same start
     }
-}
-```
+    return a[0] - b[0];
+});
 
-### 2. Sweep Line with Events
+// Now can detect covered intervals in one pass
+function removeCoveredIntervals(intervals: number[][]): number {
+    intervals.sort((a, b) =>
+        a[0] === b[0] ? b[1] - a[1] : a[0] - b[0]
+    );
 
-```typescript
-interface Event {
-    time: number;
-    type: 'start' | 'end';
-    intervalId: number;
-}
+    let count = 0;
+    let prevEnd = 0;
 
-function processIntervals(intervals: number[][]): void {
-    const events: Event[] = [];
-
-    intervals.forEach((interval, id) => {
-        events.push({ time: interval[0], type: 'start', intervalId: id });
-        events.push({ time: interval[1], type: 'end', intervalId: id });
-    });
-
-    events.sort((a, b) => {
-        if (a.time !== b.time) return a.time - b.time;
-        return a.type === 'end' ? -1 : 1; // Ends before starts
-    });
-
-    // Process events...
-}
-```
-
-### 3. Interval Scheduling
-
-Maximum number of non-overlapping intervals:
-
-```typescript
-function intervalScheduling(intervals: number[][]): number[][] {
-    // Sort by end time (greedy)
-    intervals.sort((a, b) => a[1] - b[1]);
-
-    const selected: number[][] = [];
-    let lastEnd = -Infinity;
-
-    for (const interval of intervals) {
-        if (interval[0] >= lastEnd) {
-            selected.push(interval);
-            lastEnd = interval[1];
+    for (const [start, end] of intervals) {
+        if (end > prevEnd) {
+            count++;
+            prevEnd = end;
         }
     }
 
-    return selected;
+    return count;
 }
 ```
 
 ---
 
-## Edge Cases to Consider
+## 🚨 Edge Cases
+
+Always test these:
 
 1. **Empty input:** `[]`
 2. **Single interval:** `[[1, 3]]`
 3. **All overlapping:** `[[1, 5], [2, 6], [3, 7]]`
-4. **No overlapping:** `[[1, 2], [3, 4], [5, 6]]`
-5. **Adjacent intervals:** `[[1, 2], [2, 3]]` (check boundary handling)
+4. **No overlaps:** `[[1, 2], [3, 4], [5, 6]]`
+5. **Adjacent intervals:** `[[1, 2], [2, 3]]`
 6. **Nested intervals:** `[[1, 10], [2, 3], [4, 5]]`
-7. **Same start or end:** `[[1, 3], [1, 5]]` or `[[1, 5], [3, 5]]`
-8. **Point intervals:** `[[2, 2]]`
+7. **Same start:** `[[1, 3], [1, 5]]`
+8. **Same end:** `[[1, 5], [3, 5]]`
+9. **Point intervals:** `[[2, 2]]`
+10. **Unsorted input:** `[[5, 7], [1, 3], [2, 4]]`
 
 ---
 
-## Time & Space Complexity Analysis
+## ✅ Ready to Practice
 
-| Operation | Time | Space | Notes |
-|-----------|------|-------|--------|
-| Sort intervals | O(n log n) | O(1) or O(n) | Depends on sort implementation |
-| Merge intervals | O(n log n) | O(n) | Sorting + linear scan |
-| Insert interval | O(n) | O(n) | Linear scan |
-| Remove overlaps | O(n log n) | O(1) | Greedy after sorting |
-| Meeting rooms | O(n log n) | O(n) | Various approaches |
-| Interval intersection | O(n + m) | O(min(n, m)) | Two pointer technique |
+**Say:** `"Claude, I watched the videos"` for concept check!
 
----
+**Quick Reference:**
+- **Overlap:** `a[0] < b[1] && b[0] < a[1]`
+- **Sort by start:** Merging problems
+- **Sort by end:** Greedy problems
+- **Line sweep:** Concurrent events
+- **Always visualize:** Draw timeline first
 
-## Common Interview Questions
-
-1. **"How do you handle inclusive vs exclusive intervals?"**
-   - Clarify with interviewer
-   - Adjust comparisons accordingly
-   - Document your assumption
-
-2. **"What if intervals can have the same start time?"**
-   - Secondary sort by end time
-   - Or by interval length
-   - Depends on problem requirements
-
-3. **"Can intervals be modified in place?"**
-   - Ask if mutation is allowed
-   - Consider space complexity trade-offs
-
-4. **"How would you handle streaming intervals?"**
-   - Discuss online algorithms
-   - Interval tree for dynamic updates
-   - Trade-offs of different data structures
+**Pattern Recognition:**
+- "Merge overlapping" → Sort by start, merge in one pass
+- "Minimum remove" → Sort by end, greedy selection
+- "How many concurrent" → Line sweep or heap
+- "Two sorted lists" → Two pointers
 
 ---
 
-## Practice Problems
-
-Start with these in order:
-1. Meeting Rooms (Easy) - Simple overlap check
-2. Merge Intervals (Medium) - Fundamental operation
-3. Insert Interval (Medium) - Build on merge
-4. Non-overlapping Intervals (Medium) - Greedy approach
-5. Meeting Rooms II (Medium) - Multiple techniques
-
-Then advance to:
-6. Minimum Number of Arrows (Medium) - Greedy variant
-7. Interval List Intersections (Medium) - Two pointers
-8. My Calendar I (Medium) - Dynamic intervals
-9. Remove Covered Intervals (Medium) - Subset relationships
-10. Employee Free Time (Hard) - Complex merging
-
----
-
-**Ready for the concept check?** Say: "I watched the video"
+[Back to Session README](./README.md)

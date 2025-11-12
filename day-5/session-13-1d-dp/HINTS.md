@@ -1,259 +1,301 @@
-# Session 13: 1D Dynamic Programming - Hints
+# Hints - Session 13: 1D Dynamic Programming
+
+Progressive hints for 10 problems. Struggling is part of learning.
+
+---
 
 ## Problem 1: Climbing Stairs
 
-### Hint Level 1 (Gentle)
-Think about the last step you take to reach the top. You can either take 1 step from position n-1, or 2 steps from position n-2. What does this tell you about the total number of ways?
+### Level 1
+How many ways to reach step n? Think about the last step - you came from n-1 (took 1 step) or n-2 (took 2 steps).
 
-### Hint Level 2 (Direct)
-If you know the number of ways to reach step i-1 and step i-2, you can calculate the ways to reach step i. This forms a recurrence relation: ways(i) = ways(i-1) + ways(i-2).
+### Level 2
+Recurrence relation: ways(n) = ways(n-1) + ways(n-2). This is Fibonacci! Base cases: ways(1) = 1, ways(2) = 2.
 
-### Hint Level 3 (Detailed)
-```
-Base cases: ways(1) = 1, ways(2) = 2
-For i from 3 to n:
-    ways(i) = ways(i-1) + ways(i-2)
-
-This is the Fibonacci sequence! You can solve it with:
-- Recursion + memoization
-- Bottom-up DP array
-- Space optimization with two variables
+### Level 3
+```typescript
+// Space optimized
+let prev2 = 1, prev1 = 2;
+for (let i = 3; i <= n; i++) {
+  const curr = prev1 + prev2;
+  prev2 = prev1;
+  prev1 = curr;
+}
+return prev1;
 ```
 
 ---
 
 ## Problem 2: House Robber
 
-### Hint Level 1 (Gentle)
-At each house, you have two choices: rob it or skip it. If you rob house i, you can't rob house i-1, but you can add the money from house i to whatever you had from house i-2.
+### Level 1
+At each house: rob it OR skip it. If rob house i, can't rob i-1, but can add money from i-2.
 
-### Hint Level 2 (Direct)
-Define dp[i] as the maximum money you can rob from houses 0 to i. For each house, compare: taking current house + dp[i-2] vs skipping current house (dp[i-1]).
+### Level 2
+Define dp[i] = max money robbing houses 0..i. Recurrence: dp[i] = max(dp[i-1], dp[i-2] + nums[i]).
 
-### Hint Level 3 (Detailed)
-```
-dp[i] = max amount robbing houses 0 to i
-dp[0] = nums[0]
-dp[1] = max(nums[0], nums[1])
-
-For i from 2 to n-1:
-    dp[i] = max(dp[i-1], dp[i-2] + nums[i])
-
-You only need the last two values, so optimize to O(1) space.
+### Level 3
+```typescript
+let prev2 = 0, prev1 = 0;
+for (const num of nums) {
+  const curr = Math.max(prev1, prev2 + num);
+  prev2 = prev1;
+  prev1 = curr;
+}
+return prev1;
 ```
 
 ---
 
 ## Problem 3: House Robber II
 
-### Hint Level 1 (Gentle)
-Since houses form a circle, you can't rob both the first and last house. This means you need to consider two scenarios separately.
+### Level 1
+Circular arrangement - first and last houses are adjacent. Can't rob both!
 
-### Hint Level 2 (Direct)
-Break the problem into two linear House Robber problems:
-1. Rob houses 0 to n-2 (exclude last)
-2. Rob houses 1 to n-1 (exclude first)
-Take the maximum of these two results.
+### Level 2
+Two scenarios: (1) Rob houses 0 to n-2 (exclude last), (2) Rob houses 1 to n-1 (exclude first). Take max.
 
-### Hint Level 3 (Detailed)
-```
-def robCircular(nums):
-    if len <= 2: handle edge cases
-
-    def robLinear(start, end):
-        # Standard house robber from start to end
-
-    return max(
-        robLinear(0, n-2),  # Include first, exclude last
-        robLinear(1, n-1)   # Exclude first, include last
-    )
+### Level 3
+```typescript
+function robLinear(start, end) {
+  let prev2 = 0, prev1 = 0;
+  for (let i = start; i <= end; i++) {
+    const curr = Math.max(prev1, prev2 + nums[i]);
+    prev2 = prev1;
+    prev1 = curr;
+  }
+  return prev1;
+}
+return Math.max(robLinear(0, n-2), robLinear(1, n-1));
 ```
 
 ---
 
 ## Problem 4: Coin Change
 
-### Hint Level 1 (Gentle)
-Build up the solution for larger amounts using solutions for smaller amounts. If you can make amount X with Y coins, then you can make amount X+coin with Y+1 coins.
+### Level 1
+Build solution for larger amounts using smaller amounts. If can make X with Y coins, can make X+coin with Y+1 coins.
 
-### Hint Level 2 (Direct)
-Define dp[i] as the minimum coins needed for amount i. For each amount, try using each coin and take the minimum: dp[i] = min(dp[i-coin] + 1) for all valid coins.
+### Level 2
+dp[i] = min coins for amount i. For each amount, try each coin: dp[i] = min(dp[i-coin] + 1).
 
-### Hint Level 3 (Detailed)
-```
-dp[0] = 0 (need 0 coins for amount 0)
-dp[i] = Infinity initially
-
-For amount from 1 to target:
-    For each coin:
-        if coin <= amount:
-            dp[amount] = min(dp[amount], dp[amount-coin] + 1)
-
-Return dp[target] if < Infinity, else -1
+### Level 3
+```typescript
+const dp = new Array(amount + 1).fill(Infinity);
+dp[0] = 0;
+for (let i = 1; i <= amount; i++) {
+  for (const coin of coins) {
+    if (i >= coin) {
+      dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+    }
+  }
+}
+return dp[amount] === Infinity ? -1 : dp[amount];
 ```
 
 ---
 
 ## Problem 5: Longest Increasing Subsequence
 
-### Hint Level 1 (Gentle)
-For each element, consider all previous elements that are smaller. The LIS ending at current element is 1 plus the maximum LIS ending at any of those smaller elements.
+### Level 1
+For each element, find longest increasing subsequence ending at that position by checking all smaller previous elements.
 
-### Hint Level 2 (Direct)
-Define dp[i] as the length of LIS ending at index i. For each i, check all j < i where nums[j] < nums[i], and update dp[i] = max(dp[i], dp[j] + 1).
+### Level 2
+dp[i] = LIS length ending at i. For each i, check all j < i where nums[j] < nums[i]: dp[i] = max(dp[i], dp[j] + 1).
 
-### Hint Level 3 (Detailed)
-```
-O(n²) approach:
-dp[i] = LIS length ending at i
-Initialize all dp[i] = 1
-
-For i from 1 to n-1:
-    For j from 0 to i-1:
-        if nums[j] < nums[i]:
-            dp[i] = max(dp[i], dp[j] + 1)
-
-For O(n log n), maintain array of smallest tail elements.
+### Level 3
+```typescript
+// O(n²) approach
+const dp = new Array(n).fill(1);
+let maxLength = 1;
+for (let i = 1; i < n; i++) {
+  for (let j = 0; j < i; j++) {
+    if (nums[j] < nums[i]) {
+      dp[i] = Math.max(dp[i], dp[j] + 1);
+    }
+  }
+  maxLength = Math.max(maxLength, dp[i]);
+}
+return maxLength;
 ```
 
 ---
 
 ## Problem 6: Decode Ways
 
-### Hint Level 1 (Gentle)
-At each position, you can decode either one digit (if valid) or two digits (if valid). The total ways is the sum of ways from both choices.
+### Level 1
+At each position, can decode as single digit (1-9) or two digits (10-26). Total ways is sum of both choices.
 
-### Hint Level 2 (Direct)
-Check if current digit forms valid single-digit code (1-9) and if current + previous form valid two-digit code (10-26). Add the corresponding previous dp values.
+### Level 2
+dp[i] = ways to decode up to i. Check if s[i] valid single digit, add dp[i-1]. Check if s[i-1:i+1] valid double digit, add dp[i-2].
 
-### Hint Level 3 (Detailed)
-```
-dp[i] = ways to decode s[0...i-1]
-dp[0] = 1 (empty string)
-dp[1] = 1 if s[0] != '0'
-
-For i from 2 to n:
-    oneDigit = s[i-1]
-    if oneDigit is '1'-'9': dp[i] += dp[i-1]
-
-    twoDigit = s[i-2:i]
-    if twoDigit is '10'-'26': dp[i] += dp[i-2]
+### Level 3
+```typescript
+if (s[0] === '0') return 0;
+let prev2 = 1, prev1 = 1;
+for (let i = 1; i < s.length; i++) {
+  let curr = 0;
+  if (s[i] !== '0') curr += prev1;  // Single digit
+  const twoDigit = parseInt(s.substring(i-1, i+1));
+  if (twoDigit >= 10 && twoDigit <= 26) curr += prev2;  // Two digits
+  prev2 = prev1;
+  prev1 = curr;
+}
+return prev1;
 ```
 
 ---
 
 ## Problem 7: Jump Game
 
-### Hint Level 1 (Gentle)
-Keep track of the furthest position you can reach. As you iterate through the array, update this maximum reach and check if you can reach the current position.
+### Level 1
+Track furthest position you can reach. If current position > max reach, you're stuck.
 
-### Hint Level 2 (Direct)
-Greedy approach: Track maxReach. At each position i, if i > maxReach, you can't reach this position. Otherwise, update maxReach = max(maxReach, i + nums[i]).
+### Level 2
+Greedy: maxReach = max(maxReach, i + nums[i]). If i > maxReach at any point, return false.
 
-### Hint Level 3 (Detailed)
-```
-Greedy O(n):
-maxReach = 0
-For i from 0 to n-1:
-    if i > maxReach: return false
-    maxReach = max(maxReach, i + nums[i])
-    if maxReach >= n-1: return true
-
-DP O(n²):
-dp[i] = can reach position i
-dp[0] = true
-For each i, check if any j < i can reach i
+### Level 3
+```typescript
+let maxReach = 0;
+for (let i = 0; i < nums.length; i++) {
+  if (i > maxReach) return false;
+  maxReach = Math.max(maxReach, i + nums[i]);
+  if (maxReach >= nums.length - 1) return true;
+}
+return true;
 ```
 
 ---
 
 ## Problem 8: Maximum Product Subarray
 
-### Hint Level 1 (Gentle)
-Negative numbers can become positive when multiplied by another negative. Keep track of both the maximum and minimum product ending at each position.
+### Level 1
+Negative × negative = positive! Need to track both maximum AND minimum products.
 
-### Hint Level 2 (Direct)
-At each position, the max product is either: the current number alone, current * previous max, or current * previous min (if current is negative).
+### Level 2
+When multiply by negative number, min becomes max and vice versa. Track both maxProd and minProd.
 
-### Hint Level 3 (Detailed)
-```
-maxSoFar = nums[0]
-minSoFar = nums[0]
-result = nums[0]
-
-For i from 1 to n-1:
-    temp = maxSoFar
-    maxSoFar = max(nums[i], nums[i]*maxSoFar, nums[i]*minSoFar)
-    minSoFar = min(nums[i], nums[i]*temp, nums[i]*minSoFar)
-    result = max(result, maxSoFar)
+### Level 3
+```typescript
+let maxSoFar = nums[0], minSoFar = nums[0], result = nums[0];
+for (let i = 1; i < nums.length; i++) {
+  const tempMax = maxSoFar;
+  maxSoFar = Math.max(nums[i], nums[i] * maxSoFar, nums[i] * minSoFar);
+  minSoFar = Math.min(nums[i], nums[i] * tempMax, nums[i] * minSoFar);
+  result = Math.max(result, maxSoFar);
+}
+return result;
 ```
 
 ---
 
 ## Problem 9: Palindromic Substrings
 
-### Hint Level 1 (Gentle)
-Every palindrome has a center. The center can be a single character (odd length) or between two characters (even length). Try expanding from each possible center.
+### Level 1
+Every palindrome has a center. Expand outward from each possible center.
 
-### Hint Level 2 (Direct)
-For each position i, expand around two centers: (i, i) for odd-length palindromes and (i, i+1) for even-length palindromes. Count valid palindromes during expansion.
+### Level 2
+For each position i, expand from two centers: (i, i) for odd-length and (i, i+1) for even-length palindromes.
 
-### Hint Level 3 (Detailed)
-```
-Expand approach:
-count = 0
-For each i:
-    // Odd length
-    left = right = i
-    while s[left] == s[right]: count++, expand
-
-    // Even length
-    left = i, right = i+1
-    while s[left] == s[right]: count++, expand
-
-DP approach:
-dp[i][j] = is s[i...j] palindrome
-dp[i][j] = true if s[i]==s[j] && dp[i+1][j-1]
+### Level 3
+```typescript
+let count = 0;
+function expand(left, right) {
+  while (left >= 0 && right < s.length && s[left] === s[right]) {
+    count++;
+    left--;
+    right++;
+  }
+}
+for (let i = 0; i < s.length; i++) {
+  expand(i, i);      // Odd length
+  expand(i, i + 1);  // Even length
+}
+return count;
 ```
 
 ---
 
 ## Problem 10: Longest Palindromic Substring
 
-### Hint Level 1 (Gentle)
-Similar to counting palindromic substrings, but track the longest one found. You can either expand from centers or use dynamic programming.
+### Level 1
+Similar to counting palindromes, but track the longest one found instead of counting.
 
-### Hint Level 2 (Direct)
-Expand from each center and keep track of the start position and length of the longest palindrome found. Remember to check both odd and even length palindromes.
+### Level 2
+Expand from each center, keep track of start position and maxLength when longer palindrome found.
 
-### Hint Level 3 (Detailed)
-```
-Expand approach:
-start = 0, maxLen = 0
-
-For each center i:
-    // Check odd length
-    expand(i, i)
-    // Check even length
-    expand(i, i+1)
-
-function expand(left, right):
-    while s[left] == s[right]:
-        if right-left+1 > maxLen:
-            update start and maxLen
-        expand outward
-
-Return s[start:start+maxLen]
+### Level 3
+```typescript
+let start = 0, maxLen = 0;
+function expand(left, right) {
+  while (left >= 0 && right < s.length && s[left] === s[right]) {
+    const len = right - left + 1;
+    if (len > maxLen) {
+      start = left;
+      maxLen = len;
+    }
+    left--;
+    right++;
+  }
+}
+for (let i = 0; i < s.length; i++) {
+  expand(i, i);      // Odd
+  expand(i, i + 1);  // Even
+}
+return s.substring(start, start + maxLen);
 ```
 
 ---
 
-## General DP Tips
+## Pattern Recognition
 
-1. **Start with brute force** - Understand the problem first
-2. **Identify state** - What parameters define a subproblem?
-3. **Write recurrence** - How to compute from subproblems?
-4. **Handle base cases** - What are the smallest subproblems?
-5. **Optimize space** - Can you use rolling variables?
+**"Count ways to..."** → Counting DP, sum from valid previous states
 
-Remember: If stuck, try working through a small example by hand!
+**"Maximum/Minimum..."** → Optimization DP, try all choices
+
+**"Can you reach..."** → Reachability, consider greedy first
+
+**"Longest increasing..."** → Subsequence DP, check previous elements
+
+**"Decode/partition..."** → Check valid single and multiple elements
+
+**"Palindrome..."** → Expand from center or 2D DP
+
+---
+
+## Using Hints Effectively
+
+1. Try 10+ min before Level 1
+2. Try 5+ min after each hint
+3. If use Level 3, mark problem for review
+4. Don't feel bad - hints are for learning
+5. Goal: Learn pattern, not just solve one problem
+
+---
+
+## DP Debugging Checklist
+
+**Wrong Answer?**
+- Check base cases carefully
+- Verify recurrence relation
+- Print DP table for small input
+- Test edge cases (empty, single element)
+
+**Runtime Error?**
+- Check array bounds
+- Initialize all values
+- Handle edge cases first
+
+**TLE?**
+- Ensure memoization working
+- Check for infinite loops
+- Verify complexity is correct
+
+**Space Issues?**
+- Can you use rolling variables?
+- Only keep necessary states
+- Consider iterative vs recursive
+
+---
+
+[Back to Problems](./PROBLEMS.md) | [Back to Solutions](./SOLUTIONS.md)

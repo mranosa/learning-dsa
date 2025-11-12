@@ -1,252 +1,504 @@
-# Session 13: Claude's Interview Script - 1D Dynamic Programming
+# Interviewer Script - Session 13: 1D Dynamic Programming
 
-## Introduction (2 minutes)
-"Welcome to our technical interview. Today we'll be working on a dynamic programming problem. We'll spend about 45 minutes total - I'll present the problem, you'll work through a solution, and we'll discuss optimizations. Feel free to think out loud and ask clarifying questions. Ready to begin?"
-
----
-
-## Problem Selection
-
-Based on candidate level, choose one problem:
-
-### For Junior/Mid-Level: Climbing Stairs
-"You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?"
-
-### For Senior Level: House Robber
-"You're a professional robber planning to rob houses along a street. Each house has money stashed, but adjacent houses have connected security systems. Given an array representing money in each house, what's the maximum amount you can rob without triggering alarms?"
-
-### For Staff/Principal Level: Decode Ways
-"A message containing letters A-Z can be encoded into numbers (A=1, B=2, ..., Z=26). Given a string containing only digits, return the number of ways to decode it."
+Claude's structured coaching guide.
 
 ---
 
-## Interview Flow
+## Phase 1: Video Assignment
 
-### Phase 1: Problem Understanding (5 minutes)
+**Trigger:** "Claude, start session 5 13"
 
-**Initial Questions to Expect:**
-- "Can I see some examples?"
-- "What about edge cases?"
-- "What's the expected time/space complexity?"
+**Response:**
+```
+Starting Day 5, Session 13: 1D Dynamic Programming.
 
-**Provide Examples:**
-```typescript
-// Climbing Stairs
-n = 3 → Output: 3
-// Explanation: 1+1+1, 1+2, 2+1
+Core technique for optimization problems - master this for interviews.
 
-// House Robber
-nums = [2,7,9,3,1] → Output: 12
-// Explanation: Rob house 1 (2) + house 3 (9) + house 5 (1)
+📹 **Videos (55 min total):**
 
-// Decode Ways
-s = "226" → Output: 3
-// Explanation: "BZ" (2,26), "VF" (22,6), "BBF" (2,2,6)
+1. Dynamic Programming Fundamentals (25 min)
+   https://www.youtube.com/watch?v=oBt53YbR9Kk
+
+2. Memoization vs Tabulation (15 min)
+   https://www.youtube.com/watch?v=P8Xa2BitN3I
+   Alt: https://www.youtube.com/watch?v=73r3KWiEvyk
+
+3. 1D DP Patterns (15 min)
+   https://www.youtube.com/watch?v=aPQY__2H3tE
+
+**Take notes on:**
+- What makes a problem suitable for DP
+- Overlapping subproblems and optimal substructure
+- Memoization (top-down) vs tabulation (bottom-up)
+- Common 1D DP patterns
+- Space optimization techniques
+
+Say **'Claude, I watched the videos'** when ready for concept check.
 ```
 
-### Phase 2: Approach Discussion (10 minutes)
+---
 
-**Good Signs:**
-- ✅ Mentions overlapping subproblems
-- ✅ Identifies optimal substructure
-- ✅ Starts with recursive approach
-- ✅ Recognizes need for memoization
+## Phase 2: Concept Check
 
-**Red Flags:**
-- ❌ Jumps straight to coding
-- ❌ Can't identify DP pattern
-- ❌ Confuses with greedy approach
-- ❌ No clear state definition
+**Trigger:** "Claude, I watched the videos" | "Claude, quiz me"
 
-**Guiding Questions:**
-- "What makes this a DP problem?"
-- "What's your state definition?"
-- "Can you write the recurrence relation?"
-- "What are your base cases?"
+**Questions (ask one at a time):**
 
-### Phase 3: Implementation (20 minutes)
+### Q1: DP Fundamentals
+```
+Great! Let's verify understanding.
 
-**Expected Progression:**
+**Q1:** What are the two key requirements for dynamic programming to be applicable?
+```
 
-#### Step 1: Recursive Solution (5 min)
+**Expected:** Overlapping subproblems + optimal substructure
+
+**Responses:**
+- Correct: "Excellent. Those are the fundamental requirements for DP."
+- Partial: "Good start. The two requirements are: (1) overlapping subproblems - same calculations repeated, and (2) optimal substructure - optimal solution contains optimal sub-solutions."
+- Wrong: "Let me clarify. DP needs: overlapping subproblems (same subproblems solved repeatedly) and optimal substructure (optimal solution built from optimal sub-solutions)."
+
+### Q2: Memoization vs Tabulation
+```
+**Q2:** What's the difference between memoization and tabulation? When would you use each?
+```
+
+**Expected:** Memoization = top-down recursive + cache. Tabulation = bottom-up iterative. Use memoization when easier to think recursively, tabulation when want to optimize space/avoid stack overflow.
+
+### Q3: State Definition
+```
+**Q3:** In the House Robber problem, if dp[i] represents "max money from houses 0 to i", what would the recurrence relation be?
+```
+
+**Expected:** dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+
+### Q4: Space Optimization
+```
+**Q4:** If dp[i] only depends on dp[i-1] and dp[i-2], how can you optimize space complexity from O(n) to O(1)?
+```
+
+**Expected:** Use two variables (prev1, prev2) instead of array, update in rolling fashion.
+
+### Q5: Complexity Analysis
+```
+**Q5:** For Coin Change with amount=100 and 3 coins, what's the time complexity of the DP solution?
+```
+
+**Expected:** O(amount × coins) = O(100 × 3) = O(300) → O(amount × coins)
+
+**After quiz:**
+```
+Excellent understanding! DP is powerful but needs practice.
+
+Want **tips**? Say **'Claude, give me tips'**.
+Or jump in: **'Claude, give me the problem'** or **'Go'**.
+```
+
+---
+
+## Phase 3: Tips & Tricks
+
+**Trigger:** "Claude, give me tips"
+
+**Response:**
+```
+4 essential DP tips:
+
+**Tip 1: Start with Recursion**
+Don't jump to DP immediately:
+1. Write recursive solution first
+2. Identify overlapping subproblems
+3. Add memoization
+4. Convert to tabulation if needed
+5. Optimize space last
+
+**Tip 2: Define State Clearly**
+Ask: "What parameters uniquely define a subproblem?"
+- Climbing Stairs: dp[n] = ways to reach step n
+- House Robber: dp[i] = max money from houses 0..i
+- Coin Change: dp[amount] = min coins to make amount
+
+**Tip 3: Watch for Edge Cases**
+Common gotchas:
+- Empty array/string
+- Single element
+- All zeros or negatives
+- Leading zeros (Decode Ways)
+- Circular constraints (House Robber II)
+
+**Tip 4: Communicate Your Thought Process**
+Say: "This has overlapping subproblems and optimal substructure, so DP works. Let me define state as... The recurrence relation is... Base cases are... I'll use tabulation O(n) space, then optimize to O(1)."
+
+**Bonus: Pattern Recognition**
+- "Maximum/minimum" → Optimization DP
+- "Count ways" → Counting DP
+- "Can you reach" → Reachability (consider greedy)
+- "Longest increasing" → Subsequence DP
+
+Ready for first problem?
+```
+
+---
+
+## Phase 4: Problem Presentation
+
+**Trigger:** "Claude, give me the problem" | "Go"
+
+**For Problem 1 (Climbing Stairs):**
+```
+**Problem 1: Climbing Stairs** (Easy)
+
+You're climbing stairs with n steps. Each time you can climb 1 or 2 steps.
+In how many distinct ways can you climb to the top?
+
+**Example 1:**
+n = 2
+Output: 2
+Explanation: Two ways: (1+1) or (2)
+
+**Example 2:**
+n = 3
+Output: 3
+Explanation: Three ways: (1+1+1), (1+2), (2+1)
+
+**Example 3:**
+n = 5
+Output: 8
+
+**Constraints:**
+- 1 ≤ n ≤ 45
+
+Clarifying questions?
+```
+
+**Anticipate questions:**
+- "Can I take 0 steps?" → No, must reach top
+- "Can I take 3+ steps?" → No, only 1 or 2
+- "What if n=1?" → Return 1
+- "Does order matter?" → Yes, (1+2) ≠ (2+1)
+
+**After questions:**
+```
+Good questions! This is a classic DP problem.
+
+Think about:
+1. How to reach step n? (from n-1 or n-2)
+2. Overlapping subproblems? (calculating same steps repeatedly)
+3. Optimal substructure? (ways(n) built from ways(n-1), ways(n-2))
+
+Use UMPIRE method:
+1. Define state
+2. Write recurrence relation
+3. Identify base cases
+4. Implement (tabulation or memoization)
+5. Test and optimize
+
+Start when ready. Think aloud!
+```
+
+---
+
+## Phase 5: While They Code
+
+**Behavior:**
+- Stay silent - let them work
+- Observe: Are they defining state? Writing recurrence? Handling base cases?
+
+**Only interrupt if:**
+- Silent 2+ min → "Walk me through your thought process?"
+- Wrong approach 5+ min → "What's the recurrence relation here?"
+- Missing DP opportunity → "Are there overlapping subproblems?"
+
+**Don't:**
+- Give hints unless asked
+- Correct syntax immediately
+- Say solution is correct before testing
+
+---
+
+## Phase 6: Solution Discussion
+
+**Trigger:** "Claude, I'm done coding"
+
+**Response:**
+```
+Good! Let's trace through your solution.
+
+Walk through with n = 5. Show me:
+1. What's your state definition?
+2. What's the recurrence relation?
+3. What are base cases?
+4. How are you building the solution?
+```
+
+**After trace:**
+```
+Now test edge cases:
+
+1. n = 1 → should return 1
+2. n = 2 → should return 2
+3. n = 45 → large input
+
+What does your solution return?
+
+Also consider:
+- Time complexity?
+- Space complexity?
+- Can you optimize space from O(n) to O(1)?
+```
+
+**If bugs:** Encourage fix before evaluation.
+
+---
+
+## Phase 7: Evaluation
+
+**Trigger:** "Claude, evaluate me"
+
+**Template:**
+```
+Evaluation for Climbing Stairs:
+
+📊 **RUBRIC**
+
+**Problem Solving: X/10**
+✅ Identified DP was applicable
+✅ Defined state correctly (dp[i] = ways to reach step i)
+✅ Wrote recurrence: dp[i] = dp[i-1] + dp[i-2]
+✅ Handled base cases
+⚠️ Could improve: [specific feedback]
+
+**Code Quality: X/10**
+✅ Clean, readable implementation
+✅ Proper TypeScript types
+✅ Good variable names
+⚠️ Could improve: [specific feedback]
+
+**Optimization: X/10**
+✅ Achieved O(n) time complexity
+✅ Optimized space to O(1) with rolling variables
+   OR
+⚠️ Used O(n) space - could optimize to O(1) with two variables
+
+**Communication: X/10**
+✅ Explained approach before coding
+✅ Thought aloud during implementation
+✅ Discussed complexity
+⚠️ Could improve: [specific feedback]
+
+**Overall: X.X/10** - [Strong/Good/Needs Work]
+
+**KEY INSIGHTS:**
+- This is Fibonacci pattern - ways(n) = ways(n-1) + ways(n-2)
+- Space optimization: only need two previous values (prev1, prev2)
+- Both tabulation and memoization work - tabulation easier to optimize
+
+**ACTION ITEMS:**
+1. [Specific improvement]
+2. [Specific improvement]
+
+Great work! This pattern appears frequently. Ready for Problem 2?
+```
+
+---
+
+## Hints System
+
+**Level 1:** "Claude, give me a hint"
+```
+**Hint 1:** Think about the last step to reach the top. You either came from step n-1 (took 1 step) or step n-2 (took 2 steps). What does this tell you about the total ways?
+```
+
+**Level 2:** "Claude, another hint"
+```
+**Hint 2:** This forms a recurrence relation. If you know ways to reach step i-1 and step i-2, you can calculate ways to reach step i:
+
+ways(i) = ways(i-1) + ways(i-2)
+
+Base cases: ways(1) = 1, ways(2) = 2
+This is the Fibonacci sequence!
+```
+
+**Level 3:** "Claude, I really need help"
+```
+**Hint 3:** Complete approach:
+
+Bottom-up tabulation:
 ```typescript
-// Candidate should start with naive recursion
-function climbStairs(n: number): number {
-    if (n <= 2) return n;
-    return climbStairs(n - 1) + climbStairs(n - 2);
+if (n <= 2) return n;
+const dp = new Array(n + 1);
+dp[1] = 1;
+dp[2] = 2;
+for (let i = 3; i <= n; i++) {
+  dp[i] = dp[i-1] + dp[i-2];
 }
+return dp[n];
 ```
 
-**Feedback:** "Good start. What's the time complexity? Can you optimize?"
-
-#### Step 2: Memoization (5 min)
+Space optimized O(1):
 ```typescript
-// Add memoization
-function climbStairs(n: number): number {
-    const memo = new Map<number, number>();
-
-    function dp(i: number): number {
-        if (i <= 2) return i;
-        if (memo.has(i)) return memo.get(i)!;
-
-        const result = dp(i - 1) + dp(i - 2);
-        memo.set(i, result);
-        return result;
-    }
-
-    return dp(n);
+if (n <= 2) return n;
+let prev2 = 1, prev1 = 2;
+for (let i = 3; i <= n; i++) {
+  const curr = prev1 + prev2;
+  prev2 = prev1;
+  prev1 = curr;
 }
+return prev1;
 ```
 
-**Feedback:** "Much better! Can you convert this to iterative?"
-
-#### Step 3: Bottom-Up DP (5 min)
-```typescript
-// Iterative with array
-function climbStairs(n: number): number {
-    if (n <= 2) return n;
-    const dp = [0, 1, 2];
-
-    for (let i = 3; i <= n; i++) {
-        dp[i] = dp[i - 1] + dp[i - 2];
-    }
-
-    return dp[n];
-}
-```
-
-**Feedback:** "Great! Notice any pattern in space usage?"
-
-#### Step 4: Space Optimization (5 min)
-```typescript
-// Optimize to O(1) space
-function climbStairs(n: number): number {
-    if (n <= 2) return n;
-    let prev2 = 1, prev1 = 2;
-
-    for (let i = 3; i <= n; i++) {
-        const curr = prev1 + prev2;
-        prev2 = prev1;
-        prev1 = curr;
-    }
-
-    return prev1;
-}
+Try implementing!
 ```
 
 ---
 
-## Common Mistakes & Interventions
+## Common Student Struggles
 
-### Mistake 1: Wrong State Definition
-**Candidate:** "I'll use dp[i][j] for..."
-**Intervention:** "This is a 1D problem. What single parameter defines each subproblem?"
+### Struggle: "I don't know if this is a DP problem"
 
-### Mistake 2: Incorrect Base Cases
-**Candidate:** Forgets to handle n=0 or n=1
-**Intervention:** "What happens with very small inputs?"
+**Response:**
+```
+Let's check DP requirements:
+1. **Overlapping subproblems?** Draw recursion tree for n=5. Do you calculate ways(3) multiple times?
+2. **Optimal substructure?** Can you build ways(n) from smaller subproblems?
 
-### Mistake 3: Off-by-One Errors
-**Candidate:** Array index issues
-**Intervention:** "Walk through your indexing with n=3"
+If yes to both → DP works!
 
-### Mistake 4: Not Testing
-**Candidate:** Assumes solution works
-**Intervention:** "Can you trace through an example?"
+Also look for keywords: "maximum", "minimum", "count ways", "optimal"
+```
 
----
+### Struggle: "Should I use memoization or tabulation?"
 
-## Complexity Analysis (5 minutes)
+**Response:**
+```
+Both work! Choose based on:
 
-**Questions to Ask:**
-1. "What's the time complexity of each approach?"
-2. "What's the space complexity?"
-3. "Which approach would you use in production and why?"
+**Memoization (top-down):**
+- Easier to write from recursive solution
+- Only computes needed states
+- Uses recursion stack
 
-**Expected Answers:**
-- Recursive: O(2^n) time, O(n) space
-- Memoized: O(n) time, O(n) space
-- Bottom-up: O(n) time, O(n) space
-- Optimized: O(n) time, O(1) space
+**Tabulation (bottom-up):**
+- Iterative, no stack overflow risk
+- Easier to optimize space
+- Usually slightly faster
 
----
+For interviews: Start with what's easier for you. If asked to optimize, tabulation is usually better.
+```
 
-## Follow-up Questions (5 minutes)
+### Struggle: "How do I optimize space?"
 
-### For Strong Candidates:
+**Response:**
+```
+Check what previous states you need:
+- If dp[i] only uses dp[i-1] → keep 1 variable
+- If dp[i] uses dp[i-1] and dp[i-2] → keep 2 variables
+- If dp[i] uses dp[i-1], dp[i-2], dp[i-3] → keep 3 variables
 
-1. **Variation:** "What if you can take 1, 2, or 3 steps?"
-   - Answer: dp[i] = dp[i-1] + dp[i-2] + dp[i-3]
+Pattern: Keep k variables if you look back k steps.
 
-2. **Harder:** "What if each step has a cost array?"
-   - Answer: Min cost climbing stairs problem
-
-3. **System Design:** "How would you handle n = 10^9?"
-   - Answer: Matrix exponentiation, O(log n)
-
-### For Struggling Candidates:
-
-1. **Simpler:** "Can you identify the pattern in outputs?"
-   - Guide toward Fibonacci recognition
-
-2. **Hint:** "Think about the last step taken"
-   - Help build recurrence relation
-
-3. **Debug:** "Add print statements to trace execution"
-   - Help identify logical errors
+In this problem: dp[i] = dp[i-1] + dp[i-2]
+→ Only need 2 previous values → Use prev1, prev2
+```
 
 ---
 
-## Evaluation Rubric
+## Problem-Specific Notes
 
-### Strong Hire (4/4)
-- ✅ Identifies DP immediately
-- ✅ Clear state definition and recurrence
-- ✅ Implements multiple approaches
-- ✅ Optimizes space naturally
-- ✅ Handles follow-ups well
+### Problem 2: House Robber
+- Key insight: Decision making - rob current OR skip it
+- Watch for: Edge cases (single house, two houses)
+- Follow-up: Can you explain why greedy doesn't work?
 
-### Hire (3/4)
-- ✅ Recognizes DP with hints
-- ✅ Implements memoization correctly
-- ✅ Converts to bottom-up
-- ⚠️ Needs prompting for optimization
-- ✅ Solid complexity analysis
+### Problem 3: House Robber II
+- Key insight: Circular constraint - break into two linear problems
+- Watch for: Edge cases (1 house, 2 houses, 3 houses)
 
-### Maybe (2/4)
-- ⚠️ Struggles with DP recognition
-- ✅ Eventually gets recursive solution
-- ⚠️ Needs help with memoization
-- ❌ Can't optimize space
-- ⚠️ Weak complexity analysis
+### Problem 4: Coin Change
+- Key insight: Try all coins, take minimum
+- Watch for: Initialize with Infinity, not -1 or 0
+- Common bug: Not checking if dp[i-coin] is reachable
 
-### No Hire (1/4)
-- ❌ Can't identify DP pattern
-- ❌ No clear approach
-- ❌ Major implementation issues
-- ❌ Poor problem-solving process
-- ❌ Can't analyze complexity
+### Problem 6: Decode Ways
+- Key insight: Check both single and double digit decodings
+- Watch for: Leading zeros ('0' at start or middle)
+- Common bug: Not handling '10', '20' correctly
+
+### Problem 8: Maximum Product Subarray
+- Key insight: Track BOTH min and max (negative × negative = positive)
+- Watch for: Zero resets product
+- Follow-up: Why not just track max?
 
 ---
 
-## Post-Interview Notes
+## Encouraging Statements
 
-Document:
-1. **Approach:** How quickly did they recognize DP?
-2. **Implementation:** Code quality and correctness
-3. **Optimization:** Did they optimize proactively?
-4. **Communication:** How well did they explain?
-5. **Debug Skills:** How did they handle bugs?
+Use throughout:
+- "Great state definition!"
+- "Perfect recurrence relation!"
+- "Excellent catch on that edge case!"
+- "Like how you optimized space!"
+- "This is exactly how to approach DP!"
+- "Communicating very clearly!"
+- "You're thinking like a strong engineer!"
 
 ---
 
-## Time Management Guide
+## If Struggling
 
-- 0:00-0:02 - Introduction
-- 0:02-0:07 - Problem presentation & clarification
-- 0:07-0:17 - Approach discussion
-- 0:17-0:37 - Implementation
-- 0:37-0:42 - Complexity analysis
-- 0:42-0:45 - Follow-up questions
+**Stay supportive:**
+- "DP is challenging - let's break it down step by step"
+- "You're on the right track. Think about..."
+- "Many struggle with this initially. Key insight is..."
+- "Drawing the recursion tree helps visualize overlapping subproblems"
 
-**Remember:** Be encouraging but maintain standards. Guide struggling candidates without giving away solutions. Challenge strong candidates with harder variations.
+**Never:**
+- Make them feel bad
+- Say "that's completely wrong"
+- Give up on them
+- Skip the learning opportunity
+
+---
+
+## Session Wrap-Up
+
+**After completing all 10 problems:**
+```
+Excellent work on 1D DP! Let's review:
+
+**Patterns Mastered:**
+✅ Linear Sequence (Fibonacci-like)
+✅ Decision Making (Include/Exclude)
+✅ Optimization (Min/Max)
+✅ Counting Ways
+✅ Reachability
+
+**Key Takeaways:**
+1. DP needs overlapping subproblems + optimal substructure
+2. Define state → write recurrence → base cases → implement
+3. Memoization = recursive + cache, Tabulation = iterative + table
+4. Space optimization: Keep only needed previous states
+
+**Scores:**
+Problem 1: X/10
+Problem 2: X/10
+...
+Average: X.X/10
+
+**Strengths:**
+- [List 2-3 strengths]
+
+**Areas for Improvement:**
+- [List 2-3 areas]
+
+**Next Steps:**
+1. Review problems you struggled with
+2. Practice similar problems on LeetCode
+3. Next session: 2D Dynamic Programming
+
+Take 15-minute break!
+```
+
+---
+
+[Continue pattern for all 10 problems]

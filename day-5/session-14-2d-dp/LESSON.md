@@ -1,295 +1,511 @@
-# 2D Dynamic Programming - Complete Guide
-
-## Introduction
-
-2D Dynamic Programming extends the concepts of 1D DP to problems involving two dimensions or two variables. These problems often involve grids, matrices, or comparing two sequences.
+# Lesson: 2D Dynamic Programming
 
 ---
 
-## Core Concepts
+## 📹 Video 1: 2D DP Fundamentals (15 min)
 
-### What is 2D DP?
+**"2D Dynamic Programming Introduction" by NeetCode**
+https://www.youtube.com/watch?v=cJ24x7lLies
 
-2D DP problems have states that depend on two variables:
-- **Grid problems:** dp[row][col] = optimal solution at position (row, col)
-- **String problems:** dp[i][j] = result for first i chars of string1 and first j chars of string2
-- **Interval problems:** dp[left][right] = optimal solution for range [left, right]
-
-### Key Characteristics
-
-1. **Optimal Substructure:** Solution can be built from smaller subproblems
-2. **Overlapping Subproblems:** Same subproblems appear multiple times
-3. **Two-dimensional State:** Need two variables to uniquely identify a state
+**Focus on:**
+- What makes a problem 2D DP
+- State representation with two variables
+- Building DP tables
+- Base case initialization
 
 ---
 
-## Video Resources
+## 📹 Video 2: Grid Traversal (12 min)
 
-### Essential Videos (Watch First)
+**"Unique Paths Explanation" by NeetCode**
+https://www.youtube.com/watch?v=IlEsdxuD4lY
 
-1. **2D Dynamic Programming Introduction** (15 min)
-   - NeetCode: https://www.youtube.com/watch?v=cJ24x7lLies
-   - Covers grid traversal and basic patterns
-
-2. **Unique Paths Explanation** (12 min)
-   - NeetCode: https://www.youtube.com/watch?v=IlEsdxuD4lY
-   - Foundation for grid DP problems
-
-3. **Longest Common Subsequence** (18 min)
-   - NeetCode: https://www.youtube.com/watch?v=Ua0GhsJSlWM
-   - Classic string DP pattern
-
-### Advanced Topics
-
-4. **Edit Distance (Levenshtein)** (20 min)
-   - NeetCode: https://www.youtube.com/watch?v=XYi2-LPrwm4
-   - Important for string comparison
-
-5. **Regular Expression Matching** (25 min)
-   - NeetCode: https://www.youtube.com/watch?v=l3K8lrAOmU0
-   - Complex pattern matching
+**Focus on:**
+- Grid path counting
+- Coming from top/left only
+- Path sum optimization
+- Space optimization tricks
 
 ---
 
-## Common Patterns
+## 📹 Video 3: String DP Patterns (18 min)
 
-### 1. Grid Traversal Pattern
+**"Longest Common Subsequence" by NeetCode**
+https://www.youtube.com/watch?v=Ua0GhsJSlWM
+
+**Focus on:**
+- Comparing two strings
+- Match vs mismatch cases
+- Building LCS table
+- Understanding diagonal transitions
+
+---
+
+## 📹 Video 4: Edit Distance (20 min)
+
+**"Edit Distance (Levenshtein)" by NeetCode**
+https://www.youtube.com/watch?v=XYi2-LPrwm4
+
+**Focus on:**
+- Insert, delete, replace operations
+- Choosing minimum cost
+- String transformation
+- Space optimization
+
+---
+
+## 📹 Video 5: Regular Expression Matching (25 min)
+
+**"Regular Expression Matching" by NeetCode**
+https://www.youtube.com/watch?v=l3K8lrAOmU0
+
+**Focus on:**
+- Handling wildcards (. and *)
+- Star matches 0 or more
+- Complex state transitions
+- Edge case handling
+
+---
+
+## 🎯 2D DP: Core Patterns
+
+### Pattern 1: Grid Traversal
+
+Used when: Path counting, min/max path problems.
 
 ```typescript
-function gridDP(grid: number[][]): number {
-    const m = grid.length;
-    const n = grid[0].length;
-    const dp: number[][] = Array(m).fill(0).map(() => Array(n).fill(0));
+// Grid path counting
+function uniquePaths(m: number, n: number): number {
+  const dp: number[][] = Array(m).fill(0).map(() => Array(n).fill(1));
 
-    // Base case: Initialize first row and column
-    dp[0][0] = grid[0][0];
+  // Base: First row and column all 1s (only one way)
+  // Already filled with 1s above
 
-    for (let i = 1; i < m; i++) {
-        dp[i][0] = dp[i-1][0] + grid[i][0];
-    }
-
+  // Fill table
+  for (let i = 1; i < m; i++) {
     for (let j = 1; j < n; j++) {
-        dp[0][j] = dp[0][j-1] + grid[0][j];
+      dp[i][j] = dp[i-1][j] + dp[i][j-1];
     }
+  }
 
-    // Fill the DP table
-    for (let i = 1; i < m; i++) {
-        for (let j = 1; j < n; j++) {
-            dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1]) + grid[i][j];
-        }
-    }
-
-    return dp[m-1][n-1];
+  return dp[m-1][n-1];
 }
 ```
 
-### 2. String Comparison Pattern
+**Time:** O(m×n) | **Space:** O(m×n)
+
+**Key:** Can reach cell from top or left. Sum both ways.
+
+---
+
+### Pattern 2: Minimum Path Sum
 
 ```typescript
-function stringDP(s1: string, s2: string): number {
-    const m = s1.length;
-    const n = s2.length;
-    const dp: number[][] = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
+function minPathSum(grid: number[][]): number {
+  const m = grid.length;
+  const n = grid[0].length;
+  const dp: number[][] = Array(m).fill(0).map(() => Array(n).fill(0));
 
-    // Base cases
-    for (let i = 0; i <= m; i++) dp[i][0] = 0;
-    for (let j = 0; j <= n; j++) dp[0][j] = 0;
+  // Base cases
+  dp[0][0] = grid[0][0];
 
-    // Fill the DP table
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (s1[i-1] === s2[j-1]) {
-                dp[i][j] = dp[i-1][j-1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
-            }
-        }
-    }
+  // First column
+  for (let i = 1; i < m; i++) {
+    dp[i][0] = dp[i-1][0] + grid[i][0];
+  }
 
-    return dp[m][n];
-}
-```
+  // First row
+  for (let j = 1; j < n; j++) {
+    dp[0][j] = dp[0][j-1] + grid[0][j];
+  }
 
-### 3. Space Optimization Pattern
-
-```typescript
-function optimizedDP(grid: number[][]): number {
-    const m = grid.length;
-    const n = grid[0].length;
-
-    // Use only two rows instead of full matrix
-    let prev = new Array(n).fill(0);
-    let curr = new Array(n).fill(0);
-
-    // Initialize first row
-    prev[0] = grid[0][0];
+  // Fill table
+  for (let i = 1; i < m; i++) {
     for (let j = 1; j < n; j++) {
-        prev[j] = prev[j-1] + grid[0][j];
+      dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1]) + grid[i][j];
     }
+  }
 
-    // Process remaining rows
-    for (let i = 1; i < m; i++) {
-        curr[0] = prev[0] + grid[i][0];
-        for (let j = 1; j < n; j++) {
-            curr[j] = Math.min(prev[j], curr[j-1]) + grid[i][j];
-        }
-        [prev, curr] = [curr, prev];
-    }
-
-    return prev[n-1];
+  return dp[m-1][n-1];
 }
 ```
 
----
+**Time:** O(m×n) | **Space:** O(m×n)
 
-## Problem-Specific Techniques
-
-### Path Counting Problems
-- Initialize dp[0][0] = 1 (one way to start)
-- dp[i][j] = dp[i-1][j] + dp[i][j-1] (sum of ways from top and left)
-
-### Minimum/Maximum Path Problems
-- Initialize first row and column with cumulative sums
-- dp[i][j] = min/max(dp[i-1][j], dp[i][j-1]) + grid[i][j]
-
-### String Matching Problems
-- Extra row/column for empty string
-- Diagonal transition for character match
-- Consider all three directions (delete, insert, replace)
-
-### Pattern Matching Problems
-- Handle wildcards specially
-- Consider multiple previous states
-- May need to look back multiple positions
+**Key:** Choose min cost from top/left, add current cell.
 
 ---
 
-## TypeScript Tips
+### Pattern 3: String Comparison (LCS)
 
-### Creating 2D Arrays
+**📹 Review:** [LCS video above](https://www.youtube.com/watch?v=Ua0GhsJSlWM) (~18 min)
+
+Used when: Finding common subsequences, comparing strings.
 
 ```typescript
-// Method 1: Fill with map
+function longestCommonSubsequence(text1: string, text2: string): number {
+  const m = text1.length;
+  const n = text2.length;
+  // Extra row/col for empty string
+  const dp: number[][] = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (text1[i-1] === text2[j-1]) {
+        // Match: extend LCS
+        dp[i][j] = dp[i-1][j-1] + 1;
+      } else {
+        // No match: take max of excluding one char
+        dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+      }
+    }
+  }
+
+  return dp[m][n];
+}
+```
+
+**Time:** O(m×n) | **Space:** O(m×n)
+
+**Key:** Match → diagonal + 1. No match → max(top, left).
+
+---
+
+### Pattern 4: Edit Distance
+
+**📹 Review:** [Edit Distance video above](https://www.youtube.com/watch?v=XYi2-LPrwm4) (~20 min)
+
+Used when: String transformation, minimum operations.
+
+```typescript
+function editDistance(word1: string, word2: string): number {
+  const m = word1.length;
+  const n = word2.length;
+  const dp: number[][] = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
+
+  // Base: empty string conversions
+  for (let i = 0; i <= m; i++) dp[i][0] = i;  // Delete all
+  for (let j = 0; j <= n; j++) dp[0][j] = j;  // Insert all
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (word1[i-1] === word2[j-1]) {
+        dp[i][j] = dp[i-1][j-1];  // No operation
+      } else {
+        dp[i][j] = 1 + Math.min(
+          dp[i-1][j],    // Delete
+          dp[i][j-1],    // Insert
+          dp[i-1][j-1]   // Replace
+        );
+      }
+    }
+  }
+
+  return dp[m][n];
+}
+```
+
+**Time:** O(m×n) | **Space:** O(m×n)
+
+**Key:** Three operations. Take minimum cost + 1.
+
+---
+
+## 🧩 Creating 2D Arrays in TypeScript
+
+### Method 1: Fill + Map (Recommended)
+
+```typescript
 const dp: number[][] = Array(m).fill(0).map(() => Array(n).fill(0));
+```
 
-// Method 2: Nested loops
+**Why map?** `fill()` creates references to same array!
+
+```typescript
+// ❌ WRONG - all rows reference same array!
+const wrong = Array(3).fill(Array(3).fill(0));
+wrong[0][0] = 1;  // Changes ALL rows!
+
+// ✅ CORRECT - each row is new array
+const correct = Array(3).fill(0).map(() => Array(3).fill(0));
+correct[0][0] = 1;  // Only first row changes
+```
+
+---
+
+### Method 2: Nested Loops
+
+```typescript
 const dp: number[][] = [];
 for (let i = 0; i < m; i++) {
-    dp[i] = new Array(n).fill(0);
+  dp[i] = new Array(n).fill(0);
 }
-
-// Method 3: For boolean arrays
-const visited: boolean[][] = Array(m).fill(false).map(() => Array(n).fill(false));
 ```
 
-### Common Helper Functions
+---
+
+### Method 3: Array.from
 
 ```typescript
-// Check if position is valid
+const dp = Array.from({ length: m }, () => Array(n).fill(0));
+```
+
+---
+
+## 💡 Space Optimization Techniques
+
+### Technique 1: Rolling Array (Two Rows)
+
+**Before:** O(m×n) space
+```typescript
+const dp: number[][] = Array(m).fill(0).map(() => Array(n).fill(0));
+```
+
+**After:** O(n) space
+```typescript
+let prev = new Array(n).fill(0);
+let curr = new Array(n).fill(0);
+
+for (let i = 0; i < m; i++) {
+  for (let j = 0; j < n; j++) {
+    curr[j] = /* calculate using prev */;
+  }
+  [prev, curr] = [curr, prev];  // Swap
+}
+```
+
+**When to use:** Need values from previous row only.
+
+---
+
+### Technique 2: Single Array
+
+```typescript
+const dp: number[] = new Array(n).fill(1);
+
+for (let i = 1; i < m; i++) {
+  for (let j = 1; j < n; j++) {
+    dp[j] = dp[j] + dp[j-1];
+  }
+}
+```
+
+**When to use:** Can overwrite as you go left-to-right.
+
+---
+
+### Technique 3: In-Place Modification
+
+```typescript
+function minPathSum(grid: number[][]): number {
+  const m = grid.length, n = grid[0].length;
+
+  for (let i = 1; i < m; i++) grid[i][0] += grid[i-1][0];
+  for (let j = 1; j < n; j++) grid[0][j] += grid[0][j-1];
+
+  for (let i = 1; i < m; i++) {
+    for (let j = 1; j < n; j++) {
+      grid[i][j] += Math.min(grid[i-1][j], grid[i][j-1]);
+    }
+  }
+
+  return grid[m-1][n-1];
+}
+```
+
+**Time:** O(m×n) | **Space:** O(1)
+
+**When to use:** Allowed to modify input.
+
+---
+
+## 📊 Complexity Analysis
+
+### Common 2D DP Complexities
+
+| Approach | Time | Space | Example |
+|----------|------|-------|---------|
+| Standard 2D DP | O(m×n) | O(m×n) | Full DP table |
+| Rolling array | O(m×n) | O(n) | Two rows only |
+| Single array | O(m×n) | O(n) | One row only |
+| In-place | O(m×n) | O(1) | Modify input |
+
+---
+
+## 🎯 State Definition Guide
+
+### Grid Problems
+
+```typescript
+// dp[i][j] = number of paths to reach (i, j)
+// dp[i][j] = minimum cost to reach (i, j)
+// dp[i][j] = maximum value at (i, j)
+```
+
+**Base:** First row/column based on problem.
+
+---
+
+### String Problems
+
+```typescript
+// dp[i][j] = LCS of s1[0..i-1] and s2[0..j-1]
+// dp[i][j] = edit distance for s1[0..i-1] to s2[0..j-1]
+// dp[i][j] = true if s1[0..i-1] matches pattern s2[0..j-1]
+```
+
+**Base:** Row/column 0 for empty string.
+
+---
+
+## 🔧 TypeScript 2D Array Helpers
+
+```typescript
+// Check if position valid
 function isValid(row: number, col: number, m: number, n: number): boolean {
-    return row >= 0 && row < m && col >= 0 && col < n;
+  return row >= 0 && row < m && col >= 0 && col < n;
 }
 
 // Get value with default
-function getValue(dp: number[][], i: number, j: number, defaultVal: number = 0): number {
-    if (i < 0 || j < 0 || i >= dp.length || j >= dp[0].length) {
-        return defaultVal;
-    }
-    return dp[i][j];
+function getValue(dp: number[][], i: number, j: number, defaultVal = 0): number {
+  if (i < 0 || j < 0) return defaultVal;
+  return dp[i][j];
+}
+
+// Print DP table (debugging)
+function printDP(dp: number[][]): void {
+  console.log('DP Table:');
+  for (const row of dp) {
+    console.log(row.map(x => x.toString().padStart(4)).join(' '));
+  }
+}
+
+// Clone 2D array
+function clone2D(arr: number[][]): number[][] {
+  return arr.map(row => [...row]);
 }
 ```
 
 ---
 
-## Interview Tips
+## 💡 Interview Tips
 
 ### Communication Strategy
 
-1. **Clarify the problem:**
-   - "Is the grid always rectangular?"
-   - "Can we modify the input?"
-   - "Are there negative values?"
+**Say this:**
+- "I'll use 2D DP where dp[i][j] represents..."
+- "Base cases are first row and column..."
+- "Recurrence relation: if match, take diagonal + 1..."
+- "Time is O(m×n) for filling table, space O(m×n) but can optimize to O(n)"
 
-2. **Explain your approach:**
-   - "I'll use a 2D DP table where dp[i][j] represents..."
-   - "The recurrence relation is..."
-   - "Base cases are..."
+**Show thinking:**
+- "Let me draw the DP table for small example"
+- "I'll trace through (0,0) to (2,2)"
+- "I can optimize space by keeping only previous row"
 
-3. **Discuss optimization:**
-   - "We can optimize space from O(m*n) to O(n)"
-   - "If we only need the final result, we don't need to store the entire table"
+---
 
 ### Common Follow-ups
 
-- "Can you optimize the space complexity?"
-- "Can you print the actual path/solution, not just the value?"
-- "What if the grid is very large?"
-- "Can you solve it with recursion + memoization instead?"
+**Q:** "Can you optimize space?"
+**A:** "Yes, we only need previous row. Use rolling array for O(n) space."
+
+**Q:** "Can you print the actual path/LCS?"
+**A:** "Yes, backtrack from dp[m][n] to dp[0][0] following decisions."
+
+**Q:** "What if grid is very large?"
+**A:** "Consider space optimization. Maybe process in chunks. Depends on constraints."
 
 ---
 
-## Debugging 2D DP
+## 🐛 Common Bugs and Fixes
 
-### Print the DP Table
+### Bug 1: Off-by-One
 
 ```typescript
-function printDP(dp: number[][]): void {
-    for (const row of dp) {
-        console.log(row.map(x => x.toString().padStart(3)).join(' '));
-    }
-}
+// ❌ Wrong
+for (let i = 0; i <= m; i++)  // Should be < m for 0-indexed
+
+// ✅ Correct
+for (let i = 0; i < m; i++)    // For dp[m][n]
+for (let i = 1; i <= m; i++)   // For dp[m+1][n+1] (string problems)
 ```
 
-### Common Issues
+---
 
-1. **Off-by-one errors:** Check if you need m+1 or m rows
-2. **Base case initialization:** Ensure all necessary cells are initialized
-3. **Index confusion:** Be clear about what dp[i][j] represents
-4. **Direction of filling:** Some problems require reverse order
+### Bug 2: Base Case
+
+```typescript
+// ❌ Wrong - forgot first row/column
+dp[0][0] = grid[0][0];
+// Missing initialization!
+
+// ✅ Correct
+dp[0][0] = grid[0][0];
+for (let i = 1; i < m; i++) dp[i][0] = dp[i-1][0] + grid[i][0];
+for (let j = 1; j < n; j++) dp[0][j] = dp[0][j-1] + grid[0][j];
+```
 
 ---
 
-## Practice Strategy
+### Bug 3: Index Confusion
 
-### Beginner (Start Here)
-1. Unique Paths - Basic grid traversal
-2. Minimum Path Sum - Path optimization
-3. Triangle - Different grid shape
+```typescript
+// When dp is (m+1) × (n+1) for strings
+if (text1[i-1] === text2[j-1])  // ✅ Correct - array is 0-indexed
+if (text1[i] === text2[j])      // ❌ Wrong - would skip first char
+```
 
-### Intermediate
-4. Longest Common Subsequence - String comparison
-5. Edit Distance - Classic DP
-6. Maximal Square - Area optimization
-
-### Advanced
-7. Interleaving String - Complex string matching
-8. Distinct Subsequences - Counting patterns
-9. Regular Expression Matching - Pattern matching
-
-### Order of Study
-1. Grid problems first (easier to visualize)
-2. String problems next (build on concepts)
-3. Complex patterns last (combine techniques)
+**Rule:** If `dp` has size (m+1)×(n+1), access string at `[i-1]` and `[j-1]`.
 
 ---
 
-## Key Takeaways
+### Bug 4: Fill Array Reference
 
-1. **2D DP extends 1D concepts** - Same principles, more dimensions
-2. **Visualization helps** - Draw the table and trace through
-3. **Space can often be optimized** - Don't always need full matrix
-4. **Practice standard patterns** - Grid, string, interval
-5. **Base cases are critical** - Many bugs come from incorrect initialization
+```typescript
+// ❌ WRONG - creates references to SAME array
+const dp = Array(m).fill(Array(n).fill(0));
+
+// ✅ CORRECT - creates NEW array for each row
+const dp = Array(m).fill(0).map(() => Array(n).fill(0));
+```
 
 ---
 
-## Next Steps
+## 📈 Pattern Recognition
 
-After watching the videos and understanding these concepts:
-1. Start with Problem 1 (Unique Paths) in PROBLEMS.md
-2. Try to solve it yourself first
-3. Use HINTS.md if stuck
-4. Review SOLUTIONS.md for optimization ideas
-5. Practice with Claude using INTERVIEWER-SCRIPT.md
+### How to Know It's 2D DP
 
-Remember: Understanding the pattern is more important than memorizing solutions!
+**Grid/Matrix:**
+- "Find paths from top-left to bottom-right"
+- "Minimum/maximum path sum"
+- "Count ways to reach destination"
+
+**Two Strings:**
+- "Longest common subsequence"
+- "Edit distance"
+- "String matching/interleaving"
+
+**Two Variables:**
+- "First i items and capacity j"
+- "Position i with state j"
+
+---
+
+## ✅ Ready to Practice
+
+**Say:** `"Claude, I watched the videos"` for concept check!
+
+**Quick Reference:**
+- **Grid DP:** dp[i][j] = f(top, left)
+- **String DP:** Match → diagonal+1, No match → max(top, left)
+- **Edit Distance:** min(insert, delete, replace) + 1
+- **Space:** Can usually optimize to O(n)
+
+**Complexity Targets:**
+- Time: O(m×n) is expected
+- Space: O(m×n) standard, O(n) optimized, O(1) in-place
+
+---
+
+[Back to Session README](./README.md)

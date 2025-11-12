@@ -1,397 +1,370 @@
-# Heap & Priority Queue Hints
+# Hints - Session 17: Heaps & Priority Queues
 
-## Problem 1: Kth Largest Element in an Array
+Progressive hints for 10 problems. Struggling is part of learning.
 
-### Hint 1 (Gentle)
-Think about what data structure efficiently maintains the K largest elements seen so far.
+---
 
-### Hint 2 (Direct)
-Use a min heap of size K. The root will always be the Kth largest element.
+## Problem 1: Kth Largest Element
 
-### Hint 3 (Detailed)
-- Create a min heap
-- Add elements one by one
-- When heap size exceeds K, remove the smallest (root)
-- After processing all elements, the root is your answer
-- This is more efficient than sorting when K << n
+### Level 1
+What data structure maintains K largest elements efficiently? Think about what gets removed.
+
+### Level 2
+Min heap of size K. Keep K largest, root is K-th largest. Why min? We remove smallest of K largest.
+
+### Level 3
+```typescript
+const minHeap: number[] = [];
+for (const num of nums) {
+  minHeap.push(num);
+  bubbleUp(minHeap.length - 1);
+  if (minHeap.length > k) {
+    minHeap[0] = minHeap.pop()!;
+    bubbleDown(0);
+  }
+}
+return minHeap[0];
+```
 
 ---
 
 ## Problem 2: Top K Frequent Elements
 
-### Hint 1 (Gentle)
-This is a two-step problem: count frequencies, then find the top K.
+### Level 1
+Two-step problem: count frequencies, then find top K. What structure tracks K best?
 
-### Hint 2 (Direct)
-Count frequencies with a Map, then use a min heap of size K based on frequency.
+### Level 2
+Map for frequencies. Min heap of size K comparing by frequency. Remove least frequent when size > K.
 
-### Hint 3 (Detailed)
-- First pass: Build frequency map
-- Second pass: Use min heap comparing by frequency
-- Keep heap size at K by removing minimum frequency
-- Alternative: Use bucket sort since frequencies are bounded by array length
+### Level 3
+```typescript
+const freq = new Map();
+for (const num of nums) freq.set(num, (freq.get(num) || 0) + 1);
+
+const minHeap: [number, number][] = []; // [value, freq]
+for (const [num, count] of freq) {
+  minHeap.push([num, count]);
+  bubbleUp(minHeap.length - 1);
+  if (minHeap.length > k) {
+    minHeap[0] = minHeap.pop()!;
+    bubbleDown(0);
+  }
+}
+```
 
 ---
 
 ## Problem 3: Find Median from Data Stream
 
-### Hint 1 (Gentle)
-How can you maintain the smaller and larger halves of your data separately?
+### Level 1
+How to maintain two halves of data? Think about accessing middle elements efficiently.
 
-### Hint 2 (Direct)
-Use two heaps: a max heap for the smaller half and a min heap for the larger half.
+### Level 2
+Two heaps: max heap (smaller half), min heap (larger half). Balance sizes. Median from top(s).
 
-### Hint 3 (Detailed)
-- Max heap stores smaller half (top is largest of small)
-- Min heap stores larger half (top is smallest of large)
-- Keep sizes balanced (differ by at most 1)
-- Median is either max heap top or average of both tops
-- Maintain invariant: max heap top <= min heap top
+### Level 3
+```typescript
+class MedianFinder {
+  maxHeap: number[] = []; // left half
+  minHeap: number[] = []; // right half
+
+  addNum(num: number): void {
+    this.maxHeap.push(num);
+    this.bubbleUpMax(this.maxHeap.length - 1);
+
+    // Balance sizes
+    if (this.maxHeap.length > this.minHeap.length + 1) {
+      const val = this.maxHeap[0];
+      this.maxHeap[0] = this.maxHeap.pop()!;
+      this.bubbleDownMax(0);
+      this.minHeap.push(val);
+      this.bubbleUpMin(this.minHeap.length - 1);
+    }
+
+    // Maintain: max top <= min top
+    if (this.minHeap.length && this.maxHeap[0] > this.minHeap[0]) {
+      [this.maxHeap[0], this.minHeap[0]] = [this.minHeap[0], this.maxHeap[0]];
+      this.bubbleDownMax(0);
+      this.bubbleDownMin(0);
+    }
+  }
+
+  findMedian(): number {
+    if (this.maxHeap.length > this.minHeap.length) return this.maxHeap[0];
+    return (this.maxHeap[0] + this.minHeap[0]) / 2;
+  }
+}
+```
 
 ---
 
 ## Problem 4: Merge K Sorted Lists
 
-### Hint 1 (Gentle)
-You need to track the smallest element across all K lists at any time.
+### Level 1
+Need smallest element across K lists at any time. What tracks minimum efficiently?
 
-### Hint 2 (Direct)
-Use a min heap containing one node from each list. Always take the minimum.
+### Level 2
+Min heap with one node from each list. Extract min, add to result, push next from same list.
 
-### Hint 3 (Detailed)
-- Initialize heap with first node from each list
-- Extract minimum node, add to result
-- If extracted node has a next, add it to heap
-- Continue until heap is empty
-- Heap size never exceeds K
+### Level 3
+```typescript
+const minHeap: ListNode[] = [];
+for (const head of lists) {
+  if (head) {
+    minHeap.push(head);
+    bubbleUp(minHeap.length - 1);
+  }
+}
+
+const dummy = new ListNode(0);
+let curr = dummy;
+
+while (minHeap.length > 0) {
+  const node = minHeap[0];
+  minHeap[0] = minHeap.pop()!;
+  if (minHeap.length) bubbleDown(0);
+
+  curr.next = node;
+  curr = curr.next;
+
+  if (node.next) {
+    minHeap.push(node.next);
+    bubbleUp(minHeap.length - 1);
+  }
+}
+```
 
 ---
 
 ## Problem 5: Task Scheduler
 
-### Hint 1 (Gentle)
-Tasks with higher frequency determine the minimum time needed.
+### Level 1
+High frequency tasks determine minimum time. Need to pick highest frequency available.
 
-### Hint 2 (Direct)
-Use a max heap for frequencies and a queue for cooling tasks.
+### Level 2
+Max heap for frequencies. Queue for cooling tasks with available time. Simulate time.
 
-### Hint 3 (Detailed)
-- Count task frequencies
-- Use max heap to always pick highest frequency task
-- After executing, decrease count and add to cooldown queue
-- Queue stores [count, available_time]
-- Process queue when tasks become available
-- Time progresses whether CPU is idle or not
+### Level 3
+```typescript
+const freq = new Map();
+for (const task of tasks) freq.set(task, (freq.get(task) || 0) + 1);
 
----
+const maxHeap = Array.from(freq.values()).sort((a, b) => b - a);
+const queue: [number, number][] = []; // [count, availableTime]
+let time = 0;
 
-## Problem 6: Kth Smallest Element in a Sorted Matrix
+while (maxHeap.length || queue.length) {
+  time++;
 
-### Hint 1 (Gentle)
-The matrix is sorted row-wise and column-wise. How can you explore elements in order?
+  if (queue.length && queue[0][1] === time) {
+    maxHeap.push(queue.shift()![0]);
+    maxHeap.sort((a, b) => b - a);
+  }
 
-### Hint 2 (Direct)
-Use a min heap starting with matrix[0][0], then explore right and down.
-
-### Hint 3 (Detailed)
-- Start with top-left element in heap
-- Extract minimum K times
-- When extracting element at [i,j]:
-  - Add [i+1,j] if not visited
-  - Add [i,j+1] if not visited
-- Use a Set to track visited cells
-- Kth extraction gives the answer
+  if (maxHeap.length) {
+    const count = maxHeap.shift()! - 1;
+    if (count > 0) queue.push([count, time + n + 1]);
+  }
+}
+```
 
 ---
 
-## Problem 7: K Closest Points to Origin
+## Problem 6: Kth Smallest in Matrix
 
-### Hint 1 (Gentle)
-You don't need to calculate the actual distance - what's sufficient for comparison?
+### Level 1
+Matrix sorted row and column. How to explore elements in sorted order?
 
-### Hint 2 (Direct)
-Use squared distance (x² + y²) to avoid sqrt. Use a max heap of size K.
+### Level 2
+Min heap starting with [0,0]. Extract K times. When extract [i,j], add [i+1,j] and [i,j+1].
 
-### Hint 3 (Detailed)
-- Calculate squared distance for each point
-- Use max heap comparing by distance
-- Keep heap size at K
-- Remove farthest point when size > K
-- Final heap contains K closest points
-- No need for sqrt since comparing relative distances
+### Level 3
+```typescript
+const minHeap: [number, number, number][] = [[matrix[0][0], 0, 0]];
+const visited = new Set(['0,0']);
+
+for (let count = 0; count < k; count++) {
+  const [val, row, col] = minHeap[0];
+  if (count === k - 1) return val;
+
+  minHeap[0] = minHeap.pop()!;
+  bubbleDown(0);
+
+  if (row + 1 < n && !visited.has(`${row + 1},${col}`)) {
+    minHeap.push([matrix[row + 1][col], row + 1, col]);
+    visited.add(`${row + 1},${col}`);
+    bubbleUp(minHeap.length - 1);
+  }
+
+  if (col + 1 < n && !visited.has(`${row},${col + 1}`)) {
+    minHeap.push([matrix[row][col + 1], row, col + 1]);
+    visited.add(`${row},${col + 1}`);
+    bubbleUp(minHeap.length - 1);
+  }
+}
+```
+
+---
+
+## Problem 7: K Closest Points
+
+### Level 1
+Don't need actual distance, what's sufficient? Think about what gets removed.
+
+### Level 2
+Squared distance (x² + y²) for comparison. Max heap of size K by distance.
+
+### Level 3
+```typescript
+const maxHeap: [number, number[]][] = []; // [distance, point]
+
+for (const point of points) {
+  const dist = point[0] ** 2 + point[1] ** 2;
+  maxHeap.push([dist, point]);
+  bubbleUp(minHeap.length - 1);
+
+  if (maxHeap.length > k) {
+    maxHeap[0] = maxHeap.pop()!;
+    bubbleDown(0);
+  }
+}
+
+return maxHeap.map(([_, point]) => point);
+```
 
 ---
 
 ## Problem 8: Reorganize String
 
-### Hint 1 (Gentle)
-What's the maximum frequency a character can have for reorganization to be possible?
+### Level 1
+What's max frequency for reorganization to be possible? How to place characters?
 
-### Hint 2 (Direct)
-Use a max heap by frequency. Always place the most frequent character, then the second most.
+### Level 2
+If any freq > (n+1)/2, impossible. Max heap by frequency. Take two most frequent alternately.
 
-### Hint 3 (Detailed)
-- Count character frequencies
-- If any frequency > (length + 1) / 2, return ""
-- Use max heap ordered by frequency
-- Take two most frequent characters each iteration
-- Place them alternately
-- Decrease counts and re-add to heap if > 0
-- Handle last character separately if odd length
+### Level 3
+```typescript
+const freq = new Map();
+for (const char of s) freq.set(char, (freq.get(char) || 0) + 1);
+
+const maxHeap = Array.from(freq.entries()).sort((a, b) => b[1] - a[1]);
+
+if (maxHeap[0][1] > Math.ceil(s.length / 2)) return "";
+
+const result: string[] = [];
+
+while (maxHeap.length > 1) {
+  const [char1, count1] = maxHeap.shift()!;
+  const [char2, count2] = maxHeap.shift()!;
+
+  result.push(char1, char2);
+
+  if (count1 > 1) maxHeap.push([char1, count1 - 1]);
+  if (count2 > 1) maxHeap.push([char2, count2 - 1]);
+
+  maxHeap.sort((a, b) => b[1] - a[1]);
+}
+
+if (maxHeap.length) result.push(maxHeap[0][0]);
+```
 
 ---
 
 ## Problem 9: Ugly Number II
 
-### Hint 1 (Gentle)
-Each ugly number is formed by multiplying a previous ugly number by 2, 3, or 5.
+### Level 1
+Each ugly = previous ugly × 2, 3, or 5. How to generate in order?
 
-### Hint 2 (Direct)
-Use a min heap to generate ugly numbers in order, avoiding duplicates.
+### Level 2
+Min heap. Start with 1. Multiply by 2,3,5 and add. Use Set for duplicates.
 
-### Hint 3 (Detailed)
-- Start with 1 in heap
-- Extract minimum, it's the next ugly number
-- Multiply by 2, 3, 5 and add to heap
-- Use a Set to avoid duplicates
-- Alternative: Use three pointers for 2x, 3x, 5x sequences
-- Dynamic programming approach is more efficient
-
----
-
-## Problem 10: Find K Pairs with Smallest Sums
-
-### Hint 1 (Gentle)
-Since arrays are sorted, which pairs should you consider first?
-
-### Hint 2 (Direct)
-Use a min heap starting with (nums1[0], nums2[0]), then explore next candidates.
-
-### Hint 3 (Detailed)
-- Start with pair (0, 0) in heap
-- Heap stores [sum, i, j] where i and j are indices
-- When extracting pair (i, j):
-  - Add (i+1, j) if not visited
-  - Add (i, j+1) if not visited
-- Use Set to track visited pairs
-- Extract K pairs from heap
-- Early termination when K pairs found
-
----
-
-## General Heap Problem-Solving Strategy
-
-### Step 1: Identify the Pattern
-- K elements? → Heap of size K
-- Streaming data? → Dynamic heap operations
-- Priority ordering? → Custom comparator
-- Merge sorted? → Min heap of heads
-
-### Step 2: Choose Heap Type
-- K largest → Min heap of size K
-- K smallest → Max heap of size K
-- Median → Two heaps (max + min)
-- Merge → Min heap
-
-### Step 3: Implementation
-- Custom heap or library?
-- Handle edge cases
-- Track additional state if needed
-- Optimize heap size when possible
-
-### Step 4: Complexity Analysis
-- Insertion: O(log k) or O(log n)
-- Extraction: O(log k) or O(log n)
-- Building: O(n) with heapify
-- Total: Usually O(n log k)
-
----
-
-## Common Pitfalls to Avoid
-
-1. **Wrong heap type** - Min vs Max confusion
-2. **Heap size** - Not maintaining size K
-3. **Comparator** - Wrong comparison function
-4. **Duplicates** - Not handling properly
-5. **Edge cases** - Empty input, K > n
-6. **Index math** - Parent/child calculations
-7. **Heap invariant** - Not maintaining after operations
-
----
-
-## Debugging Tips
-
-### Common Heap Bugs:
-
-#### 1. Index Calculation Errors
+### Level 3
 ```typescript
-// WRONG - Common off-by-one error
-parent(i) = i / 2  // Missing floor
-leftChild(i) = 2 * i  // Wrong for 0-indexed
+const minHeap = [1];
+const seen = new Set([1]);
 
-// CORRECT
-parent(i) = Math.floor((i - 1) / 2)
-leftChild(i) = 2 * i + 1
-rightChild(i) = 2 * i + 2
+for (let count = 0; count < n - 1; count++) {
+  const ugly = minHeap[0];
+  minHeap[0] = minHeap.pop()!;
+  if (minHeap.length) bubbleDown(0);
+
+  for (const factor of [2, 3, 5]) {
+    const next = ugly * factor;
+    if (!seen.has(next)) {
+      seen.add(next);
+      minHeap.push(next);
+      bubbleUp(minHeap.length - 1);
+    }
+  }
+}
+
+return minHeap[0];
 ```
 
-#### 2. Heap Property Violation
-```typescript
-// Debug by printing heap after each operation
-console.log("Heap state:", heap);
-console.log("Is valid:", isValidHeap(heap));
-```
+---
 
-#### 3. Wrong Heap Type
-```typescript
-// For K largest → Use MIN heap (counterintuitive!)
-// For K smallest → Use MAX heap
-// Remember: We keep K elements and remove the "worst"
-```
+## Problem 10: K Pairs with Smallest Sums
 
-#### 4. Forgetting to Maintain Size K
-```typescript
-// WRONG
-heap.push(element);
+### Level 1
+Arrays sorted. Which pairs to consider first?
 
-// CORRECT
-heap.push(element);
-if (heap.size() > k) {
-    heap.pop();
+### Level 2
+Min heap starting with [0,0]. Heap stores [sum, i, j]. When extract [i,j], add [i+1,j] and [i,j+1].
+
+### Level 3
+```typescript
+const minHeap: [number, number, number][] = [[nums1[0] + nums2[0], 0, 0]];
+const visited = new Set(['0,0']);
+const result: number[][] = [];
+
+while (result.length < k && minHeap.length) {
+  const [sum, i, j] = minHeap[0];
+  minHeap[0] = minHeap.pop()!;
+  if (minHeap.length) bubbleDown(0);
+
+  result.push([nums1[i], nums2[j]]);
+
+  if (i + 1 < nums1.length && !visited.has(`${i + 1},${j}`)) {
+    minHeap.push([nums1[i + 1] + nums2[j], i + 1, j]);
+    visited.add(`${i + 1},${j}`);
+    bubbleUp(minHeap.length - 1);
+  }
+
+  if (j + 1 < nums2.length && !visited.has(`${i},${j + 1}`)) {
+    minHeap.push([nums1[i] + nums2[j + 1], i, j + 1]);
+    visited.add(`${i},${j + 1}`);
+    bubbleUp(minHeap.length - 1);
+  }
 }
 ```
 
 ---
 
-## Pattern Recognition Guide
+## Pattern Hints
 
-### Pattern 1: Fixed K Elements
-**Problems:** Kth Largest, Top K Frequent, K Closest Points
-```typescript
-// Template
-for (const element of input) {
-    heap.push(element);
-    if (heap.size() > k) heap.pop();
-}
-return heap.getAllElements();
-```
+**"K largest"** → Min heap of size K (remove smallest)
 
-### Pattern 2: Dynamic Median
-**Problems:** Find Median from Data Stream
-```typescript
-// Template
-maxHeap; // smaller half
-minHeap; // larger half
-// Maintain: maxHeap.size() >= minHeap.size()
-// Maintain: maxHeap.top() <= minHeap.top()
-```
+**"K smallest"** → Max heap of size K (remove largest)
 
-### Pattern 3: Merge Multiple Sources
-**Problems:** Merge K Lists, K Pairs with Smallest Sums
-```typescript
-// Template
-heap.push(initialElements);
-while (!heap.isEmpty() && result.length < k) {
-    current = heap.pop();
-    result.push(current);
-    heap.push(nextCandidates);
-}
-```
+**"Median/middle"** → Two heaps (max + min)
 
-### Pattern 4: Greedy with Constraints
-**Problems:** Task Scheduler, Reorganize String
-```typescript
-// Template
-while (hasWork) {
-    available = getAvailable();
-    best = heap.pop();
-    process(best);
-    updateConstraints();
-}
-```
+**"Merge K sorted"** → Min heap of heads
+
+**"Priority/scheduling"** → Max heap by priority
+
+**"Generate sequence"** → Min heap with generation logic
 
 ---
 
-## Time Complexity Quick Guide
+## Using Hints Effectively
 
-### Building Heap:
-- **From insertions:** O(n log n)
-- **From heapify:** O(n) - Preferred!
+1. Try 10+ min before Level 1
+2. Try 5+ min after each hint
+3. If use Level 3, mark for review
+4. Learn the pattern, not just the solution
 
-### K Operations:
-- **Maintaining size K heap:** O(n log k)
-- **Extracting K elements:** O(k log n)
-
-### Trade-offs:
-- **Sorting:** O(n log n) always
-- **Heap:** O(n log k) when k << n
-- **QuickSelect:** O(n) average, O(n²) worst
-
-Choose based on:
-- k << n? → Use heap
-- Need all sorted? → Use sorting
-- Only need kth? → Use QuickSelect
+Goal: Recognize when to use heaps instantly.
 
 ---
 
-## Visualization Techniques
-
-### Draw the Heap:
-```
-       10          [10, 7, 8, 5, 2, 6, 3]
-      /  \
-     7    8        Index: 0  1  2  3  4  5  6
-    / \  / \
-   5  2 6  3       Parent of i: (i-1)/2
-                   Children: 2i+1, 2i+2
-```
-
-### Trace Operations:
-```
-Insert 4:
-[10, 7, 8, 5, 2, 6, 3] → [10, 7, 8, 5, 2, 6, 3, 4]
-Bubble up from index 7:
-Parent(7) = 3, arr[3] = 5 > 4, no swap
-Final: [10, 7, 8, 5, 2, 6, 3, 4]
-```
-
----
-
-## Interview Conversation Examples
-
-### When Asked About Approach:
-"I see this is a K-element problem. I'll use a min heap of size K to maintain the K largest elements. This gives us O(n log k) time instead of O(n log n) for sorting."
-
-### When Explaining Trade-offs:
-"We could sort in O(n log n), but since we only need K elements, a heap gives us O(n log k). If K is small relative to n, this is much better."
-
-### When Debugging:
-"Let me trace through with a small example. Starting with [3,2,1], k=2. I'll maintain a min heap of size 2..."
-
----
-
-## Final Study Checklist
-
-Before moving on, ensure you can:
-
-### Implementation:
-- [ ] Code a min heap from scratch in 5 minutes
-- [ ] Code a max heap from scratch in 5 minutes
-- [ ] Convert between min and max heap logic
-- [ ] Implement with custom comparator
-
-### Problem Solving:
-- [ ] Identify when to use heap vs other structures
-- [ ] Choose correct heap type (min vs max)
-- [ ] Handle edge cases properly
-- [ ] Optimize for K << n scenarios
-
-### Conceptual:
-- [ ] Explain heap properties clearly
-- [ ] Derive time complexities
-- [ ] Justify space complexities
-- [ ] Compare with alternative approaches
-
----
-
-**Still stuck?** Review the LESSON.md for heap operation implementations!
+[Back to Problems](./PROBLEMS.md) | [Solutions](./SOLUTIONS.md)

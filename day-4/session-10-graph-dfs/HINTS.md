@@ -1,36 +1,32 @@
-# Hints: Graph DFS
+# Hints - Session 10: Graph DFS
+
+Progressive hints for 10 problems. Struggling is part of learning.
+
+---
 
 ## Problem 1: Number of Islands
 
-### Hint Level 1 (Gentle nudge)
+### Level 1
 Think of each island as a connected component in a graph. How can you explore all land cells connected to a starting point?
 
-### Hint Level 2 (Directed guidance)
-Use DFS to explore each island completely. When you find a '1', increment your island count and use DFS to mark all connected '1's as visited. You can either:
-- Modify the grid in-place (change '1' to '0')
-- Use a separate visited set
+### Level 2
+Use DFS to explore each island completely. When you find a '1', increment island count and use DFS to mark all connected '1's as visited. Either:
+- Modify grid in-place (change '1' to '0')
+- Use separate visited set
 
-### Hint Level 3 (Detailed approach)
+### Level 3
 ```typescript
-// Pseudocode structure:
-function numIslands(grid):
-    islands = 0
+// Pseudocode:
+islands = 0
 
-    for each cell in grid:
-        if cell is '1':
-            islands++
-            dfs(cell) // Mark entire island as visited
-
-    return islands
+for each cell in grid:
+    if cell is '1':
+        islands++
+        dfs(cell) // Mark entire island as visited
 
 function dfs(row, col):
-    // Base case: out of bounds or water
-    if invalid: return
-
-    // Mark as visited
-    grid[row][col] = '0'
-
-    // Explore 4 directions
+    if out of bounds or water: return
+    grid[row][col] = '0'  // Mark visited
     dfs(row+1, col), dfs(row-1, col), dfs(row, col+1), dfs(row, col-1)
 ```
 
@@ -38,31 +34,26 @@ function dfs(row, col):
 
 ## Problem 2: Clone Graph
 
-### Hint Level 1 (Gentle nudge)
-You need to create a deep copy. Think about how to avoid infinite loops when the graph has cycles. What data structure can help you track already cloned nodes?
+### Level 1
+Need deep copy. How to avoid infinite loops when graph has cycles? What data structure tracks already cloned nodes?
 
-### Hint Level 2 (Directed guidance)
-Use a HashMap to map original nodes to their clones. This serves two purposes:
+### Level 2
+Use HashMap to map original nodes to their clones. Serves two purposes:
 1. Avoid creating duplicate clones
-2. Handle cycles in the graph
+2. Handle cycles in graph
 
-When you encounter a node, check if it's already cloned. If yes, return the clone; if no, create a new clone and recursively clone its neighbors.
+When encounter node: check if already cloned. If yes, return clone; if no, create new clone and recursively clone neighbors.
 
-### Hint Level 3 (Detailed approach)
+### Level 3
 ```typescript
-// Use a Map to track cloned nodes
 const cloned = new Map<Node, Node>();
 
 function dfs(node):
-    // Already cloned? Return the clone
-    if (cloned.has(node)):
-        return cloned.get(node)
+    if (cloned.has(node)): return cloned.get(node)
 
-    // Create clone
     clone = new Node(node.val)
     cloned.set(node, clone)
 
-    // Clone all neighbors
     for neighbor in node.neighbors:
         clone.neighbors.push(dfs(neighbor))
 
@@ -73,36 +64,31 @@ function dfs(node):
 
 ## Problem 3: Max Area of Island
 
-### Hint Level 1 (Gentle nudge)
-This is similar to Number of Islands, but instead of just counting islands, you need to track the size of each island. How can you modify the DFS to return the area?
+### Level 1
+Similar to Number of Islands, but instead of just counting, track the size of each island. How can you modify DFS to return area?
 
-### Hint Level 2 (Directed guidance)
-Make your DFS function return the area of the island it explores. The area is:
+### Level 2
+Make DFS return the area of island it explores. Area is:
 - 1 (for current cell) + area from exploring all 4 directions
-- 0 if the cell is water or out of bounds
+- 0 if cell is water or out of bounds
 
-Keep track of the maximum area found across all islands.
+Keep track of maximum area found.
 
-### Hint Level 3 (Detailed approach)
+### Level 3
 ```typescript
-function maxAreaOfIsland(grid):
-    maxArea = 0
+maxArea = 0
 
-    for each cell in grid:
-        if cell is 1:
-            area = dfs(row, col)
-            maxArea = max(maxArea, area)
-
-    return maxArea
+for each cell:
+    if cell is 1:
+        area = dfs(row, col)
+        maxArea = max(maxArea, area)
 
 function dfs(row, col):
-    if out of bounds or water:
-        return 0
-
-    grid[row][col] = 0  // Mark as visited
+    if out of bounds or water: return 0
+    grid[row][col] = 0  // Mark visited
 
     area = 1  // Current cell
-    area += dfs(row+1, col)  // Add area from each direction
+    area += dfs(row+1, col)
     area += dfs(row-1, col)
     area += dfs(row, col+1)
     area += dfs(row, col-1)
@@ -114,17 +100,16 @@ function dfs(row, col):
 
 ## Problem 4: Pacific Atlantic Water Flow
 
-### Hint Level 1 (Gentle nudge)
+### Level 1
 Instead of checking from each cell if water can reach both oceans, think backwards: which cells can be reached FROM each ocean? Water flows from higher to equal/lower heights.
 
-### Hint Level 2 (Directed guidance)
-Run DFS from all Pacific border cells (top row and left column) to find all cells reachable from Pacific. Do the same for Atlantic (bottom row and right column). The answer is cells that appear in both sets.
+### Level 2
+Run DFS from all Pacific border cells (top row and left column) to find all cells reachable from Pacific. Do same for Atlantic (bottom row and right column). Answer = cells that appear in both sets.
 
-When doing DFS from ocean, you can move to a neighbor if its height is >= current height (water flows uphill when going backwards).
+When doing DFS from ocean, can move to neighbor if height >= current height (water flows uphill when going backwards).
 
-### Hint Level 3 (Detailed approach)
+### Level 3
 ```typescript
-// Two separate DFS explorations
 pacific = new Set()
 atlantic = new Set()
 
@@ -137,15 +122,12 @@ for each cell in bottom row: dfs(cell, atlantic)
 for each cell in right column: dfs(cell, atlantic)
 
 // Find intersection
-result = []
 for each cell:
     if cell in pacific AND atlantic:
         result.push(cell)
 
-// DFS function
 function dfs(row, col, visited, prevHeight):
-    if out of bounds or visited or height < prevHeight:
-        return
+    if out of bounds or visited or height < prevHeight: return
     visited.add(cell)
     // Explore 4 directions with current height
 ```
@@ -154,25 +136,24 @@ function dfs(row, col, visited, prevHeight):
 
 ## Problem 5: Surrounded Regions
 
-### Hint Level 1 (Gentle nudge)
-O's that are on the border or connected to the border cannot be surrounded. How can you identify and protect these O's before flipping the rest?
+### Level 1
+O's on border or connected to border cannot be surrounded. How can you identify and protect these O's before flipping the rest?
 
-### Hint Level 2 (Directed guidance)
-1. Run DFS from all border O's and mark them as "safe" (use a temporary marker like 'S')
-2. After marking all safe O's, iterate through the board:
-   - Change remaining O's to X's (these are surrounded)
-   - Change S's back to O's (these are safe)
+### Level 2
+1. Run DFS from all border O's and mark as "safe" (use temporary marker like 'S')
+2. After marking all safe O's, iterate through board:
+   - Change remaining O's to X's (surrounded)
+   - Change S's back to O's (safe)
 
-### Hint Level 3 (Detailed approach)
+### Level 3
 ```typescript
 // Step 1: Mark border-connected O's as safe
 for each border cell:
-    if cell is 'O':
-        dfs(cell)  // Changes O to S
+    if cell is 'O': dfs(cell)  // Changes O to S
 
 function dfs(row, col):
     if out of bounds or not 'O': return
-    board[row][col] = 'S'  // Mark as safe
+    board[row][col] = 'S'  // Mark safe
     // Explore 4 directions
 
 // Step 2: Final pass
@@ -185,28 +166,25 @@ for each cell:
 
 ## Problem 6: Flood Fill
 
-### Hint Level 1 (Gentle nudge)
-This is a straightforward DFS problem. Start from the given pixel and change all connected pixels of the same color to the new color.
+### Level 1
+Straightforward DFS problem. Start from given pixel and change all connected pixels of same color to new color.
 
-### Hint Level 2 (Directed guidance)
-Be careful of one edge case: if the new color is the same as the original color, you don't need to do anything (and you'd get infinite recursion if you tried).
+### Level 2
+Be careful of edge case: if new color same as original color, don't need to do anything (and you'd get infinite recursion if you tried).
 
-Store the original color, then use DFS to change all connected pixels with that color to the new color.
+Store original color, then use DFS to change all connected pixels with that color to new color.
 
-### Hint Level 3 (Detailed approach)
+### Level 3
 ```typescript
-function floodFill(image, sr, sc, newColor):
-    originalColor = image[sr][sc]
+originalColor = image[sr][sc]
 
-    // Edge case: same color
-    if originalColor == newColor: return image
+// Edge case: same color
+if originalColor == newColor: return image
 
-    dfs(sr, sc)
-    return image
+dfs(sr, sc)
 
 function dfs(row, col):
-    if out of bounds or image[row][col] != originalColor:
-        return
+    if out of bounds or image[row][col] != originalColor: return
 
     image[row][col] = newColor
     // Explore 4 directions
@@ -216,21 +194,20 @@ function dfs(row, col):
 
 ## Problem 7: Number of Connected Components
 
-### Hint Level 1 (Gentle nudge)
-Build an adjacency list from the edges, then count how many times you need to start a new DFS to visit all nodes.
+### Level 1
+Build adjacency list from edges, then count how many times you need to start a new DFS to visit all nodes.
 
-### Hint Level 2 (Directed guidance)
-1. Create an adjacency list representation of the graph
-2. Keep a visited set
-3. For each unvisited node, start a DFS and increment component count
-4. The DFS should mark all reachable nodes as visited
+### Level 2
+1. Create adjacency list representation of graph
+2. Keep visited set
+3. For each unvisited node, start DFS and increment component count
+4. DFS should mark all reachable nodes as visited
 
-### Hint Level 3 (Detailed approach)
+### Level 3
 ```typescript
 // Build adjacency list
 graph = new Map()
-for i from 0 to n-1:
-    graph[i] = []
+for i from 0 to n-1: graph[i] = []
 for each edge [a, b]:
     graph[a].push(b)
     graph[b].push(a)
@@ -251,17 +228,17 @@ return components
 
 ## Problem 8: Word Search
 
-### Hint Level 1 (Gentle nudge)
-Try starting from each cell that matches the first character of the word. Use backtracking - mark cells as visited during exploration, then unmark them when backtracking.
+### Level 1
+Try starting from each cell matching first character. Use backtracking - mark cells as visited during exploration, then unmark when backtracking.
 
-### Hint Level 2 (Directed guidance)
-Use DFS with an index parameter tracking your position in the word. At each step:
+### Level 2
+Use DFS with index parameter tracking position in word. At each step:
 1. Check if current cell matches word[index]
-2. Temporarily mark the cell as visited (e.g., change to '#')
+2. Temporarily mark cell as visited (change to '#')
 3. Explore 4 directions with index+1
-4. Restore the original value (backtrack)
+4. Restore original value (backtrack)
 
-### Hint Level 3 (Detailed approach)
+### Level 3
 ```typescript
 function exist(board, word):
     for each cell:
@@ -272,7 +249,7 @@ function dfs(row, col, index):
     if index == word.length: return true  // Found word
     if out of bounds or board[row][col] != word[index]: return false
 
-    // Temporarily mark as visited
+    // Temporarily mark visited
     temp = board[row][col]
     board[row][col] = '#'
 
@@ -292,50 +269,49 @@ function dfs(row, col, index):
 
 ## Problem 9: All Paths From Source to Target
 
-### Hint Level 1 (Gentle nudge)
-This is a path enumeration problem. Use DFS to explore all paths from node 0 to node n-1. Since it's a DAG, you don't need to worry about cycles.
+### Level 1
+Path enumeration problem. Use DFS to explore all paths from node 0 to node n-1. Since it's DAG, don't need to worry about cycles.
 
-### Hint Level 2 (Directed guidance)
-Build the current path as you traverse. When you reach the target node, add the current path to your result. Remember to:
-- Add the current node to the path before exploring
+### Level 2
+Build current path as you traverse. When reach target node, add current path to result. Remember to:
+- Add current node to path before exploring
 - Remove it after exploring (backtracking)
-- Or create a new path array for each recursive call
+- Or create new path array for each recursive call
 
-### Hint Level 3 (Detailed approach)
+### Level 3
 ```typescript
-function allPaths(graph):
-    result = []
-    target = graph.length - 1
+result = []
+target = graph.length - 1
 
-    function dfs(node, path):
-        path.push(node)
+function dfs(node, path):
+    path.push(node)
 
-        if node == target:
-            result.push([...path])  // Found a path
-        else:
-            for neighbor in graph[node]:
-                dfs(neighbor, path)
+    if node == target:
+        result.push([...path])  // Found path
+    else:
+        for neighbor in graph[node]:
+            dfs(neighbor, path)
 
-        path.pop()  // Backtrack
+    path.pop()  // Backtrack
 
-    dfs(0, [])
-    return result
+dfs(0, [])
+return result
 ```
 
 ---
 
 ## Problem 10: Detect Cycle in Undirected Graph
 
-### Hint Level 1 (Gentle nudge)
-In an undirected graph, a cycle exists if you visit a node that's already been visited AND it's not the parent of the current node.
+### Level 1
+In undirected graph, cycle exists if you visit node that's already been visited AND it's not parent of current node.
 
-### Hint Level 2 (Directed guidance)
-Build an adjacency list, then use DFS with parent tracking:
-- If you encounter an unvisited neighbor, continue DFS
-- If you encounter a visited neighbor that's not your parent, you found a cycle
+### Level 2
+Build adjacency list, then use DFS with parent tracking:
+- If encounter unvisited neighbor, continue DFS
+- If encounter visited neighbor that's not parent, found cycle
 - Check all disconnected components
 
-### Hint Level 3 (Detailed approach)
+### Level 3
 ```typescript
 // Build adjacency list
 graph = buildGraph(n, edges)
@@ -346,8 +322,7 @@ function dfs(node, parent):
 
     for neighbor in graph[node]:
         if neighbor not in visited:
-            if dfs(neighbor, node):  // Found cycle in subtree
-                return true
+            if dfs(neighbor, node): return true  // Found cycle in subtree
         else if neighbor != parent:  // Back edge (cycle)
             return true
 
@@ -360,3 +335,36 @@ for i from 0 to n-1:
 
 return false
 ```
+
+---
+
+## Pattern Hints
+
+**"Count islands/components"** → DFS from each unvisited cell/node, count starts
+
+**"Max/min area"** → DFS returns size/area, track maximum
+
+**"Can reach both X and Y"** → Multi-source DFS from X and Y, find intersection
+
+**"Connected to border"** → DFS from all border cells, mark as safe
+
+**"Find all paths"** → DFS with path tracking, backtracking
+
+**"Detect cycle"** → DFS with parent/state tracking
+
+**"Clone/copy structure"** → DFS with HashMap to track clones
+
+---
+
+## Using Hints Effectively
+
+1. Try 10+ min before Level 1
+2. Try 5+ min after each hint
+3. If use Level 3, mark for review and retry similar later
+4. Don't feel bad - hints are for learning
+
+Goal: Learn pattern, not just solve one problem.
+
+---
+
+[Back to Problems](./PROBLEMS.md) | [Back to Solutions](./SOLUTIONS.md)
