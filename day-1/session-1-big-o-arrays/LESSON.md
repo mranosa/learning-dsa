@@ -1,384 +1,484 @@
-# Lesson: Big O Notation & Arrays
-
-## 📹 Video Assignment (20 minutes)
-
-**Primary Video:**
-"Big O Notation - Full Tutorial" by NeetCode
-https://www.youtube.com/watch?v=BgLTDT03QtU
-
-**Alternative Videos** (if you need different explanations):
-- "Big O Notation" by freeCodeCamp (6 min): https://www.youtube.com/watch?v=v4cd1O4zkGw
-- "Data Structures Easy to Advanced" by freeCodeCamp (skip to Big O section, 8 hours total): https://www.youtube.com/watch?v=RBSGKlAvoiM
-
-**What to focus on:**
-- Understanding what Big O represents
-- Common time complexities and their growth rates
-- Space complexity
-- How to analyze simple algorithms
+# Lesson: Big O & Arrays
 
 ---
 
-## 📚 Big O Notation - Core Concepts
+## 📹 Video 1: Array Fundamentals (15 min)
+
+**"JavaScript Arrays Crash Course" by freeCodeCamp**
+https://www.youtube.com/watch?v=QEZXbRiaY1I
+
+**Focus on:**
+- Array creation syntax
+- Core methods (push, pop, shift, unshift)
+- Iteration methods
+- TypeScript typing
+
+---
+
+## 📹 Video 2: Big O Notation (20 min)
+
+**"Big O Notation - Full Tutorial" by NeetCode**
+https://www.youtube.com/watch?v=BgLTDT03QtU
+
+**Focus on:**
+- Time/space complexity
+- Common complexities (O(1) through O(n²))
+- How to analyze algorithms
+
+---
+
+## 📹 Video 3: Array Patterns (12 min)
+
+**"5 Simple Steps for Solving Any Recursive Problem" by Reducible**
+https://www.youtube.com/watch?v=ngCos392W4w
+
+**Alternative - Two Pointers:**
+https://www.youtube.com/watch?v=On03HWe2tZM
+
+**Focus on:**
+- Two pointers technique
+- Sliding window pattern
+- When to use each pattern
+
+---
+
+## 🎯 Arrays: Creation & Syntax
+
+### Creating Arrays
+
+```typescript
+// Method 1: Literal syntax (most common)
+const nums: number[] = [1, 2, 3, 4, 5];
+const names: string[] = ["Alice", "Bob"];
+
+// Method 2: Array constructor
+const arr1 = new Array<number>(5);        // [empty × 5]
+const arr2 = new Array<number>(1, 2, 3);  // [1, 2, 3]
+
+// Method 3: Array.of()
+const arr3 = Array.of(1, 2, 3);           // [1, 2, 3]
+
+// Method 4: Array.from()
+const arr4 = Array.from({ length: 5 }, (_, i) => i);  // [0, 1, 2, 3, 4]
+
+// Empty arrays
+const empty: number[] = [];
+const empty2 = new Array<string>();
+
+// Mixed types (avoid in interviews)
+const mixed: (number | string)[] = [1, "two", 3];
+
+// Read-only arrays
+const readonly: readonly number[] = [1, 2, 3];
+```
+
+---
+
+## 🔧 TypeScript Array Functions
+
+### Core Functions (Must Know)
+
+| Function | Description | Example | Time |
+|----------|-------------|---------|------|
+| `push(x)` | Add to end | `arr.push(5)` | O(1) |
+| `pop()` | Remove from end | `arr.pop()` | O(1) |
+| `shift()` | Remove from start | `arr.shift()` | O(n) |
+| `unshift(x)` | Add to start | `arr.unshift(0)` | O(n) |
+| `length` | Get size | `arr.length` | O(1) |
+| `arr[i]` | Access by index | `arr[0]` | O(1) |
+
+```typescript
+const arr = [1, 2, 3];
+arr.push(4);          // [1, 2, 3, 4]
+arr.pop();            // [1, 2, 3], returns 4
+arr.unshift(0);       // [0, 1, 2, 3]
+arr.shift();          // [1, 2, 3], returns 0
+```
+
+---
+
+### Interview Essentials
+
+| Function | Description | Example | Time |
+|----------|-------------|---------|------|
+| `slice(start, end)` | Copy subarray (non-mutating) | `arr.slice(1, 3)` | O(k) |
+| `splice(i, n, ...items)` | Remove/insert (mutates) | `arr.splice(1, 2)` | O(n) |
+| `sort(compareFn)` | Sort in-place | `arr.sort((a,b) => a-b)` | O(n log n) |
+| `reverse()` | Reverse in-place | `arr.reverse()` | O(n) |
+| `includes(x)` | Check existence | `arr.includes(5)` | O(n) |
+| `indexOf(x)` | Find index | `arr.indexOf(5)` | O(n) |
+| `join(sep)` | Convert to string | `arr.join(",")` | O(n) |
+| `concat(arr2)` | Merge arrays | `arr1.concat(arr2)` | O(n+m) |
+
+```typescript
+const arr = [3, 1, 4, 1, 5];
+
+// slice - extract portion (doesn't mutate)
+arr.slice(1, 4);           // [1, 4, 1]
+
+// splice - remove/insert (mutates!)
+arr.splice(2, 1);          // Remove 1 item at index 2
+arr.splice(1, 0, 9);       // Insert 9 at index 1
+
+// sort - MUST use comparator for numbers!
+arr.sort((a, b) => a - b); // [1, 1, 3, 4, 5] ✅
+arr.sort();                 // ["1","1","3","4","5"] ❌ (string sort!)
+
+// reverse
+arr.reverse();             // [5, 4, 3, 1, 1]
+
+// includes/indexOf
+arr.includes(4);           // true
+arr.indexOf(4);            // 2
+arr.indexOf(99);           // -1 (not found)
+```
+
+---
+
+### Functional Methods (Interview Power Tools)
+
+| Function | Description | Returns | Time |
+|----------|-------------|---------|------|
+| `map(fn)` | Transform each element | New array | O(n) |
+| `filter(fn)` | Keep elements matching condition | New array | O(n) |
+| `reduce(fn, init)` | Accumulate to single value | Single value | O(n) |
+| `forEach(fn)` | Execute function on each (no return) | undefined | O(n) |
+| `find(fn)` | First element matching condition | Element or undefined | O(n) |
+| `findIndex(fn)` | Index of first match | Number | O(n) |
+| `every(fn)` | All elements match? | Boolean | O(n) |
+| `some(fn)` | Any element matches? | Boolean | O(n) |
+
+```typescript
+const nums = [1, 2, 3, 4, 5];
+
+// map - transform each element
+nums.map(x => x * 2);              // [2, 4, 6, 8, 10]
+
+// filter - keep elements matching condition
+nums.filter(x => x % 2 === 0);     // [2, 4]
+
+// reduce - accumulate
+nums.reduce((sum, x) => sum + x, 0);  // 15
+
+// forEach - side effects (no return)
+nums.forEach(x => console.log(x));
+
+// find - first match
+nums.find(x => x > 3);             // 4
+
+// findIndex
+nums.findIndex(x => x > 3);        // 3 (index of 4)
+
+// every - all match?
+nums.every(x => x > 0);            // true
+
+// some - any match?
+nums.some(x => x > 4);             // true
+```
+
+---
+
+## 📊 Big O Notation
 
 ### What is Big O?
 
-Big O notation describes how an algorithm's runtime or space requirements grow as the input size increases. It answers: **"How does performance scale?"**
+Big O describes how performance scales as input size increases.
 
-**Key insight:** We care about **worst-case** behavior and **growth rate**, not exact operations.
-
-### The Big O Hierarchy (Fastest to Slowest)
-
+**Hierarchy (fastest → slowest):**
 ```
 O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2ⁿ) < O(n!)
 ```
 
-**Visual representation of growth:**
+**Growth comparison:**
 ```
-n=10:   1 < 3 < 10 < 33 < 100 < 1024 < 3,628,800
-n=100:  1 < 7 < 100 < 664 < 10,000 < 10³⁰ < 10¹⁵⁷
-n=1000: 1 < 10 < 1000 < 9,966 < 1,000,000 < 10³⁰¹ < 10²⁵⁶⁷
+n=100:   1 vs 7 vs 100 vs 664 vs 10,000 vs 10³⁰ vs 10¹⁵⁷
 ```
-
-Notice how exponential and factorial explode!
 
 ---
 
-### O(1) - Constant Time
+### Common Complexities
 
-**Definition:** Runtime doesn't change with input size.
+| Complexity | Name | Example | When |
+|------------|------|---------|------|
+| **O(1)** | Constant | Array access `arr[i]` | Fixed operations |
+| **O(log n)** | Logarithmic | Binary search | Divide in half |
+| **O(n)** | Linear | Single loop | Check each element |
+| **O(n log n)** | Linearithmic | Merge sort | Efficient sort |
+| **O(n²)** | Quadratic | Nested loops | All pairs |
+| **O(2ⁿ)** | Exponential | Fibonacci (naive) | Brute force recursion |
 
 **Examples:**
+
 ```typescript
-// Array access
+// O(1) - Constant
 function getFirst(arr: number[]): number {
-  return arr[0];  // Always 1 operation
+  return arr[0];
 }
 
-// Hash map lookup
-function lookup(map: Map<string, number>, key: string): number | undefined {
-  return map.get(key);  // Always ~1 operation
-}
-
-// Math operation
-function add(a: number, b: number): number {
-  return a + b;  // Always 1 operation
-}
-```
-
-**Interview tip:** Even if you have 10 O(1) operations, it's still O(1). Constants are dropped.
-
----
-
-### O(log n) - Logarithmic Time
-
-**Definition:** Runtime grows slowly. Doubling input size only adds one more step.
-
-**When it appears:** Dividing problem in half repeatedly (binary search, balanced trees).
-
-**Example - Binary Search:**
-```typescript
+// O(log n) - Logarithmic (binary search)
 function binarySearch(arr: number[], target: number): number {
-  let left = 0;
-  let right = arr.length - 1;
-
+  let left = 0, right = arr.length - 1;
   while (left <= right) {
     const mid = Math.floor((left + right) / 2);
-
     if (arr[mid] === target) return mid;
     if (arr[mid] < target) left = mid + 1;
     else right = mid - 1;
   }
-
   return -1;
 }
-// Every iteration cuts search space in half
-// 1000 elements → only ~10 iterations max
-```
 
-**Key insight:** log₂(1000) ≈ 10. That's why binary search is so fast!
+// O(n) - Linear
+function sum(arr: number[]): number {
+  let total = 0;
+  for (const num of arr) total += num;
+  return total;
+}
+
+// O(n log n) - Merge sort
+arr.sort((a, b) => a - b);
+
+// O(n²) - Quadratic
+function allPairs(arr: number[]): number[][] {
+  const pairs: number[][] = [];
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = i + 1; j < arr.length; j++) {
+      pairs.push([arr[i], arr[j]]);
+    }
+  }
+  return pairs;
+}
+
+// O(2ⁿ) - Exponential
+function fib(n: number): number {
+  if (n <= 1) return n;
+  return fib(n - 1) + fib(n - 2);
+}
+```
 
 ---
 
-### O(n) - Linear Time
+### Space Complexity
 
-**Definition:** Runtime grows proportionally with input size.
+Space complexity measures extra memory used (excluding input).
 
-**When it appears:** Single loop through data.
-
-**Examples:**
 ```typescript
-// Find max in array
+// O(1) space - only variables
 function findMax(arr: number[]): number {
   let max = arr[0];
-  for (let i = 1; i < arr.length; i++) {  // n iterations
-    if (arr[i] > max) max = arr[i];
+  for (const num of arr) {
+    if (num > max) max = num;
   }
   return max;
 }
 
-// Sum array
-function sum(arr: number[]): number {
-  return arr.reduce((acc, val) => acc + val, 0);  // O(n)
-}
-```
-
-**Interview tip:** If you must look at every element at least once, you can't do better than O(n).
-
----
-
-### O(n log n) - Linearithmic Time
-
-**Definition:** Runtime is n × log n.
-
-**When it appears:** Efficient sorting algorithms.
-
-**Example - Merge Sort:**
-```typescript
-// TypeScript built-in sort is O(n log n)
-arr.sort((a, b) => a - b);
-```
-
-**Why n log n?**
-- You must touch every element (n)
-- But you do it in log n "levels" (divide and conquer)
-
-**Interview tip:** If asked to sort, that's O(n log n). You usually can't sort faster.
-
----
-
-### O(n²) - Quadratic Time
-
-**Definition:** Runtime grows with square of input size.
-
-**When it appears:** Nested loops over same data.
-
-**Example - Find all pairs:**
-```typescript
-function findAllPairs(arr: number[]): number[][] {
-  const pairs: number[][] = [];
-
-  for (let i = 0; i < arr.length; i++) {       // n iterations
-    for (let j = i + 1; j < arr.length; j++) { // n iterations
-      pairs.push([arr[i], arr[j]]);
-    }
-  }
-
-  return pairs;
-}
-// n × n = n² pairs
-```
-
-**Interview tip:** Nested loops often mean O(n²). This is usually what you're trying to optimize away!
-
----
-
-### O(2ⁿ) - Exponential Time
-
-**Definition:** Runtime doubles with each additional input.
-
-**When it appears:** Brute force recursion, generating all subsets.
-
-**Example - Fibonacci (naive):**
-```typescript
-function fib(n: number): number {
-  if (n <= 1) return n;
-  return fib(n - 1) + fib(n - 2);  // 2 recursive calls per level
-}
-// fib(10) makes 177 calls!
-// fib(30) makes 2,692,537 calls!
-```
-
-**Interview tip:** If you see exponential complexity, there's usually a DP optimization available.
-
----
-
-## Space Complexity
-
-Space complexity measures **extra memory** used, not counting the input.
-
-**Examples:**
-```typescript
-// O(1) space - only a few variables
-function sum(arr: number[]): number {
-  let total = 0;  // One variable
-  for (const num of arr) {
-    total += num;
-  }
-  return total;
-}
-
-// O(n) space - creating new array
+// O(n) space - new array
 function double(arr: number[]): number[] {
-  return arr.map(x => x * 2);  // New array of size n
+  return arr.map(x => x * 2);
 }
 
-// O(n) space - recursion call stack
+// O(n) space - recursion stack
 function factorial(n: number): number {
   if (n <= 1) return 1;
-  return n * factorial(n - 1);  // n calls on stack
+  return n * factorial(n - 1);
 }
 ```
 
-**Interview tip:** Mention space complexity even if not asked. It shows thoroughness.
+---
+
+### Analysis Rules
+
+1. **Drop constants:** 3n → O(n)
+2. **Drop lower terms:** n² + n → O(n²)
+3. **Different inputs:** Two arrays of size n, m → O(n + m) or O(n × m)
+4. **Worst case:** Analyze worst-case scenario
 
 ---
 
-## Analyzing Algorithms
+## 🎯 Array Operations Complexity
 
-### Rules for Big O:
-
-1. **Drop constants:**
-   - 3n → O(n), not O(3n)
-   - n/2 → O(n), not O(n/2)
-
-2. **Drop lower terms:**
-   - n² + n → O(n²), not O(n² + n)
-   - n log n + n → O(n log n)
-
-3. **Different variables for different inputs:**
-   - Two arrays of size n and m → O(n + m) or O(n × m), NOT O(n²)
-
-4. **Amortized complexity:**
-   - Dynamic array push is O(1) amortized (even though occasional resize is O(n))
+| Operation | Time | Space | Notes |
+|-----------|------|-------|-------|
+| Access `arr[i]` | O(1) | O(1) | Direct index |
+| Update `arr[i] = x` | O(1) | O(1) | Direct index |
+| Push (end) | O(1) | O(1) | Amortized |
+| Pop (end) | O(1) | O(1) | |
+| Shift (start) | O(n) | O(1) | Shifts all elements |
+| Unshift (start) | O(n) | O(1) | Shifts all elements |
+| Search unsorted | O(n) | O(1) | Must check each |
+| Search sorted | O(log n) | O(1) | Binary search |
+| Sort | O(n log n) | O(1)-O(n) | Depends on algorithm |
+| Slice | O(k) | O(k) | k = slice length |
+| Map/Filter | O(n) | O(n) | New array |
 
 ---
 
-## Array Fundamentals
+## 🧩 Common Array Patterns
 
-### Why Arrays?
+### Pattern 1: Two Pointers
 
-**Strengths:**
-- ✅ O(1) access by index
-- ✅ Cache-friendly (contiguous memory)
-- ✅ Simple and fast
-- ✅ Built into every language
+Used when: Sorted array, finding pairs/triplets, removing duplicates.
 
-**Weaknesses:**
-- ❌ O(n) insertion/deletion (except at end)
-- ❌ Fixed size (in some languages)
-- ❌ O(n) search (unsorted)
-
----
-
-### Array Operations Complexity
-
-| Operation | Time | Notes |
-|-----------|------|-------|
-| Access `arr[i]` | O(1) | Direct index |
-| Update `arr[i] = x` | O(1) | Direct index |
-| Push to end | O(1) | Amortized |
-| Pop from end | O(1) | |
-| Insert at start | O(n) | Shift all elements |
-| Delete at start | O(n) | Shift all elements |
-| Search unsorted | O(n) | Must check each |
-| Search sorted | O(log n) | Binary search |
-| Sort | O(n log n) | Depends on algorithm |
-
----
-
-### Common Array Patterns
-
-#### 1. Two Pointers (will see in problems)
 ```typescript
-let left = 0;
-let right = arr.length - 1;
-while (left < right) {
-  // Process elements
-  // Move pointers based on condition
+// Two pointers from ends
+function twoSum(arr: number[], target: number): number[] {
+  let left = 0, right = arr.length - 1;
+
+  while (left < right) {
+    const sum = arr[left] + arr[right];
+    if (sum === target) return [left, right];
+    if (sum < target) left++;
+    else right--;
+  }
+
+  return [-1, -1];
 }
 ```
 
-#### 2. Sliding Window (next session)
+**Time:** O(n) | **Space:** O(1)
+
+---
+
+### Pattern 2: Sliding Window
+
+Used when: Subarray/substring with condition, fixed or variable size window.
+
 ```typescript
-let windowSum = 0;
-for (let i = 0; i < k; i++) {
-  windowSum += arr[i];
+// Fixed window - max sum of k elements
+function maxSum(arr: number[], k: number): number {
+  let windowSum = 0;
+
+  // Initial window
+  for (let i = 0; i < k; i++) {
+    windowSum += arr[i];
+  }
+
+  let maxSum = windowSum;
+
+  // Slide window
+  for (let i = k; i < arr.length; i++) {
+    windowSum += arr[i] - arr[i - k];
+    maxSum = Math.max(maxSum, windowSum);
+  }
+
+  return maxSum;
 }
-// Slide window...
 ```
 
-#### 3. Prefix Sum
+**Time:** O(n) | **Space:** O(1)
+
+---
+
+### Pattern 3: Prefix Sum
+
+Used when: Range queries, subarray sums.
+
 ```typescript
-const prefix: number[] = [arr[0]];
-for (let i = 1; i < arr.length; i++) {
-  prefix[i] = prefix[i - 1] + arr[i];
+// Build prefix sum array
+function buildPrefixSum(arr: number[]): number[] {
+  const prefix: number[] = [arr[0]];
+  for (let i = 1; i < arr.length; i++) {
+    prefix[i] = prefix[i - 1] + arr[i];
+  }
+  return prefix;
 }
-// Now range sum is O(1)
+
+// Range sum using prefix: O(1)
+function rangeSum(prefix: number[], left: number, right: number): number {
+  if (left === 0) return prefix[right];
+  return prefix[right] - prefix[left - 1];
+}
 ```
 
-#### 4. Kadane's Algorithm (Maximum Subarray)
+**Build:** O(n) | **Query:** O(1) | **Space:** O(n)
+
+---
+
+### Pattern 4: Kadane's Algorithm
+
+Used when: Maximum subarray sum.
+
 ```typescript
-let maxSum = arr[0];
-let currentSum = arr[0];
-for (let i = 1; i < arr.length; i++) {
-  currentSum = Math.max(arr[i], currentSum + arr[i]);
-  maxSum = Math.max(maxSum, currentSum);
+function maxSubArray(nums: number[]): number {
+  let maxSum = nums[0];
+  let currentSum = nums[0];
+
+  for (let i = 1; i < nums.length; i++) {
+    currentSum = Math.max(nums[i], currentSum + nums[i]);
+    maxSum = Math.max(maxSum, currentSum);
+  }
+
+  return maxSum;
+}
+```
+
+**Key insight:** At each position, either extend current subarray or start fresh.
+
+**Time:** O(n) | **Space:** O(1)
+
+---
+
+## 💡 Interview Tips
+
+### Complexity Analysis
+
+**Quick rules:**
+- 1 loop → O(n)
+- Nested loops → O(n²)
+- Halving each step → O(log n)
+- Sorting → O(n log n)
+- Hash map lookup → O(1)
+
+**Say this:**
+- "This is O(n) time because we iterate once, O(1) space for variables."
+- "I'm trading O(n) space for O(n) time using a hash map instead of O(n²) nested loops."
+- "Binary search gives us O(log n) since we halve the search space each iteration."
+
+---
+
+### TypeScript Gotchas
+
+```typescript
+// ❌ Wrong - sorts as strings
+[1, 10, 2, 20].sort();           // [1, 10, 2, 20]
+
+// ✅ Correct - numeric sort
+[1, 10, 2, 20].sort((a, b) => a - b);  // [1, 2, 10, 20]
+
+// ❌ Wrong - mutation without asking
+function process(arr: number[]) {
+  arr.sort();  // Mutates input!
+}
+
+// ✅ Better - copy first
+function process(arr: number[]) {
+  const sorted = [...arr].sort((a, b) => a - b);
 }
 ```
 
 ---
 
-## Interview Tips
+### Common Patterns
 
-### How to Analyze Complexity Quickly
-
-1. **Count the loops:**
-   - 1 loop → probably O(n)
-   - 2 nested loops → probably O(n²)
-   - Loop that halves → probably O(log n)
-
-2. **Look for keywords:**
-   - "Sorted array" → O(log n) possible (binary search)
-   - "All pairs" → O(n²) likely
-   - "Recursive" → Could be O(2ⁿ), check tree
-
-3. **Common operations:**
-   - Sorting → O(n log n)
-   - Hash map operations → O(1)
-   - Array access → O(1)
-   - Array search → O(n)
-
-### What Interviewers Want to Hear
-
-**Good:**
-- "I'll use a hash map for O(1) lookup instead of O(n) array search"
-- "This is O(n) time and O(n) space. I'm trading space for time."
-- "The brute force is O(n²), but I can optimize to O(n) using..."
-
-**Bad:**
-- "I think it's fast" (be specific!)
-- Saying O(n) when it's O(n²)
-- Not mentioning space complexity
+| Problem Type | Pattern | Complexity |
+|--------------|---------|------------|
+| Find pair with sum | Hash map or Two pointers | O(n) |
+| Max subarray sum | Kadane's | O(n) |
+| Subarray with condition | Sliding window | O(n) |
+| Range sum queries | Prefix sum | O(n) build, O(1) query |
+| Find in rotated array | Modified binary search | O(log n) |
+| All pairs | Nested loops | O(n²) |
 
 ---
 
-## Practice Time!
+## ✅ Ready to Practice
 
-Now that you understand Big O and arrays, you're ready to solve problems.
+**Say:** `"Claude, I watched the videos"` for concept check!
 
-**Remember:**
-- Start with UMPIRE method
-- Think about complexity BEFORE coding
-- Consider edge cases (empty, single element, etc.)
-- Use TypeScript array methods correctly
-
-**Say:** `"Claude, I watched the video"` when ready for the concept check!
-
----
-
-## Quick Reference
-
-**Time Complexities (Fastest to Slowest):**
-O(1) → O(log n) → O(n) → O(n log n) → O(n²) → O(2ⁿ) → O(n!)
-
-**Space Complexity:**
-- In-place algorithm: O(1)
-- One extra array: O(n)
-- Recursion: O(depth)
-
-**Array Access:** O(1)
-**Array Search:** O(n) unsorted, O(log n) sorted
-**Array Sort:** O(n log n)
+**Quick Reference:**
+- **Array access:** O(1)
+- **Array search:** O(n) unsorted, O(log n) sorted
+- **Array sort:** O(n log n)
+- **Space:** In-place = O(1), new array = O(n)
 
 ---
 
