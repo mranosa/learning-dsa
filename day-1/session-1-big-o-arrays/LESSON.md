@@ -374,7 +374,7 @@ function maxSum(arr: number[], k: number): number {
 
 ### Pattern 3: Prefix Sum
 
-**📹 Learn:** Search "takeUforward prefix sum" or "NeetCode prefix sum" on YouTube (~10-15 min)
+**📹 Learn:** [Prefix Sum Array Tutorial](https://www.youtube.com/results?search_query=neetcode+prefix+sum) - Search "NeetCode prefix sum" or "takeUforward prefix sum" (~10-15 min)
 
 Used when: Range queries, subarray sums.
 
