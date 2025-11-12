@@ -316,6 +316,8 @@ function factorial(n: number): number {
 
 ### Pattern 1: Two Pointers
 
+**📹 Learn:** [Two Pointers Algorithm](https://www.youtube.com/watch?v=On03HWe2tZM) by NeetCode (~10 min)
+
 Used when: Sorted array, finding pairs/triplets, removing duplicates.
 
 ```typescript
@@ -339,6 +341,8 @@ function twoSum(arr: number[], target: number): number[] {
 ---
 
 ### Pattern 2: Sliding Window
+
+**📹 Learn:** [Sliding Window Playlist](https://www.youtube.com/playlist?list=PL_z_8CaSLPWeM8BDJmIYDaoQ5zuwyxnfj) by Aditya Verma (best series) | [NeetCode Sliding Window](https://neetcode.io/courses/advanced-algorithms) (8 min + 16 min)
 
 Used when: Subarray/substring with condition, fixed or variable size window.
 
@@ -370,6 +374,8 @@ function maxSum(arr: number[], k: number): number {
 
 ### Pattern 3: Prefix Sum
 
+**📹 Learn:** Search "takeUforward prefix sum" or "NeetCode prefix sum" on YouTube (~10-15 min)
+
 Used when: Range queries, subarray sums.
 
 ```typescript
@@ -394,6 +400,8 @@ function rangeSum(prefix: number[], left: number, right: number): number {
 ---
 
 ### Pattern 4: Kadane's Algorithm
+
+**📹 Learn:** Search "NeetCode maximum subarray" or "NeetCode Kadane" on YouTube (~8-12 min) | [Kadane's with Proof](https://www.youtube.com/watch?v=4csAswCkXZM) by QuanticDev
 
 Used when: Maximum subarray sum.
 
